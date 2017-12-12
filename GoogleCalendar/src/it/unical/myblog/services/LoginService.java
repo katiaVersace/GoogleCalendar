@@ -16,6 +16,7 @@ public class LoginService {
 	public void initialize() {
 		credentials.put("ciccio", "ciccio");
 		credentials.put("pippo", "pippo");
+		credentials.put("mario", "mario");
 	}
 	
 	public boolean loginAttempt(String username, String password) {
