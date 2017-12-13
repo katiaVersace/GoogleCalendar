@@ -1,4 +1,4 @@
-package it.unical.myblog.controllers;
+package it.unical.googlecalendar.controllers;
 
 import javax.servlet.http.HttpSession;
 
@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import it.unical.myblog.services.BlogService;
+import it.unical.googlecalendar.services.BlogService;
 
 @Controller
 public class IndexController {

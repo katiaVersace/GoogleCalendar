@@ -1,4 +1,4 @@
-package it.unical.myblog.model;
+package it.unical.googlecalendar.model;
 
 import java.util.Date;
 

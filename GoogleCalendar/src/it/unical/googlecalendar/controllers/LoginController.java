@@ -1,4 +1,4 @@
-package it.unical.myblog.controllers;
+package it.unical.googlecalendar.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import it.unical.myblog.services.LoginService;
+import it.unical.googlecalendar.services.LoginService;
 
 @Controller
 public class LoginController {

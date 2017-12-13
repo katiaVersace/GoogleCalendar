@@ -1,11 +1,8 @@
-package it.unical.myblog.model;
+package it.unical.googlecalendar.model;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-
-import it.unical.myblog.model.Comment;
 
 public class Post {
 	

@@ -1,4 +1,4 @@
-package it.unical.myblog.services;
+package it.unical.googlecalendar.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,8 +11,8 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
 
-import it.unical.myblog.model.Comment;
-import it.unical.myblog.model.Post;
+import it.unical.googlecalendar.model.Comment;
+import it.unical.googlecalendar.model.Post;
 
 @Service
 public class BlogService {

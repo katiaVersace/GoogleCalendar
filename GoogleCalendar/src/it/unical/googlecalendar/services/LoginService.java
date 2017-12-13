@@ -1,4 +1,4 @@
-package it.unical.myblog.services;
+package it.unical.googlecalendar.services;
 
 import java.util.HashMap;
 import java.util.Map;
