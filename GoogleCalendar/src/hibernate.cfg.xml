@@ -11,7 +11,10 @@
 		<property name="dialect">org.hibernate.dialect.H2Dialect</property>
 		<property name="show_sql">true</property>
 		<property name="hbm2ddl.auto">create</property>
-		<mapping class="it.unical.googlecalendar.model.Author" />
-		<mapping class="it.unical.googlecalendar.model.Book" />
+		<mapping class="it.unical.googlecalendar.model.User" />
+		<mapping class="it.unical.googlecalendar.model.Calendar" />
+		<mapping class="it.unical.googlecalendar.model.Occurrence" />
+		<mapping class="it.unical.googlecalendar.model.Memo" />
+		<mapping class="it.unical.googlecalendar.model.Event" />
 	</session-factory>
 </hibernate-configuration>
