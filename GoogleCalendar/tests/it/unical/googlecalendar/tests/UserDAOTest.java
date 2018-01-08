@@ -4,17 +4,28 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
+import it.unical.googlecalendar.configuration.AppConfiguration;
 import it.unical.googlecalendar.dao.UserDAO;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.model.User;
 
-
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = AppConfiguration.class)
+@WebAppConfiguration
 public class UserDAOTest {
+	
+	@Autowired
+	private UserDAOImpl dao;
 	
 	@Test
 	public void saveTest() {
-		UserDAO dao = UserDAOImpl.getInstance();
+		
 		User pippo = new User("pippo", "1234");
 		dao.save(new User("ciccio", "5678"));
 		dao.save(pippo);

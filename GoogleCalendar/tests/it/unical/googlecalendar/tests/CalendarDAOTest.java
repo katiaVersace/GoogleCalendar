@@ -4,23 +4,32 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-import it.unical.googlecalendar.dao.CalendarDAO;
+import it.unical.googlecalendar.configuration.AppConfiguration;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
-import it.unical.googlecalendar.dao.UserDAO;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.User;
 
-
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = AppConfiguration.class)
+@WebAppConfiguration
 public class CalendarDAOTest {
+	
+	@Autowired
+	private CalendarDAOImpl cdao;
+	@Autowired
+	private UserDAOImpl udao;
 	
 	@Test
 	public void saveTest() {
 		
 			
-		CalendarDAO cdao = CalendarDAOImpl.getInstance();
-		UserDAO udao = UserDAOImpl.getInstance();
 		User katia=new User("Katia","1234");		
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia,"katia's Calendar 2", "second list of katia's events");

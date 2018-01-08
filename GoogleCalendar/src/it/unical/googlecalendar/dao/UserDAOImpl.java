@@ -5,30 +5,23 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import it.unical.googlecalendar.dao.UserDAO;
 
 import it.unical.googlecalendar.model.User;
 
+
+@Repository
 public class UserDAOImpl implements UserDAO {
 
-	
 
-	private static UserDAOImpl instance;
-	
-	public static UserDAOImpl getInstance() {
-		if(instance==null) {
-			instance = new UserDAOImpl();
-		}
-		return instance;
-	}
-
+@Autowired	
 	private SessionFactory sessionFactory;
 	
 	public UserDAOImpl() {
 
-		sessionFactory = DBManager.getSessionFactory();
 	}
 
 	public void save(User user) {

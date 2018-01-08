@@ -7,31 +7,22 @@ import javax.persistence.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import it.unical.googlecalendar.dao.OccurrenceDAO;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 
+@Repository
 public class OccurrenceDAOImpl implements OccurrenceDAO {
 
-	
-
-	private static OccurrenceDAOImpl instance;
-	
-	public static OccurrenceDAOImpl getInstance() {
-		if(instance==null) {
-			instance = new OccurrenceDAOImpl();
-		}
-		return instance;
-	}
-
+@Autowired
 	private SessionFactory sessionFactory;
 	
 	public OccurrenceDAOImpl() {
 
-		sessionFactory = DBManager.getSessionFactory();
 	}
 
 	public void save(Occurrence Occurrence) {
