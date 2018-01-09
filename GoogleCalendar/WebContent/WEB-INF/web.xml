@@ -18,10 +18,12 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>it.unical.googlecalendar.configuration.AppConfiguration</param-value>
 		</init-param>
+		
+		
+		
 	</servlet>
-	<servlet-mapping>
+ 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
 </web-app>
