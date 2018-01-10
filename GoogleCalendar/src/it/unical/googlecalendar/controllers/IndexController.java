@@ -17,8 +17,9 @@ public class IndexController {
 	
 	@RequestMapping("/index")
 	public String homePage(Model model, HttpSession session) {
-	if(session.getAttribute("user")==null)	return "redirect:/";
-		model.addAttribute("events", dbService.stampaTuttiGliEventi());
+		String email=(String) session.getAttribute("email");
+	if(email==null)	return "redirect:/";
+		model.addAttribute("events", dbService.stampaTuttiGliEventi(email));
 		
 		return "index";
 	}

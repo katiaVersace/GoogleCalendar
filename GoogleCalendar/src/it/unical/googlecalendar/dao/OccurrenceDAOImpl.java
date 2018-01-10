@@ -90,5 +90,15 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		session.close();
 		return result;
 	}
+	
+	@Override
+	public List<Occurrence> getOccurrencesByEmail(String email){
+		Session session = sessionFactory.openSession();
+
+		//sql query
+		List<Occurrence> result = session.createQuery("SELECT * FROM occurrence o WHERE o.creator = :user_email").setParameter("user_email", email).getResultList();
+session.close();
+		return result;
+	}
 
 }

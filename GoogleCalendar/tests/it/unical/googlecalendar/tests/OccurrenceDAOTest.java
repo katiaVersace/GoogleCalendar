@@ -38,7 +38,7 @@ public class OccurrenceDAOTest {
 	public void saveTest() {
 		
 	
-		User katia=new User("Katia","1234");	
+		User katia=new User("katia.versace@hotmail.it","Katia","1234");	
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 				
 		

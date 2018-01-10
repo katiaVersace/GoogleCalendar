@@ -21,16 +21,16 @@ public class LoginController {
 
 	@RequestMapping("/")
 	public String loginPage(HttpSession r) {
-		if(r.getAttribute("user")==null)
+		if(r.getAttribute("email")==null)
 		return "login";
 		return "redirect:/index";
 	}
 	
 	@RequestMapping(value="/loginAttempt",method=RequestMethod.POST)
-	public String loginAttempt(@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
+	public String loginAttempt(@RequestParam String email, @RequestParam String password, Model model, HttpSession session) {
 		
-		if(loginService.loginAttempt(username, password)) {
-			session.setAttribute("user", username);
+		if(loginService.loginAttempt(email, password)) {
+			session.setAttribute("email",email);
 			return "redirect:/index";
 		}
 		
@@ -38,9 +38,9 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/registrationAttempt",method=RequestMethod.POST)
-	public String registrationAttempt(@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
+	public String registrationAttempt(@RequestParam String email,@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
 
-		if(loginService.registrationAttempt(username, password)) {
+		if(loginService.registrationAttempt(email,username, password)) {
 			session.setAttribute("user", username);
 			
 			return "redirect:/index";

@@ -28,6 +28,9 @@ public class User {
 	private String username;
 	
 	@Column(nullable=false)
+	private String email;
+	
+	@Column(nullable=false)
 	private String password;
 
 	@ManyToMany(cascade=CascadeType.ALL, mappedBy="users")
@@ -53,10 +56,19 @@ public class User {
 		super();
 	}
 
-	public User(String username, String password) {
+	public User(String email, String username, String password) {
 		super();
+		this.email=email;
 		this.username = username;
 		this.password = password;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getUsername() {

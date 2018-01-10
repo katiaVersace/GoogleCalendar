@@ -30,11 +30,9 @@ public class BlogService {
 	@Autowired
 	private OccurrenceDAOImpl odao;
 	
-	
-	public Collection<Occurrence> stampaTuttiGliEventi(){
-		
-		
-		User katia=new User("Katia","1234");	
+	@PostConstruct
+	public void initialize() {
+		User katia=new User("k@h.it","Katia","1234");	
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 				
 		
@@ -63,6 +61,10 @@ public class BlogService {
     	
 		
 		
+	}
+	
+
+	public Collection<Occurrence> stampaTuttiGliEventi(String email) {
 		
 		return odao.getAllOccurrences();
 	}

@@ -39,9 +39,9 @@ public class GuestsTest {
 		
 		//creo gli utenti e un calendario e all'utente katia associo il calendario 
 		
-		User katia=new User("Katia","1234");
-		User ciccio=new User("Ciccio","9876");
-		User pippo=new User("Pippo","7654");
+		User katia=new User("k@b.it","Katia","1234");
+		User ciccio=new User("c@j.ot","Ciccio","9876");
+		User pippo=new User("p@k.com","Pippo","7654");
 		
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 				

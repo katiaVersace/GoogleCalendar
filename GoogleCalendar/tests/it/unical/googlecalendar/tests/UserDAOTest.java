@@ -26,8 +26,8 @@ public class UserDAOTest {
 	@Test
 	public void saveTest() {
 		
-		User pippo = new User("pippo", "1234");
-		dao.save(new User("ciccio", "5678"));
+		User pippo = new User("pippo@p.it","pippo", "1234");
+		dao.save(new User("ciccio@c.it","ciccio", "5678"));
 		dao.save(pippo);
 		List<User> allUsers = dao.getAllUsers();
 		

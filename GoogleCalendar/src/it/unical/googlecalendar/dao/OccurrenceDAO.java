@@ -13,6 +13,8 @@ public interface OccurrenceDAO {
 
 	List<Occurrence> getAllOccurrences();
 	
+	List<Occurrence> getOccurrencesByEmail(String email);
+	
 	List<Occurrence> getOccurrencesByCalendar(Calendar calendar);
 
 	List<User> getGuestsByOccurrence(Occurrence occurrence);

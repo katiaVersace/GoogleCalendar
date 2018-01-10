@@ -129,13 +129,6 @@
 			
 			
 				events: [
-					<c:forEach items="${events}" var="e">
-					{
-						title: "${e.title}",
-						start: new Date(y, m, d),
-						allDay: true,
-					},
-					</c:forEach>
 				/*{
 					title: 'Evento 1',
 					start: new Date(y, m, 1)
@@ -184,10 +177,18 @@
 			
 			,			
 		});
-		
+		<c:forEach items="${events}" var="el">
+		$('#calendar').fullCalendar('renderEvent', {
+			title: "${el.title}",
+			start: new Date(y, m, d),
+			allDay: true,
+		}, true);
+		</c:forEach>
 		
 	});
 
+	
+	
 </script>
 <style>
 

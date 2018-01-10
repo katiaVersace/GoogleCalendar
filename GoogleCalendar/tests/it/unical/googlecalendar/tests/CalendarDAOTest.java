@@ -30,7 +30,7 @@ public class CalendarDAOTest {
 	public void saveTest() {
 		
 			
-		User katia=new User("Katia","1234");		
+		User katia=new User("k@j.it","Katia","1234");		
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia,"katia's Calendar 2", "second list of katia's events");
 		

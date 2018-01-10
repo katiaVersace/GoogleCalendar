@@ -24,9 +24,10 @@ public class UserDAOImpl implements UserDAO {
 
 	}
 
-	public void save(User user) {
+	public boolean save(User user) {
 
 		Session session = sessionFactory.openSession();
+		boolean result=false;
 
 		Transaction tx = null;
 
@@ -34,12 +35,15 @@ public class UserDAOImpl implements UserDAO {
 			tx = session.beginTransaction();
 			session.save(user);
 			tx.commit();
+			result=true;
 
 		} catch (Exception e) {
 			tx.rollback();
+			result=false;
 		}
 
 		session.close();
+		return result;
 
 	}
 
@@ -52,6 +56,19 @@ public class UserDAOImpl implements UserDAO {
 		session.close();
 		return result;
 
+	}
+	
+	public boolean existsUser(String email, String password) {
+		Session session = sessionFactory.openSession();
+
+		//sql query
+		List<User> result = session.createQuery("SELECT * FROM user u WHERE u.email = :user_email and u.password = :user_password").setParameter("user_email", email).setParameter("user_password", password).getResultList();
+
+		session.close();
+		if (result.size()==0)
+		return false;
+		else return true;
+	
 	}
 
 }

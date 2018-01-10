@@ -8,8 +8,9 @@ import it.unical.googlecalendar.model.User;
 
 public interface UserDAO {
 	
-	void save(User User);
+	boolean save(User User);
 
 	List<User> getAllUsers();
+	public boolean existsUser(String email, String password);
 	
 }
