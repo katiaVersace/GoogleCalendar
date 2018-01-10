@@ -13,20 +13,16 @@ import it.unical.googlecalendar.services.BlogService;
 @Controller
 public class IndexController {
 	@Autowired
-	private BlogService blogService;
+	private BlogService dbService;
 	
 	@RequestMapping("/index")
 	public String homePage(Model model, HttpSession session) {
 	if(session.getAttribute("user")==null)	return "redirect:/";
-		model.addAttribute("posts", blogService.getPosts());
+		model.addAttribute("events", dbService.stampaTuttiGliEventi());
+		
 		return "index";
 	}
 	
-	@RequestMapping("/comment")
-	public String addComment(@RequestParam int post, @RequestParam String comment, HttpSession session, Model model) {
-		blogService.addComment(post, comment, session.getAttribute("user").toString());
-		model.addAttribute("posts", blogService.getPosts());
-		return "redirect:/";
-	}
+	
 
 }

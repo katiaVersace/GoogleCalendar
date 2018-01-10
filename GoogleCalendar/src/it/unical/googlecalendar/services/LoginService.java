@@ -31,8 +31,10 @@ public class LoginService {
 	
 	
 	public boolean registrationAttempt(String username, String password) {
+		if (!username.equals("")&& !password.equals(""))
 		
 		return credentials.put(username, password)==null;
+		else return false;
 			
 		
 		

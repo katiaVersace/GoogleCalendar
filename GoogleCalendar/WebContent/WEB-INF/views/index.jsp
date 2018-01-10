@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page language="java" contentType="text/html; charset=utf8"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -125,12 +126,21 @@
 				
 			},
 			
-			events: [
-				{
-					title: 'All Day Event',
+			
+			
+				events: [
+					<c:forEach items="${events}" var="e">
+					{
+						title: "${e.title}",
+						start: new Date(y, m, d),
+						allDay: true,
+					},
+					</c:forEach>
+				/*{
+					title: 'Evento 1',
 					start: new Date(y, m, 1)
-				},
-				{
+				}
+					,{
 					id: 999,
 					title: 'Repeating Event',
 					start: new Date(y, m, d-3, 16, 0),
@@ -170,7 +180,9 @@
 					url: 'http://google.com/',
 					className: 'success'
 				}
-			],			
+				*/]
+			
+			,			
 		});
 		
 		
