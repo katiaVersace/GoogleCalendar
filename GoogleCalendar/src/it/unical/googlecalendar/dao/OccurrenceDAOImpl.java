@@ -96,7 +96,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		Session session = sessionFactory.openSession();
 
 		//sql query
-		List<Occurrence> result = session.createQuery("SELECT * FROM occurrence o WHERE o.creator = :user_email").setParameter("user_email", email).getResultList();
+		List<Occurrence> result = session.createQuery("SELECT o FROM Occurrence o WHERE o.creator.email = :user_email").setParameter("user_email", email).getResultList();
 session.close();
 		return result;
 	}

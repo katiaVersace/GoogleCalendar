@@ -16,34 +16,34 @@ public class LoginService {
 
 	@Autowired
 	private UserDAOImpl udao;
-	
+
 	@PostConstruct
 	public void initialize() {
-		
-		udao.save(new User("ciccio@c.it","ciccio", "ciccio"));
-		udao.save(new User("pippo@p.it","pippo", "pippo"));
-		udao.save(new User("mario@m.it","mario", "mario"));
-	
-		
+
+		udao.save(new User("ciccio@c.it", "ciccio", "ciccio"));
+		udao.save(new User("pippo@p.it", "pippo", "pippo"));
+		udao.save(new User("k@h.it", "Katia", "1234"));
+
 	}
-	
+
 	public boolean loginAttempt(String email, String password) {
-		if(!udao.existsUser(email,password)) {
+		if (!udao.existsUser(email, password)) {
 			return false;
 		}
 		return true;
-		
+
+	}
+
+	public boolean registrationAttempt(String email, String username, String password) {
+		if (!email.equals("") && !username.equals("") && !password.equals(""))
+			if (udao.save(new User(email, username, password)))
+				return true;
+
+		return false;
+
 	}
 	
-	
-	
-	public boolean registrationAttempt(String email, String username, String password) {
-		if (!email.equals("") && !username.equals("")&& !password.equals(""))
-	              	if(udao.save(new User(email,username,password))) return true;
-	
-		return false;
-			
-		
-		
+	public String getUsername(String email){
+		return udao.getUsernameByEmail(email);
 	}
 }

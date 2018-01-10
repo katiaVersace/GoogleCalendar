@@ -2,6 +2,8 @@ package it.unical.googlecalendar.dao;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -62,7 +64,10 @@ public class UserDAOImpl implements UserDAO {
 		Session session = sessionFactory.openSession();
 
 		//sql query
-		List<User> result = session.createQuery("SELECT * FROM user u WHERE u.email = :user_email and u.password = :user_password").setParameter("user_email", email).setParameter("user_password", password).getResultList();
+		List<User> result;
+		Query q= session.createQuery("SELECT u FROM User u WHERE u.email = :user_email and u.password = :user_password");
+		q.setParameter("user_email", email).setParameter("user_password", password);
+		result=q.getResultList();
 
 		session.close();
 		if (result.size()==0)
@@ -71,4 +76,16 @@ public class UserDAOImpl implements UserDAO {
 	
 	}
 
+	public String getUsernameByEmail(String email){
+		Session session = sessionFactory.openSession();
+
+		//sql query
+		List<String>result = session.createQuery("SELECT u.username FROM User u where u.email= :user_password").setParameter("user_password",email).getResultList();
+
+		session.close();
+		return result.get(0);
+		
+	}
+	
+	
 }

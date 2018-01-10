@@ -260,5 +260,8 @@ box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
 
 <div style='clear:both'></div>
 </div>
+<form action="logout">
+		<input id="logout-btn" type="submit" value="logout"></input>
+	</form>
 </body>
 </html>

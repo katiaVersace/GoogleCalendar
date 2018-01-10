@@ -19,7 +19,7 @@ public class IndexController {
 	public String homePage(Model model, HttpSession session) {
 		String email=(String) session.getAttribute("email");
 	if(email==null)	return "redirect:/";
-		model.addAttribute("events", dbService.stampaTuttiGliEventi(email));
+		model.addAttribute("events", dbService.stampaEventiPerUtente(email));
 		
 		return "index";
 	}

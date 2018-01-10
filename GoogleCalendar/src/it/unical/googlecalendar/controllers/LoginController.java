@@ -31,6 +31,7 @@ public class LoginController {
 		
 		if(loginService.loginAttempt(email, password)) {
 			session.setAttribute("email",email);
+			session.setAttribute("username",loginService.getUsername(email));
 			return "redirect:/index";
 		}
 		
@@ -41,7 +42,8 @@ public class LoginController {
 	public String registrationAttempt(@RequestParam String email,@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
 
 		if(loginService.registrationAttempt(email,username, password)) {
-			session.setAttribute("user", username);
+			session.setAttribute("email", email);
+			session.setAttribute("username",username);
 			
 			return "redirect:/index";
 		}

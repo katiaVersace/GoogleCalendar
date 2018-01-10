@@ -64,8 +64,12 @@ public class BlogService {
 	}
 	
 
-	public Collection<Occurrence> stampaTuttiGliEventi(String email) {
+	public Collection<Occurrence> stampaTuttiGliEventi() {
 		
 		return odao.getAllOccurrences();
+	}
+	
+	public Collection<Occurrence> stampaEventiPerUtente(String email){
+		return odao.getOccurrencesByEmail(email);
 	}
 }
