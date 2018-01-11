@@ -34,12 +34,33 @@ public class LoginService {
 
 	}
 
-	public boolean registrationAttempt(String email, String username, String password) {
-		if (!email.equals("") && !username.equals("") && !password.equals(""))
-			if (udao.save(new User(email, username, password)))
-				return true;
+	public boolean registrationAttempt(String email, String username, String password, String confirmPassword) {
 
-		return false;
+		 
+
+		//empty fields
+
+		if (email.equals("") || username.equals("") || password.equals(""))
+
+			return false;
+
+		//password missmatch
+
+	    if(!password.equals(confirmPassword))
+
+	    	return false;
+
+	    //user Exist
+
+		if (!udao.save(new User(email, username, password)))
+
+			return false;
+
+
+
+		return true;
+
+
 
 	}
 	

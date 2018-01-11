@@ -19,7 +19,7 @@ td.fc-today {
 
 .fc-first th{
 	font-family: 'Roboto', sans-serif;
-    background:#9675ce !important;
+    background:#1c6c13!important;
 	color:#FFF;
 	font-size:14px !important;
 	font-weight:500 !important;
@@ -97,11 +97,11 @@ html .fc,
 }
 	span.fc-button {
     font-family: 'Roboto', sans-serif;
-    border-color: #9675ce;
-	color: #9675ce;
+    border-color: #1c6c13;
+	color: #1c6c13;
 }
 .fc-state-down, .fc-state-active {
-    background-color: #9675ce !important;
+    background-color: #1c6c13!important;
 	color: #FFF !important;
 }
 .fc .fc-header-space {
@@ -162,24 +162,24 @@ html .fc,
 
     /* <th>, usually */
 .fc-widget-content {  /* <td>, usually */
-	border: 1px solid #e5e5e5;
+	border: 1px solid #b3f0ac;
 	}
 .fc-widget-header{
-    border-bottom: 1px solid #EEE; 
+    border-bottom: 1px solid #eefced; 
 }	
 .fc-state-highlight { /* <td> today cell */ /* TODO: add .fc-today to <th> */
-	/* background: #fcf8e3; */
+	/* background: #baf1b4; */
 }
 
 .fc-state-highlight > div > div.fc-day-number{
-    background-color: #ff3b30;
+    background-color: #1c6c13;
     color: #FFFFFF;
     border-radius: 50%;
     margin: 4px;
 }
 	
 .fc-cell-overlay { /* semi-transparent rectangle while dragging */
-	background: #bce8f1;
+	background: #ffffcc;
 	opacity: .3;
 	filter: alpha(opacity=30); /* for IE */
 	}
@@ -313,7 +313,7 @@ html .fc,
 	border: 1px solid #FFF; /* default BORDER color */
 	background-color: #FFF; /* default BACKGROUND color */
 	color: #919191;               /* default TEXT color */
-	font-size: 12px;
+	font-size: 24px;
 	cursor: default;
 }
 .fc-event.chill{
@@ -688,7 +688,7 @@ table.fc-header{
     transition: background-color 0.2s;
 }
 .fc-week .fc-day.fc-state-highlight:hover .fc-day-number{
-    background-color:  #ff3b30;
+    background-color:  #5ce04e;
 }
 .fc-button-today{
     border: 1px solid rgba(255,255,255,.0);

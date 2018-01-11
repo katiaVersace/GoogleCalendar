@@ -2,266 +2,203 @@
 <%@ page language="java" contentType="text/html; charset=utf8"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
-<html>
-<head>
 
-<meta charset="UTF-8">
+<html data-ng-app="mwl.calendar.docs">
+  <head>
+  <script type="text/javascript" src="resources/opensource/angular.min.js"></script>
+    
+    <script src="https://unpkg.com/moment@2.17.1"></script>
+    <script src="https://unpkg.com/interactjs@1"></script>
+    <script src="https://unpkg.com/angular@1.6.6/angular.js"></script>
+    <script src="https://unpkg.com/angular-animate@1.6.6/angular-animate.js"></script>
+    <script src="https://unpkg.com/angular-ui-bootstrap@2/dist/ui-bootstrap-tpls.js"></script>
+    <script src="https://unpkg.com/rrule@2"></script>
+    <script src="https://unpkg.com/angular-bootstrap-colorpicker@3"></script>
+    <script src="https://unpkg.com/angular-bootstrap-calendar"></script>
+    <link href="https://unpkg.com/bootstrap@3/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="https://unpkg.com/angular-bootstrap-colorpicker@3/css/colorpicker.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css" rel="stylesheet">
+    <script  src="resources/scripts/example.js"></script>
+    <script src="resources/scripts/helpers.js"></script>
+   
+  
+  </head>
+  <body>
+  <h1>Welcome "${username}"</h1>
+    <div data-ng-controller="KitchenSinkCtrl as vm">
+  <h2 class="text-center">{{ vm.calendarTitle }}</h2>
 
-<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+  <div class="row">
 
-<script
-  src="https://code.jquery.com/jquery-3.2.1.min.js"
-  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-  crossorigin="anonymous"></script>
+    <div class="col-md-6 text-center">
+      <div class="btn-group">
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"> 
+        <button
+          class="btn btn-primary"
+          mwl-date-modifier
+          date="vm.viewDate"
+          decrement="vm.calendarView"
+          ng-click="vm.cellIsOpen = false">
+          Previous
+        </button>
+        <button
+          class="btn btn-default"
+          mwl-date-modifier
+          date="vm.viewDate"
+          set-to-today
+          ng-click="vm.cellIsOpen = false">
+          Today
+        </button>
+        <button
+          class="btn btn-primary"
+          mwl-date-modifier
+          date="vm.viewDate"
+          increment="vm.calendarView"
+          ng-click="vm.cellIsOpen = false">
+          Next
+        </button>
+      </div>
+    </div>
 
-<link type="text/css" rel="stylesheet" href="resources/css/index.css">
+    <br class="visible-xs visible-sm">
 
-<script src="resources/scripts/index.js"></script>
-<script>
+    <div class="col-md-6 text-center">
+      <div class="btn-group">
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'year'" ng-click="vm.cellIsOpen = false">Year</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Month</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Week</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
+      </div>
+    </div>
 
-	$(document).ready(function() {
-	    var date = new Date();
-		var d = date.getDate();
-		var m = date.getMonth();
-		var y = date.getFullYear();
-		
-		/*  className colors
-		
-		className: default(transparent), important(red), chill(pink), success(green), info(blue)
-		
-		*/		
-		
-		  
-		/* initialize the external events
-		-----------------------------------------------------------------*/
-	
-		$('#external-events div.external-event').each(function() {
-		
-			// create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-			// it doesn't need to have a start or end
-			var eventObject = {
-				title: $.trim($(this).text()) // use the element's text as the event title
-			};
-			
-			// store the Event Object in the DOM element so we can get to it later
-			$(this).data('eventObject', eventObject);
-			
-			// make the event draggable using jQuery UI
-			$(this).draggable({
-				zIndex: 999,
-				revert: true,      // will cause the event to go back to its
-				revertDuration: 0  //  original position after the drag
-			});
-			
-		});
-	
-	
-		/* initialize the calendar
-		-----------------------------------------------------------------*/
-		
-		var calendar =  $('#calendar').fullCalendar({
-			header: {
-				left: 'title',
-				center: 'agendaDay,agendaWeek,month',
-				right: 'prev,next today'
-			},
-			editable: true,
-			firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
-			selectable: true,
-			defaultView: 'month',
-			
-			axisFormat: 'h:mm',
-			columnFormat: {
-                month: 'ddd',    // Mon
-                week: 'ddd d', // Mon 7
-                day: 'dddd M/d',  // Monday 9/7
-                agendaDay: 'dddd d'
-            },
-            titleFormat: {
-                month: 'MMMM yyyy', // September 2009
-                week: "MMMM yyyy", // September 2009
-                day: 'MMMM yyyy'                  // Tuesday, Sep 8, 2009
-            },
-			allDaySlot: false,
-			selectHelper: true,
-			select: function(start, end, allDay) {
-				var title = prompt('Event Title:');
-				if (title) {
-					calendar.fullCalendar('renderEvent',
-						{
-							title: title,
-							start: start,
-							end: end,
-							allDay: allDay
-						},
-						true // make the event "stick"
-					);
-				}
-				calendar.fullCalendar('unselect');
-			},
-			droppable: true, // this allows things to be dropped onto the calendar !!!
-			drop: function(date, allDay) { // this function is called when something is dropped
-			
-				// retrieve the dropped element's stored Event Object
-				var originalEventObject = $(this).data('eventObject');
-				
-				// we need to copy it, so that multiple events don't have a reference to the same object
-				var copiedEventObject = $.extend({}, originalEventObject);
-				
-				// assign it the date that was reported
-				copiedEventObject.start = date;
-				copiedEventObject.allDay = allDay;
-				
-				// render the event on the calendar
-				// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-				$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-				
-				// is the "remove after drop" checkbox checked?
-				if ($('#drop-remove').is(':checked')) {
-					// if so, remove the element from the "Draggable Events" list
-					$(this).remove();
-				}
-				
-			},
-			
-			
-			
-				events: [
-				/*{
-					title: 'Evento 1',
-					start: new Date(y, m, 1)
-				}
-					,{
-					id: 999,
-					title: 'Repeating Event',
-					start: new Date(y, m, d-3, 16, 0),
-					allDay: false,
-					className: 'info'
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: new Date(y, m, d+4, 16, 0),
-					allDay: false,
-					className: 'info'
-				},
-				{
-					title: 'Meeting',
-					start: new Date(y, m, d, 10, 30),
-					allDay: false,
-					className: 'important'
-				},
-				{
-					title: 'Lunch',
-					start: new Date(y, m, d, 12, 0),
-					end: new Date(y, m, d, 14, 0),
-					allDay: false,
-					className: 'important'
-				},
-				{
-					title: 'Birthday Party',
-					start: new Date(y, m, d+1, 19, 0),
-					end: new Date(y, m, d+1, 22, 30),
-					allDay: false,
-				},
-				{
-					title: 'Click for Google',
-					start: new Date(y, m, 28),
-					end: new Date(y, m, 29),
-					url: 'http://google.com/',
-					className: 'success'
-				}
-				*/]
-			
-			,			
-		});
-		<c:forEach items="${events}" var="el">
-		$('#calendar').fullCalendar('renderEvent', {
-			title: "${el.title}",
-			start: new Date(y, m, d),
-			allDay: true,
-		}, true);
-		</c:forEach>
-		
-	});
+  </div>
 
-	
-	
-</script>
-<style>
+  <br>
 
-	body {
-	    margin-bottom: 40px;
-		margin-top: 40px;
-		text-align: center;
-		font-size: 14px;
-		font-family: 'Roboto', sans-serif;
-		background:url(http://www.digiphotohub.com/wp-content/uploads/2015/09/bigstock-Abstract-Blurred-Background-Of-92820527.jpg);
-		}
-		
-	#wrap {
-		width: 1100px;
-		margin: 0 auto;
-		}
-		
-	#external-events {
-		float: left;
-		width: 150px;
-		padding: 0 10px;
-		text-align: left;
-		}
-		
-	#external-events h4 {
-		font-size: 16px;
-		margin-top: 0;
-		padding-top: 1em;
-		}
-		
-	.external-event { /* try to mimick the look of a real event */
-		margin: 10px 0;
-		padding: 2px 4px;
-		background: #3366CC;
-		color: #fff;
-		font-size: .85em;
-		cursor: pointer;
-		}
-		
-	#external-events p {
-		margin: 1.5em 0;
-		font-size: 11px;
-		color: #666;
-		}
-		
-	#external-events p input {
-		margin: 0;
-		vertical-align: middle;
-		}
+  <mwl-calendar
+    events="vm.events"
+    view="vm.calendarView"
+    view-title="vm.calendarTitle"
+    view-date="vm.viewDate"
+    on-event-click="vm.eventClicked(calendarEvent)"
+    on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+    cell-is-open="vm.cellIsOpen"
+    day-view-start="06:00"
+    day-view-end="22:59"
+    day-view-split="30"
+    cell-modifier="vm.modifyCell(calendarCell)"
+    cell-auto-open-disabled="true"
+    on-timespan-click="vm.timespanClicked(calendarDate, calendarCell)">
+  </mwl-calendar>
 
-	#calendar {
-/* 		float: right; */
-        margin: 0 auto;
-		width: 900px;
-		background-color: #FFFFFF;
-		  border-radius: 6px;
-        box-shadow: 0 1px 2px #C3C3C3;
-		-webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
--moz-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-		}
+  <br><br><br>
 
-</style>
-</head>
-<body>
-<div id='wrap'>
+  <h3 id="event-editor">
+    Edit events
+    <button
+      class="btn btn-primary pull-right"
+      ng-click="vm.addEvent()">
+      Add new
+    </button>
+    <div class="clearfix"></div>
+  </h3>
 
-<div id='calendar'></div>
+  <table class="table table-bordered">
 
-<div style='clear:both'></div>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Primary color</th>
+        <th>Secondary color</th>
+        <th>Starts at</th>
+        <th>Ends at</th>
+        <th>Remove</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr ng-repeat="event in vm.events track by $index">
+        <td>
+          <input
+            type="text"
+            class="form-control"
+            ng-model="event.title">
+        </td>
+        <td>
+          <input class="form-control" colorpicker type="text" ng-model="event.color.primary">
+        </td>
+        <td>
+          <input class="form-control" colorpicker type="text" ng-model="event.color.secondary">
+        </td>
+        <td>
+          <p class="input-group" style="max-width: 250px">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              uib-datepicker-popup="dd MMMM yyyy"
+              ng-model="event.startsAt"
+              is-open="event.startOpen"
+              close-text="Close" >
+            <span class="input-group-btn">
+              <button
+                type="button"
+                class="btn btn-default"
+                ng-click="vm.toggle($event, 'startOpen', event)">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </button>
+            </span>
+          </p>
+          <div
+            uib-timepicker
+            ng-model="event.startsAt"
+            hour-step="1"
+            minute-step="15"
+            show-meridian="true">
+          </div>
+        </td>
+        <td>
+          <p class="input-group" style="max-width: 250px">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              uib-datepicker-popup="dd MMMM yyyy"
+              ng-model="event.endsAt"
+              is-open="event.endOpen"
+              close-text="Close">
+            <span class="input-group-btn">
+              <button
+                type="button"
+                class="btn btn-default"
+                ng-click="vm.toggle($event, 'endOpen', event)">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </button>
+            </span>
+          </p>
+          <div
+            uib-timepicker
+            ng-model="event.endsAt"
+            hour-step="1"
+            minute-step="15"
+            show-meridian="true">
+          </div>
+        </td>
+        <td>
+          <button
+            class="btn btn-danger"
+            ng-click="vm.events.splice($index, 1)">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
 </div>
 <form action="logout">
 		<input id="logout-btn" type="submit" value="logout"></input>
 	</form>
-</body>
+
+  </body>
 </html>

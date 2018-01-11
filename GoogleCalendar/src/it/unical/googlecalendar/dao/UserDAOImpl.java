@@ -80,7 +80,7 @@ public class UserDAOImpl implements UserDAO {
 		Session session = sessionFactory.openSession();
 
 		//sql query
-		List<String>result = session.createQuery("SELECT u.username FROM User u where u.email= :user_password").setParameter("user_password",email).getResultList();
+		List<String>result = session.createQuery("SELECT u.username FROM User u where u.email= :user_email").setParameter("user_email",email).getResultList();
 
 		session.close();
 		return result.get(0);

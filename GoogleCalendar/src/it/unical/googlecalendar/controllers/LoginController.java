@@ -39,16 +39,26 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/registrationAttempt",method=RequestMethod.POST)
-	public String registrationAttempt(@RequestParam String email,@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
+	public String registrationAttempt(@RequestParam String email,@RequestParam String username, @RequestParam String password, @RequestParam String confirmPassword, Model model, HttpSession session) {
 
-		if(loginService.registrationAttempt(email,username, password)) {
+
+
+		if(loginService.registrationAttempt(email,username, password, confirmPassword)) {
+
 			session.setAttribute("email", email);
+
 			session.setAttribute("username",username);
-			
+
+						
+
 			return "redirect:/index";
+
 		}
+
 		
+
 		return "login";
+
 		}
 	
 	@RequestMapping("/logout")
