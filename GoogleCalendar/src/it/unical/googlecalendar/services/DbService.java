@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.services;
 
+import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,25 +17,36 @@ import org.springframework.stereotype.Service;
 
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
+import it.unical.googlecalendar.dao.UserDAOImpl;
+import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Comment;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.Post;
 import it.unical.googlecalendar.model.User;
+import it.unical.googlecalendar.model.Users_Calendars;
 
 @Service
-public class BlogService {
+public class DbService {
 
 
 	@Autowired
 	private OccurrenceDAOImpl odao;
+	@Autowired
+	private CalendarDAOImpl cdao;
+	@Autowired
+	private UserDAOImpl udao;
+
+	@Autowired
+	private Users_CalendarsDAOImpl ucdao;
 	
 	@PostConstruct
 	public void initialize() {
 		User katia=new User("k@h.it","Katia","1234");	
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 				
+		Users_Calendars uc=new Users_Calendars(katia, katiaCalendar,"ADMIN",  Color.black, katiaCalendar.getTitle());
 		
 		
 		//ora creo un evento e lo associo al mio calendario
@@ -52,13 +64,10 @@ public class BlogService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-	
-		
-		
+		ucdao.save(uc);
 		odao.save(memo1);
 		odao.save(memo2);
-    	
+		
 		
 		
 	}

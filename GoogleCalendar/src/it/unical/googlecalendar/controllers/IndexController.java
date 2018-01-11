@@ -8,12 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import it.unical.googlecalendar.services.BlogService;
+import it.unical.googlecalendar.services.DbService;
 
 @Controller
 public class IndexController {
 	@Autowired
-	private BlogService dbService;
+	private DbService dbService;
 	
 	@RequestMapping("/index")
 	public String homePage(Model model, HttpSession session) {

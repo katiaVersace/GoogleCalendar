@@ -6,10 +6,12 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -33,22 +35,27 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 
-	@ManyToMany(cascade=CascadeType.ALL, mappedBy="users")
-	 private List<Calendar> calendars=new ArrayList<Calendar>();
+	
 	
 	//Occurrences di cui l'user è ospite
 	@ManyToMany(cascade=CascadeType.ALL, mappedBy="guests")
 	 private List<Occurrence> occurrences=new ArrayList<Occurrence>();
 	
-	//Calendars di cui l'user è creatore
-		@OneToMany(mappedBy = "creator")
-		 private List<Calendar> calendarsCreated=new ArrayList<Calendar>();
-	
+		
 	//Occurrences di cui l'user è creatore
 	@OneToMany(mappedBy = "creator")
 	 private List<Occurrence> occurrencesCreated=new ArrayList<Occurrence>();
 	
-	
+	//Calendars di cui l'user è creatore
+
+			@OneToMany(mappedBy = "creator")
+
+			 private List<Calendar> calendarsCreated=new ArrayList<Calendar>();
+
+		
+	@OneToMany(mappedBy = "user")
+
+    public List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
 	
 
 	
@@ -65,6 +72,11 @@ public class User {
 	
 	public String getEmail() {
 		return email;
+	}
+	public List<Calendar> getCalendarsCreated() {
+
+		return calendarsCreated;
+
 	}
 
 	public void setEmail(String email) {
@@ -87,12 +99,9 @@ public class User {
 		this.password = password;
 	}
 	
-	public List<Calendar> getCalendars() {
-		return calendars;
-	}
 	
-	public void setCalendars(List<Calendar> c){
-		this.calendars=c;
+	public List<Users_Calendars> getUsers_Calendars() {
+		return users_calendars;
 	}
 	
 	public List<Occurrence> getOccurrences() {
@@ -111,16 +120,18 @@ public class User {
 		this.occurrencesCreated=c;
 	}
 	
+	public String getPriviledgesForCalendar(Calendar c){
+		for( Users_Calendars uc: users_calendars){
+			if(c.getId()==uc.getCalendar().getId()){
+				return uc.getPrivileges();
+			}
+			
+	}
+		return "";
+		
+	}
 
-	public List<Calendar> getCalendarsCreated() {
-		return calendarsCreated;
-	}
-	
-	public void setCalendarsCreated(List<Calendar> c){
-		this.calendarsCreated=c;
-	}
-	
-	public int getId() {
+		public int getId() {
 		return id;
 	}
 
