@@ -5,8 +5,10 @@
 
 <html data-ng-app="mwl.calendar.docs">
   <head>
-  <script type="text/javascript" src="resources/opensource/angular.min.js"></script>
-    
+  	<script type="text/javascript" src="resources/opensource/angular.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://unpkg.com/moment@2.17.1"></script>
     <script src="https://unpkg.com/interactjs@1"></script>
     <script src="https://unpkg.com/angular@1.6.6/angular.js"></script>
@@ -24,8 +26,16 @@
   
   </head>
   <body>
+  
   <h1>Welcome "${username}"</h1>
-    <div data-ng-controller="KitchenSinkCtrl as vm">
+  
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-2">
+      
+    </div>
+    <div class=col-sm-10>
+      <div data-ng-controller="KitchenSinkCtrl as vm">
   <h2 class="text-center">{{ vm.calendarTitle }}</h2>
 
   <div class="row">
@@ -196,6 +206,13 @@
 
   </table>
 </div>
+    </div>
+  </div>
+</div>
+  
+  
+  
+   
 <form action="logout">
 		<input id="logout-btn" type="submit" value="logout"></input>
 	</form>
