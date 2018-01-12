@@ -22,18 +22,52 @@
     <link href="https://unpkg.com/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css" rel="stylesheet">
     <script  src="resources/scripts/example.js"></script>
     <script src="resources/scripts/helpers.js"></script>
+    <link rel="stylesheet" type="text/css" href="resources/css/index.css">
    
   
   </head>
   <body>
   
-  <h1>Welcome "${username}"</h1>
+  <div class="barraNotifiche">
+ <div class="contenutoBarraNotifiche">
+ 
+ <div class="align-left" id="welcomeMessage">
+  <h2 >Welcome <u>${username}</u></h1>
+  </div>
+  
+   <div class="align-left" id="logoutButton">
+
+	
+	
+	<a href="logout" >
+          <span class="glyphicon glyphicon-log-out"></span>
+        </a>
+  </div>
+  
+  </div>
+  </div>
+  
+  
   
   <div class="container">
   <div class="row">
-    <div class="col-sm-2">
+ 
+    <div class="col-sm-2" id="myCalendarsBox">
+      
+      <form action="">
+<fieldset>
+ <legend>My Calendars</legend><br>
+ 
+ <c:forEach items="${calendars}" var="el">
+ <input type="checkbox" name="${el.id}" value="${el.title}" checked="checked"/> ${el.title}<br /> 
+ 
+ </c:forEach>
+ 
+</fieldset>
+</form>
       
     </div>
+    
     <div class=col-sm-10>
       <div data-ng-controller="KitchenSinkCtrl as vm">
   <h2 class="text-center">{{ vm.calendarTitle }}</h2>
@@ -209,13 +243,8 @@
     </div>
   </div>
 </div>
-  
-  
-  
-   
-<form action="logout">
-		<input id="logout-btn" type="submit" value="logout"></input>
-	</form>
 
+  
+  
   </body>
 </html>

@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -51,6 +52,17 @@ public class Users_CalendarsDAOImpl implements Users_CalendarsDAO{
 		session.close();
 		return result;
 
+	}
+@Override
+	public Collection<Calendar> getCalendarsForUser(String email) {
+	Session session = sessionFactory.openSession();
+
+	//sql query
+	Query query = session.createQuery("SELECT uc.calendar FROM Users_Calendars uc JOIN uc.user u WHERE u.email = :email");
+	query.setParameter("email",email);
+			List<Calendar> result = query.getResultList();
+	session.close();
+	return result;
 	}
 
 

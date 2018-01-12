@@ -40,10 +40,6 @@ public abstract class Occurrence {
 	@JoinColumn(name="calendar_id", nullable=false)
 	private Calendar calendar;
 	
-	@ManyToMany (cascade = CascadeType.ALL) 
-    @JoinTable( joinColumns=@JoinColumn(name="user_id"), inverseJoinColumns=@JoinColumn(name="occurrence_id"))  
-	private List<User> guests=new ArrayList<User>();
-	
 	@ManyToOne (cascade = CascadeType.ALL) 
 	@JoinColumn(name="user_id", nullable=false)
 	private User creator;
@@ -93,19 +89,8 @@ public abstract class Occurrence {
 		this.calendar = calendar;
 	}
 
-	public List<User> getGuests() {
-		return guests;
-	}
+	
 
-	public void setGuests(List<User> guests) {
-		this.guests = guests;
-	}
-
-	public void addGuest(User g){
-		//associazione tra occurrence e user (invito all'evento)
-		guests.add(g);
-		g.getOccurrences().add(this);
-	}
 	public void setCreator(User creator) {
 		this.creator=creator;
 		

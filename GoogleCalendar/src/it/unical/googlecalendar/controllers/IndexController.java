@@ -20,6 +20,7 @@ public class IndexController {
 		String email=(String) session.getAttribute("email");
 	if(email==null)	return "redirect:/";
 		model.addAttribute("events", dbService.stampaEventiPerUtente(email));
+		model.addAttribute("calendars", dbService.getCalendarsForUser(email));
 		
 		return "index";
 	}

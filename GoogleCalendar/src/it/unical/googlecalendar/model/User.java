@@ -36,11 +36,7 @@ public class User {
 	private String password;
 
 	
-	
-	//Occurrences di cui l'user è ospite
-	@ManyToMany(cascade=CascadeType.ALL, mappedBy="guests")
-	 private List<Occurrence> occurrences=new ArrayList<Occurrence>();
-	
+		
 		
 	//Occurrences di cui l'user è creatore
 	@OneToMany(mappedBy = "creator")
@@ -104,14 +100,7 @@ public class User {
 		return users_calendars;
 	}
 	
-	public List<Occurrence> getOccurrences() {
-		return occurrences;
-	}
-	
-	public void setOccurrences(List<Occurrence> c){
-		this.occurrences=c;
-	}
-	
+		
 	public List<Occurrence> getOccurrencesCreated() {
 		return occurrencesCreated;
 	}

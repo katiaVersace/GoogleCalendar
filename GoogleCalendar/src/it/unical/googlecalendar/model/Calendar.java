@@ -84,20 +84,20 @@ public class Calendar {
 
 	}
 	
-	//create association between User and Calendar
-//	public boolean inviteUserToCalendar(User owner, User guest, String privilege){
-//		if(users.contains(owner)&& getAssociationByUser(owner).getPrivileges().equals("ADMINISTRATOR") ){
-//			users.add(guest);
-//		
-//			Users_Calendars association=new Users_Calendars(guest, this, privilege,Color.BLUE, this.title);
-//			guest.getUsers_Calendars().add(association);
-//			this.users_calendars.add(association);
-//			return true;
-//		}
-//		else return false;
-//		
-//	}
-//	
+	//Sharing of calendars(aggiungere il fatto che deve essere mandata una richiesta che deve essere accettata prima di creare l'associazione
+	//create association between User and Calendar, ritorna un'associazione cosi che possa essere salvata all'esterno
+	public Users_Calendars inviteUserToCalendar(User owner, User guest, String privilege){
+		Users_Calendars association=null;
+		if(getAssociationByUser(owner).getPrivileges().equals("ADMINISTRATOR") ){
+			association=new Users_Calendars(guest, this, privilege,Color.CYAN, this.title);
+			guest.getUsers_Calendars().add(association);
+			this.users_calendars.add(association);
+			
+		}
+		return association;
+		
+	}
+	
 	public void setCreator(User creator) {
 
 		this.creator = creator;
