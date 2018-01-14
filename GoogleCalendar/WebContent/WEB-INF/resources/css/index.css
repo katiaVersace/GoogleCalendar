@@ -730,4 +730,60 @@ table.fc-header{
 	}
 	
 	
+	
+	
+	
+	
+	
+	#welcomeMessage {
+	 height: 60px;
+  margin:0 0 5px 0;
+  text-align: center;
+  
+	}
+	
+	.align-left{
+   float: left;
+ }
 
+.align-right{
+   float: right;
+ } 
+ .contenutoBarraNotifiche{
+    float: right;
+   }
+  #myCalendarsBox {
+  clear: both;			
+}
+#logoutButton{
+  height: 30px;
+  line-height: 50px;
+  text-align: center;
+   margin: 10px;
+  
+ }
+ 
+ .barraNotifiche{
+ width: 100%;
+    float: left;
+    clear: both;
+    margin: 10px 0;
+     border: 1px solid blue;
+    box-shadow: 0 5px 5px #333;
+    background-color: 		#87CEFA;
+    position:fixed;
+     top: 0;
+     z-index: 1;
+ }
+ 
+ #myCalendarsBox{
+ padding-top:10px;
+padding-bottom: 100%;
+    box-shadow: 0 5px 5px #333;
+    background-color: 	#87CEFA;
+ }
+ 
+ .container{
+  margin-top:100px;
+ }
+ 

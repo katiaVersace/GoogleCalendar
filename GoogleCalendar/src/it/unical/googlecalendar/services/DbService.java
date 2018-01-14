@@ -46,10 +46,9 @@ public class DbService {
 		User katia=new User("k@h.it","Katia","1234");	
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia,"Calendar n2", "second list of katia's events");
-				
 		Users_Calendars uc=new Users_Calendars(katia, katiaCalendar,"ADMIN",  Color.black, katiaCalendar.getTitle());
-		Users_Calendars uc2=new Users_Calendars(katia, katiaCalendar2,"ADMINISTRATOR",  Color.black, katiaCalendar2.getTitle());
-		
+
+	Users_Calendars uc2=new Users_Calendars(katia, katiaCalendar2,"ADMIN",  Color.black, katiaCalendar2.getTitle());
 		
 		//ora creo un evento e lo associo al mio calendario
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
@@ -81,11 +80,12 @@ public class DbService {
 		return odao.getAllOccurrences();
 	}
 	
+	//forse modificare in stampaEventiPerUtente e calendari(lista)
 	public Collection<Occurrence> stampaEventiPerUtente(String email){
 		return odao.getOccurrencesByEmail(email);
 	}
-	
-   public Collection<Calendar> getCalendarsForUser(String email) {
+
+	public Collection<Calendar> getCalendarsForUser(String email) {
 		
 		return ucdao.getCalendarsForUser(email);
 	}

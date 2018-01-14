@@ -17,15 +17,15 @@ public class LoginService {
 
 	@Autowired
 	private UserDAOImpl udao;
-
+	
 	//form visible
-		private String visible="block";
-		private String active="active";
-		//form hidden
-		private String hidden="none";
-		private String inactive="inactive";
-		
-		
+	private String visible="block";
+	private String active="active";
+	//form hidden
+	private String hidden="none";
+	private String inactive="inactive";
+
+			
 	
 	@PostConstruct
 	public void initialize() {
@@ -45,8 +45,6 @@ public class LoginService {
 	}
 
 	public boolean registrationAttempt(String email, String username, String password, String confirmPassword) {
-
-		 
 
 		//empty fields
 
@@ -79,6 +77,8 @@ public class LoginService {
 	}
 	
 	
+	
+	
 	public void showLoginForm(Model model){
 		model.addAttribute("login_block",visible);
 		model.addAttribute("login_title", active);
@@ -94,7 +94,4 @@ public class LoginService {
 		model.addAttribute("register_block",visible);
 		model.addAttribute("register_title", active);	
 	}
-	
-	
-	
 }

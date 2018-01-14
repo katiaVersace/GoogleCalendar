@@ -139,7 +139,8 @@ public class Users_Calendars {
 		this.color = color;
 
 		this.calendarName = calendarName;
-
+	user.getUsers_Calendars().add(this);
+	calendar.getUsers_calendars().add(this);
 	}
 
 	public Calendar getCalendar() {

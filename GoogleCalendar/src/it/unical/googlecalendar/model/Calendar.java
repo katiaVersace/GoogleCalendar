@@ -2,19 +2,11 @@ package it.unical.googlecalendar.model;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import java.util.List;import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -23,46 +15,26 @@ import javax.persistence.Table;
 public class Calendar {
 
 	@Id
-
 	@GeneratedValue(strategy = GenerationType.AUTO)
-
 	@Column(name = "calendar_id")
-
 	private int id;
 
-
-
 	@Column(nullable = false)
-
 	private String title;
 
-
-
 	@Column(nullable = false)
-
 	private String description;
 
-
-
-	@ManyToOne(cascade = CascadeType.ALL)
-
-	@JoinColumn(name = "user_id", nullable = false)
-
-	private User creator;
-
-
-
 	@OneToMany(mappedBy = "calendar")
-
 	private List<Occurrence> occurrences = new ArrayList<Occurrence>();
 
-	
-
+	// User che condividono questo calendario
 	@OneToMany(mappedBy = "calendar")
+	private List<Users_Calendars> users_calendars = new ArrayList<Users_Calendars>();
 
-    private List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
-
-  
+//	// invitation
+	@OneToMany(mappedBy = "calendar")
+	public List<Invitation> Invitations = new ArrayList<Invitation>();
 
 	public Calendar() {
 		super();
@@ -75,48 +47,68 @@ public class Calendar {
 
 		this.description = description;
 
-		setCreator(creator);
+	}
+	
 
-		//many to many association tra user e calendar	
+	// Sharing of calendars(aggiungere il fatto che deve essere mandata una
+	// richiesta che deve essere accettata prima di creare l'associazione
+	// create association between User and Calendar, ritorna un'associazione
+	// cosi che possa essere salvata all'esterno
+	// nel caso invertissimo la cascata non ci sarà bisogno di ritornare
+	// l'associazione perchè il salvataggio verrà fatto su user e calendar
+	public Users_Calendars sendInvitationToCalendar(User owner, User guest, String privilege) {
+		/*
+		 * //Ora che ho creato la classe Invitation questo metodo diventerà cosi
+		 * e dovra ritornare una Invitation
+		 * if(getAssociationByUser(owner).getPrivileges().equals("ADMIN") ){
+		 * Invitation i=new Invitation(owner.getId(), guest, this, privilege); } return
+		 * invitation;
+		 */
+		Users_Calendars association = null;
+		if (getAssociationByUser(owner).getPrivileges().equals("ADMIN")) {
+			association = new Users_Calendars(guest, this, privilege, Color.CYAN, this.title);
+		}
+		return association;
 
-		creator.getCalendarsCreated().add(this);
+	}
+
+	
+	public void cancelInvitationToCalendar(Invitation i, User sender){
+		if(i.getSenderId()==sender.getId()){
+			//cancella l'invito dal db
+		}
 		
-
 	}
 	
-	//create association between User and Calendar
-//	public boolean inviteUserToCalendar(User owner, User guest, String privilege){
-//		if(users.contains(owner)&& getAssociationByUser(owner).getPrivileges().equals("ADMINISTRATOR") ){
-//			users.add(guest);
-//		
-//			Users_Calendars association=new Users_Calendars(guest, this, privilege,Color.BLUE, this.title);
-//			guest.getUsers_Calendars().add(association);
-//			this.users_calendars.add(association);
-//			return true;
-//		}
-//		else return false;
-//		
-//	}
-//	
-	public void setCreator(User creator) {
-
-		this.creator = creator;
-
-
-
+	public void acceptInvitationToCalendar(Invitation i, User receiver) {
+		if (i.acceptInvitation(receiver)) {
+			// cancella l'Invitation dal db
+		} else {
+			// ritorna qualche errore
+		}
 	}
 
+	public void declineInvitationToCalendar(Invitation i, User receiver) {
+		if (i.declineInvitation(receiver)) {
+			// cancella l'Invitation dal db
+		} else {
+			// ritorna qualche errore
+		}
+	}
+
+	// elimina calendario(se sei ADMIN)
+	// elimina R o RW(se sei ADMIN)
 
 	
-	
-	public Users_Calendars getAssociationByUser(User u){
-		for( Users_Calendars uc: users_calendars){
-			if(uc.getUser().getId()==u.getId())
-			{
+
+	public Users_Calendars getAssociationByUser(User u) {
+		for (Users_Calendars uc : users_calendars) {
+			if (uc.getUser().getId() == u.getId()) {
 				return uc;
 			}
-			
-	}
+
+		}
+
 		return null;
 	}
 
@@ -132,8 +124,6 @@ public class Calendar {
 		return occurrences;
 	}
 
-	
-
 	public String getDescription() {
 		return description;
 	}
@@ -148,6 +138,14 @@ public class Calendar {
 
 	public synchronized void setId(int id) {
 		this.id = id;
+	}
+
+	public List<Users_Calendars> getUsers_calendars() {
+		return users_calendars;
+	}
+
+	public void setUsers_calendars(List<Users_Calendars> users_calendars) {
+		this.users_calendars = users_calendars;
 	}
 
 	@Override

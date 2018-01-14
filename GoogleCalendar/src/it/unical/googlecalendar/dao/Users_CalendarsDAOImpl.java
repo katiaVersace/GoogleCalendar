@@ -54,7 +54,6 @@ public class Users_CalendarsDAOImpl implements Users_CalendarsDAO{
 
 	}
 	
-	
 	@Override
 	public Collection<Calendar> getCalendarsForUser(String email) {
 	Session session = sessionFactory.openSession();
@@ -64,6 +63,8 @@ public class Users_CalendarsDAOImpl implements Users_CalendarsDAO{
 	query.setParameter("email",email);
 			List<Calendar> result = query.getResultList();
 	session.close();
+
+
 	return result;
 	}
 

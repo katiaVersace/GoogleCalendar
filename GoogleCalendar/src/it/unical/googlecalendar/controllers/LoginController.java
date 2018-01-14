@@ -15,7 +15,7 @@ import it.unical.googlecalendar.services.LoginService;
 
 @Controller
 public class LoginController {
-	
+
 	@Autowired
 	private LoginService loginService;
 
@@ -27,16 +27,18 @@ public class LoginController {
 		}
 		return "redirect:/index";
 	}
-	
-	@RequestMapping(value="/loginAttempt",method=RequestMethod.POST)
-	public String loginAttempt(@RequestParam String email, @RequestParam String password, Model model, HttpSession session) {
-		
-		if(loginService.loginAttempt(email, password)) {
-			session.setAttribute("email",email);
-			session.setAttribute("username",loginService.getUsername(email));
+
+	@RequestMapping(value = "/loginAttempt", method = RequestMethod.POST)
+	public String loginAttempt(@RequestParam String email, @RequestParam String password, Model model,
+			HttpSession session) {
+
+		if (loginService.loginAttempt(email, password)) {
+			session.setAttribute("email", email);
+			session.setAttribute("username", loginService.getUsername(email));
 			return "redirect:/index";
 		}
 		
+		loginService.showLoginForm(model);
 		return "login";
 	}
 	
@@ -44,9 +46,9 @@ public class LoginController {
 	public String registrationAttempt(@RequestParam String email, @RequestParam String username,
 			@RequestParam String password, @RequestParam String confirm_password, Model model, HttpSession session) {
 
-		if (loginService.registrationAttempt(email, username, password, confirm_password)) {
+	if (loginService.registrationAttempt(email, username, password, confirm_password)) {
 
-			session.setAttribute("email", email);
+		session.setAttribute("email", email);
 
 			session.setAttribute("username", username);
 
@@ -59,8 +61,9 @@ public class LoginController {
 		return "login";
 
 	}
-	
-	@RequestMapping("/logout")
+
+
+@RequestMapping("/logout")
 	public String logout(HttpSession session,Model model) {
 		loginService.showLoginForm(model);
 		session.invalidate();		

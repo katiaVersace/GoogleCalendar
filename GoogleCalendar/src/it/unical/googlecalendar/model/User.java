@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Where;
+
 
 
 @Entity
@@ -35,29 +37,15 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 
-	
-	
-	//Occurrences di cui l'user è ospite
-	@ManyToMany(cascade=CascadeType.ALL, mappedBy="guests")
-	 private List<Occurrence> occurrences=new ArrayList<Occurrence>();
-	
-		
-	//Occurrences di cui l'user è creatore
-	@OneToMany(mappedBy = "creator")
-	 private List<Occurrence> occurrencesCreated=new ArrayList<Occurrence>();
-	
-	//Calendars di cui l'user è creatore
-
-			@OneToMany(mappedBy = "creator")
-
-			 private List<Calendar> calendarsCreated=new ArrayList<Calendar>();
-
-		
+	//calendari a cui è associato l'utente
 	@OneToMany(mappedBy = "user")
-
     public List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
-	
-
+	    
+    //invitation received
+    @OneToMany(mappedBy = "receiver",cascade = CascadeType.ALL)
+    public List<Invitation> receivedInvitations=new ArrayList<Invitation>();
+       
+    
 	
 	public User() {
 		super();
@@ -73,11 +61,7 @@ public class User {
 	public String getEmail() {
 		return email;
 	}
-	public List<Calendar> getCalendarsCreated() {
 
-		return calendarsCreated;
-
-	}
 
 	public void setEmail(String email) {
 		this.email = email;
@@ -104,22 +88,8 @@ public class User {
 		return users_calendars;
 	}
 	
-	public List<Occurrence> getOccurrences() {
-		return occurrences;
-	}
-	
-	public void setOccurrences(List<Occurrence> c){
-		this.occurrences=c;
-	}
-	
-	public List<Occurrence> getOccurrencesCreated() {
-		return occurrencesCreated;
-	}
-	
-	public void setOccurrencesCreated(List<Occurrence> c){
-		this.occurrencesCreated=c;
-	}
-	
+		
+		
 	public String getPriviledgesForCalendar(Calendar c){
 		for( Users_Calendars uc: users_calendars){
 			if(c.getId()==uc.getCalendar().getId()){

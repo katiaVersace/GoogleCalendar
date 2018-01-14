@@ -21,6 +21,7 @@ public class IndexController {
 	if(email==null)	return "redirect:/";
 		model.addAttribute("events", dbService.stampaEventiPerUtente(email));
 		model.addAttribute("calendars", dbService.getCalendarsForUser(email));
+
 		return "index";
 	}
 	
