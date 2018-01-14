@@ -28,9 +28,9 @@ public class IndexController {
 	}
 	
 	  @RequestMapping(value = "/delete/{calendarId}",method = RequestMethod.POST)
-	  public boolean deleteCalendarId(@PathVariable("calendarId") int calendarId){
+	  public boolean deleteCalendarId(@PathVariable("calendarId") String calendarId){
 
-	  return dbService.deleteCalendarById(calendarId);
+	  return dbService.deleteCalendarById(Integer.parseInt(calendarId));
 	      
 	  }
 
