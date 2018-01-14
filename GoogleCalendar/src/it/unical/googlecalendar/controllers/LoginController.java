@@ -15,56 +15,57 @@ import it.unical.googlecalendar.services.LoginService;
 
 @Controller
 public class LoginController {
-	
+
 	@Autowired
 	private LoginService loginService;
 
 	@RequestMapping("/")
-	public String loginPage(HttpSession r) {
-		if(r.getAttribute("email")==null)
-		return "login";
+	public String loginPage(HttpSession session,Model model) {
+		if (session.getAttribute("email") == null) {
+			loginService.showLoginForm(model);
+			return "login";
+		}
 		return "redirect:/index";
 	}
-	
-	@RequestMapping(value="/loginAttempt",method=RequestMethod.POST)
-	public String loginAttempt(@RequestParam String email, @RequestParam String password, Model model, HttpSession session) {
-		
-		if(loginService.loginAttempt(email, password)) {
-			session.setAttribute("email",email);
-			session.setAttribute("username",loginService.getUsername(email));
+
+	@RequestMapping(value = "/loginAttempt", method = RequestMethod.POST)
+	public String loginAttempt(@RequestParam String email, @RequestParam String password, Model model,
+			HttpSession session) {
+
+		if (loginService.loginAttempt(email, password)) {
+			session.setAttribute("email", email);
+			session.setAttribute("username", loginService.getUsername(email));
 			return "redirect:/index";
 		}
 		
+		loginService.showLoginForm(model);
 		return "login";
 	}
-	
-	@RequestMapping(value="/registrationAttempt",method=RequestMethod.POST)
-	public String registrationAttempt(@RequestParam String email,@RequestParam String username, @RequestParam String password, @RequestParam String confirmPassword, Model model, HttpSession session) {
 
+	@RequestMapping(value = "/registrationAttempt", method = RequestMethod.POST)
+	public String registrationAttempt(@RequestParam String email, @RequestParam String username,
+			@RequestParam String password, @RequestParam String confirmPassword, Model model, HttpSession session) {
 
-
-		if(loginService.registrationAttempt(email,username, password, confirmPassword)) {
+		if (loginService.registrationAttempt(email, username, password, confirmPassword)) {
 
 			session.setAttribute("email", email);
 
-			session.setAttribute("username",username);
-
-						
+			session.setAttribute("username", username);
 
 			return "redirect:/index";
 
 		}
-
 		
-
+		loginService.showRegisterForm(model);
+		
 		return "login";
 
-		}
-	
+	}
+
 	@RequestMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		
+	public String logout(HttpSession session,Model model) {
+		loginService.showLoginForm(model);
+		session.invalidate();		
 		return "login";
 	}
 

@@ -17,7 +17,8 @@
 <script src="resources/scripts/login.js"></script>
 <script> 
     function validation() {
-    	   var x = document.forms["register-form"]["password"].value;
+    	
+     	   var x = document.forms["register-form"]["password"].value;
     	   var y = document.forms["register-form"]["confirm-password"].value;
     	    if (x != y ){
     	        alert("Attenzione le Password non sono uguali. Riprova!");
@@ -33,10 +34,10 @@
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-xs-6">
-							<a href="#" class="active" id="login-form-link">Login</a>
+							<a href="#" class="${login_title}" id="login-form-link">Login</a>
 						</div>
 						<div class="col-xs-6">
-							<a href="#" id="register-form-link">Register</a>
+							<a href="#" class="${register_title}" id="register-form-link">Register</a>
 						</div>
 					</div>
 					<hr>
@@ -45,7 +46,7 @@
 					<div class="row">
 						<div class="col-lg-12">
 							<form id="login-form" method="post" role="form"
-								style="display: block;">
+								style="display: ${login_block};">
 								<div class="form-group">
 									<input type="text" name="email" id="email" tabindex="1"
 										class="form-control" placeholder="Email" value="">
@@ -72,7 +73,7 @@
 
 							</form>
 							<form id="register-form" method="post" role="form"
-								style="display: none;">
+								style="display: ${register_block};">
 								<div class="form-group">
 									<input type="text" name="username" id="username" tabindex="1"
 										class="form-control" placeholder="Username" value="">
@@ -100,6 +101,7 @@
 										</div>
 									</div>
 								</div>
+						
 							</form>
 						</div>
 					</div>
@@ -107,5 +109,5 @@
 			</div>
 		</div>
 	</div>
-
+   
 </div>
