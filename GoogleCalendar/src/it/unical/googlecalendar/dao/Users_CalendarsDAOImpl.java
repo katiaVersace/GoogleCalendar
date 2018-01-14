@@ -62,6 +62,7 @@ public class Users_CalendarsDAOImpl implements Users_CalendarsDAO{
 	query.setParameter("email",email);
 			List<Calendar> result = query.getResultList();
 	session.close();
+	
 	return result;
 	}
 

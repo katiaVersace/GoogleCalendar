@@ -34,24 +34,15 @@ public class CalendarDAOTest {
 	@Test
 	public void saveTest() {
 		
-			
-		//User katia=new User("k@j.it","Katia","1234");		
-		//Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
-		//Calendar katiaCalendar2 = new Calendar(katia,"katia's Calendar 2", "second list of katia's events");
-//		Users_Calendars uc=new Users_Calendars(katia, katiaCalendar,"ADMINISTRATOR",  Color.black, katiaCalendar.getTitle());
-//		Users_Calendars uc2=new Users_Calendars(katia, katiaCalendar2,"ADMINISTRATOR",  Color.black, katiaCalendar2.getTitle());
-//		
-//		ucdao.save(uc);
-//		ucdao.save(uc2);
-//		
-		User ciccio=new User("c@j.it","ciccio","1234");	
-		Calendar ciccioCalendar = new Calendar(ciccio,"ciccio's Calendar", "list of ciccio's events");
-		Calendar ciccioCalendar2 = new Calendar(ciccio,"ciccio's Calendar2", "list2 of ciccio's events");
 		
-		Users_Calendars uciccio=new Users_Calendars(ciccio,ciccioCalendar,"ADMINISTRATOR",  Color.black, ciccioCalendar.getTitle());
-		Users_Calendars uciccio2=new Users_Calendars(ciccio,ciccioCalendar2,"ADMINISTRATOR",  Color.black, ciccioCalendar2.getTitle());
-		ucdao.save(uciccio);
-		ucdao.save(uciccio2);
+		User ciccino=new User("c@j.it","ciccino","1234");	
+		Calendar ciccinoCalendar = new Calendar(ciccino,"ciccino's Calendar", "list of ciccino's events");
+		Calendar ciccinoCalendar2 = new Calendar(ciccino,"ciccino's Calendar2", "list2 of ciccino's events");
+		
+		Users_Calendars uciccino=new Users_Calendars(ciccino,ciccinoCalendar,"ADMIN",  Color.black, ciccinoCalendar.getTitle());
+		Users_Calendars uciccino2=new Users_Calendars(ciccino,ciccinoCalendar2,"ADMIN",  Color.black, ciccinoCalendar2.getTitle());
+		ucdao.save(uciccino);
+		ucdao.save(uciccino2);
 		
 		List<Calendar> allCalendars = cdao.getAllCalendars();
 		//System.out.println("size of calendars"+allCalendars.size());

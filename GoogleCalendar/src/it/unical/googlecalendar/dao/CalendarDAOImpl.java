@@ -57,7 +57,7 @@ public class CalendarDAOImpl implements CalendarDAO {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		Query query = session.createQuery("SELECT c FROM Calendar c JOIN c.users u WHERE u.id = :user_id");
+		Query query = session.createQuery("SELECT uc.calendar FROM Users_Calendars uc where uc.user.id= :user_id");
 		query.setParameter("user_id", user.getId());
 		List<Calendar> result = query.getResultList();
 		session.close();

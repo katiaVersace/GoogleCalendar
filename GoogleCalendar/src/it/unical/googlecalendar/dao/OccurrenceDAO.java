@@ -9,16 +9,17 @@ import it.unical.googlecalendar.model.User;
 
 public interface OccurrenceDAO {
 	
-	void save(Occurrence Occurrence);
+	public void save(Occurrence Occurrence);
 
-	List<Occurrence> getAllOccurrences();
+	public List<Occurrence> getAllOccurrences();
 	
-	List<Occurrence> getOccurrencesByEmail(String email);
+	public List<Occurrence> getOccurrencesByEmail(String email);
 	
-	List<Occurrence> getOccurrencesByCalendar(Calendar calendar);
+	public List<Occurrence> getOccurrencesByCalendar(Calendar calendar);
 
-	List<User> getGuestsByOccurrence(Occurrence occurrence);
+	public List<User> getGuestsByOccurrence(Occurrence occurrence);
 
-	List<Occurrence> getOccurrencesByGuest(User guest);
+	public List<Occurrence> getOccurrencesByGuest(User guest);
+	public List<Occurrence> filterOccurrencesOfUserByCalendars(List<Calendar> calendars, User user); 
 	
 }

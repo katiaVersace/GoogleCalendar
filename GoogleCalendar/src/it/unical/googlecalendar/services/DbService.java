@@ -47,8 +47,8 @@ public class DbService {
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia,"Calendar n2", "second list of katia's events");
 					
-		Users_Calendars uc=new Users_Calendars(katia, katiaCalendar,"ADMINISTRATOR",  Color.black, katiaCalendar.getTitle());
-	Users_Calendars uc2=new Users_Calendars(katia, katiaCalendar2,"ADMINISTRATOR",  Color.black, katiaCalendar2.getTitle());
+		Users_Calendars uc=new Users_Calendars(katia, katiaCalendar,"ADMIN",  Color.black, katiaCalendar.getTitle());
+	Users_Calendars uc2=new Users_Calendars(katia, katiaCalendar2,"ADMIN",  Color.black, katiaCalendar2.getTitle());
 	
 		
 		//ora creo un evento e lo associo al mio calendario

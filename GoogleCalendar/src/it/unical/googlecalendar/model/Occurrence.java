@@ -59,7 +59,7 @@ public abstract class Occurrence {
 		setCreator(creator);
 		//One to many association 
 		calendar.getOccurrences().add(this);
-		creator.getOccurrencesCreated().add(this);
+		
 	}
 	
 	
