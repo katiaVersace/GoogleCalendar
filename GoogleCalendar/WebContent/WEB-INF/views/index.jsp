@@ -30,7 +30,7 @@
 	href="https://unpkg.com/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css"
 	rel="stylesheet">
 
-<script src="resources/scripts/sidebar.js"></script>
+
 
 <script src="resources/scripts/example.js"></script>
 <script src="resources/scripts/helpers.js"></script>
@@ -49,22 +49,8 @@
 </head>
 <body>
 
-	<!-- jQuery CDN -->
-	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-	<!-- Bootstrap Js CDN -->
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-	<script type="text/javascript">
-             $(document).ready(function () {
-                 $('#sidebarCollapse').on('click', function () {
-                     $('#sidebar').toggleClass('active');
-                 });
-             });
-    </script>
-
-
-	<div class="wrapper">
+	<div class="wrapper"  >
 		<!-- Sidebar Holder -->
 		<nav id="sidebar">
 			<div class="sidebar-header">
@@ -105,7 +91,8 @@
 						Update profile
 				</a></li>
 				<li>
-				<a  onclick="document.getElementById('modal-wrapper2').style.display='block'"> <i class="glyphicon glyphicon-briefcase"></i>
+
+		<a  onclick="document.getElementById('modal-wrapper2').style.display='block'"> <i class="glyphicon glyphicon-briefcase"></i>
 						About us
 				</a>
 				
@@ -156,15 +143,14 @@
 			<div class="line"></div>
 
 			<!-- CALENDAR -->
-		<div class="container">
+		<div class="container col-sm-12">
 				<div class="row">
 
-					<div class=col-sm-10>
+					<div >
 						<div data-ng-controller="KitchenSinkCtrl as vm">
 							<h2 class="text-center">{{ vm.calendarTitle }}</h2>
 
 							<div class="row">
-
 								<div class="col-md-6 text-center">
 									<div class="btn-group">
 
@@ -284,7 +270,8 @@
 				</div>
 			</div> 
 
-
+</div>
+	</div>
 
 	 <!-- MODAL PAGE  -->
 	
@@ -366,8 +353,20 @@
 	</div>
 
  
- 	</div>
-	</div>
+ 	
+ 
+	<!-- jQuery CDN -->
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+	<!-- Bootstrap Js CDN -->
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+             $(document).ready(function () {
+                 $('#sidebarCollapse').on('click', function () {
+                     $('#sidebar').toggleClass('active');
+                 });
+             });
+    </script>
  
  
  
