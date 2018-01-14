@@ -2,8 +2,12 @@ package it.unical.googlecalendar.model;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;import javax.persistence.Column;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,15 +29,15 @@ public class Calendar {
 	@Column(nullable = false)
 	private String description;
 
-	@OneToMany(mappedBy = "calendar")
+	@OneToMany(mappedBy = "calendar",cascade = CascadeType.ALL)
 	private List<Occurrence> occurrences = new ArrayList<Occurrence>();
 
 	// User che condividono questo calendario
-	@OneToMany(mappedBy = "calendar")
+	@OneToMany(mappedBy = "calendar",cascade = CascadeType.ALL)
 	private List<Users_Calendars> users_calendars = new ArrayList<Users_Calendars>();
 
 //	// invitation
-	@OneToMany(mappedBy = "calendar")
+	@OneToMany(mappedBy = "calendar",cascade = CascadeType.ALL)
 	public List<Invitation> Invitations = new ArrayList<Invitation>();
 
 	public Calendar() {
@@ -46,7 +50,10 @@ public class Calendar {
 		this.title = title;
 
 		this.description = description;
-
+		Users_Calendars association = null;
+		
+			association = new Users_Calendars(creator, this, "ADMIN", Color.CYAN, this.title);
+		
 	}
 	
 
@@ -56,7 +63,7 @@ public class Calendar {
 	// cosi che possa essere salvata all'esterno
 	// nel caso invertissimo la cascata non ci sarà bisogno di ritornare
 	// l'associazione perchè il salvataggio verrà fatto su user e calendar
-	public Users_Calendars sendInvitationToCalendar(User owner, User guest, String privilege) {
+	public void sendInvitationToCalendar(User owner, User guest, String privilege) {
 		/*
 		 * //Ora che ho creato la classe Invitation questo metodo diventerà cosi
 		 * e dovra ritornare una Invitation
@@ -68,7 +75,7 @@ public class Calendar {
 		if (getAssociationByUser(owner).getPrivileges().equals("ADMIN")) {
 			association = new Users_Calendars(guest, this, privilege, Color.CYAN, this.title);
 		}
-		return association;
+		
 
 	}
 

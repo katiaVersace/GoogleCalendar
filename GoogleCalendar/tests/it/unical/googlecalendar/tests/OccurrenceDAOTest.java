@@ -35,7 +35,7 @@ import it.unical.googlecalendar.model.Users_Calendars;
 public class OccurrenceDAOTest {
 	
 	@Autowired
-	private Users_CalendarsDAOImpl ucdao;
+	private UserDAOImpl udao;
 	@Autowired
 	private OccurrenceDAOImpl odao;
 	@Autowired
@@ -46,13 +46,15 @@ public class OccurrenceDAOTest {
 		
 	
 		User katia=new User("katia.versace@hotmail.it","Katia","1234");	
-		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 		User ciccio=new User("ciccio.h@hotmail.it","Ciccio","1234");
+    	udao.save(katia);
+    	udao.save(ciccio);
+    	Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 		Calendar ciccioCalendar = new Calendar(ciccio,"ciccio's Calendar", "list of ciccio's events");
+		cdao.save(ciccioCalendar);
+    	cdao.save(katiaCalendar);
 		
-		Users_Calendars uc=new Users_Calendars(katia, katiaCalendar,"ADMIN",  Color.black, katiaCalendar.getTitle());
-		Users_Calendars uc2=new Users_Calendars(ciccio, ciccioCalendar,"ADMIN",  Color.black, ciccioCalendar.getTitle());
-
+		
 		
 		//ora creo un evento e lo associo al mio calendario
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
@@ -74,18 +76,19 @@ public class OccurrenceDAOTest {
 		
 	
 	
-		ucdao.save(uc);
-		ucdao.save(uc2);
 		odao.save(memo1);
 		odao.save(memo2);
 		odao.save(memo3);
     	
-		 Users_Calendars uc3=ciccioCalendar.sendInvitationToCalendar(ciccio,katia, "ADMIN");
-			ucdao.save(uc3);
-				
-		Assert.assertTrue(odao.getOccurrencesByCalendar(katiaCalendar).contains(memo2));
 		
-			Assert.assertTrue(odao.getOccurrencesByEmail(katia.getEmail()).size()==3);
+		
+		ciccioCalendar.sendInvitationToCalendar(ciccio,katia, "ADMIN");
+			cdao.save(ciccioCalendar);
+			udao.save(katia);
+				
+		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccioCalendar).contains(memo3));
+		
+		Assert.assertTrue(odao.getOccurrencesByEmail(katia.getEmail()).size()==3);
 			
 		
 	}

@@ -147,7 +147,7 @@
 			<div class="container">
 				<div class="row">
 
-					<div class=col-sm-18>
+					<div class=col-sm-10>
 						<div data-ng-controller="KitchenSinkCtrl as vm">
 							<h2 class="text-center">{{ vm.calendarTitle }}</h2>
 

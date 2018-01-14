@@ -38,7 +38,7 @@ public class User {
 	private String password;
 
 	//calendari a cui è associato l'utente
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     public List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
 	    
     //invitation received

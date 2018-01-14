@@ -13,7 +13,6 @@ public interface Users_CalendarsDAO {
 	void save(Users_Calendars uc);
 
 	public List<Users_Calendars> getAllAssociation();
-	public Collection<Calendar> getCalendarsForUser(String email);
 	
 	
 }

@@ -31,7 +31,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.save(invitation);
+			session.saveOrUpdate(invitation);
 			tx.commit();
 		
 		} catch (Exception e) {

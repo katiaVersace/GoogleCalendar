@@ -33,7 +33,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.save(Occurrence);
+			session.saveOrUpdate(Occurrence);
 			tx.commit();
 
 		} catch (Exception e) {

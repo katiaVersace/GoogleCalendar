@@ -29,7 +29,7 @@ public class Users_CalendarsDAOImpl implements Users_CalendarsDAO{
 
 		try {
 			tx = session.beginTransaction();
-			session.save(uc);
+			session.saveOrUpdate(uc);
 			tx.commit();
 
 		} catch (Exception e) {
@@ -54,19 +54,7 @@ public class Users_CalendarsDAOImpl implements Users_CalendarsDAO{
 
 	}
 	
-	@Override
-	public Collection<Calendar> getCalendarsForUser(String email) {
-	Session session = sessionFactory.openSession();
-
-	//sql query
-	Query query = session.createQuery("SELECT uc.calendar FROM Users_Calendars uc JOIN uc.user u WHERE u.email = :email");
-	query.setParameter("email",email);
-			List<Calendar> result = query.getResultList();
-	session.close();
-
-
-	return result;
-	}
+	
 
 
 }

@@ -12,5 +12,5 @@ public interface CalendarDAO {
 	void save(Calendar Calendar);
 
 	List<Calendar> getAllCalendars();
-	List<Calendar> getCalendarsByUser(User u);	
+	List<Calendar> getCalendarsByEmail(String email);	
 }

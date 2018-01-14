@@ -36,7 +36,7 @@ public class UserDAOImpl implements UserDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.save(user);
+			session.saveOrUpdate(user);
 			tx.commit();
 			result=true;
 

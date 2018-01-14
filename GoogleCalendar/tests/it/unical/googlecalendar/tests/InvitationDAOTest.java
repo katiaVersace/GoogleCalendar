@@ -42,11 +42,11 @@ public class InvitationDAOTest {
 		User mario = new User("mario@p.it","mario", "1234");
 		User peppe=new User("peppe@c.it","peppe", "5678");
 		udao.save(peppe);
+		udao.save(mario);
 	
 		
 		Calendar c=new Calendar(peppe,"peppe calendar","jshdjs");
-		Users_Calendars uc=new Users_Calendars(peppe, c,"ADMIN",  Color.black, c.getTitle());
-		ucdao.save(uc);
+		cdao.save(c);
 		Invitation i=new Invitation(peppe.getId(), mario, c, "ADMIN");
 		udao.save(mario);
 		List<User> allUsers = udao.getAllUsers();

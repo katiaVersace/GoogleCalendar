@@ -37,18 +37,15 @@ public class DbService {
 	private CalendarDAOImpl cdao;
 	@Autowired
 	private UserDAOImpl udao;
-
-	@Autowired
-	private Users_CalendarsDAOImpl ucdao;
 	
-	@PostConstruct
+@PostConstruct
 	public void initialize() {
 		User katia=new User("k@h.it","Katia","1234");	
+udao.save(katia);
 		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia,"Calendar n2", "second list of katia's events");
-		Users_Calendars uc=new Users_Calendars(katia, katiaCalendar,"ADMIN",  Color.black, katiaCalendar.getTitle());
-
-	Users_Calendars uc2=new Users_Calendars(katia, katiaCalendar2,"ADMIN",  Color.black, katiaCalendar2.getTitle());
+cdao.save(katiaCalendar2);
+cdao.save(katiaCalendar);
 		
 		//ora creo un evento e lo associo al mio calendario
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
@@ -65,8 +62,6 @@ public class DbService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		ucdao.save(uc);
-		ucdao.save(uc2);
 		odao.save(memo1);
 		odao.save(memo2);
 		
@@ -85,9 +80,17 @@ public class DbService {
 		return odao.getOccurrencesByEmail(email);
 	}
 
-	public Collection<Calendar> getCalendarsForUser(String email) {
+	public Collection<Calendar> getCalendarsForEmail(String email) {
 		
-		return ucdao.getCalendarsForUser(email);
+		return cdao.getCalendarsByEmail(email);
+	}
+
+
+	
+
+
+	public boolean deleteCalendarById(int calendarId) {
+		return cdao.deleteById(calendarId);
 	}
 	
 	
