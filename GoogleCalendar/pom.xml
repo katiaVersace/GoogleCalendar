@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>GoogleCalendar</groupId>
   <artifactId>GoogleCalendar</artifactId>
@@ -25,76 +26,75 @@
     </plugins>
   </build>
   <dependencies>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>5.0.0.RELEASE</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>5.0.0.RELEASE</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>5.0.0.RELEASE</version>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.2.11.Final</version>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
-		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.4.196</version>
-		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/org.webjars/angularjs 
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
     <dependency>
-    <groupId>org.webjars</groupId>
-    <artifactId>angularjs</artifactId>
-    <version>1.5.4</version>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>5.0.0.RELEASE</version>
     </dependency>
-		-->
-		
-<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-			<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>5.0.0.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>5.0.0.RELEASE</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>5.0.0.RELEASE</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.2.11.Final</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.196</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.webjars/angularjs <dependency> <groupId>org.webjars</groupId> 
+      <artifactId>angularjs</artifactId> <version>1.5.4</version> </dependency> -->
+    <dependency>
+      <groupId>jstl</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>5.0.0.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <!--  Gson: Java to Json conversion -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.2</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 </project>
