@@ -1,24 +1,23 @@
-
- *{margin:0px; padding:0px; font-family:Helvetica, Arial, sans-serif;}
+*{margin:0px; padding:0px; font-family:Helvetica, Arial, sans-serif;}
  
 
 
 input[type=text], input[type=password] {
-    width: 59%;
     padding: 12px 20px;
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
 	font-size:16px;
+	margin-bottom: 10px;
+	width: 100%;
 } 
 textarea{
-	width: 59%;
-    padding: 12px 20px;
-    margin: 8px 26px;
+	padding: 12px 20px;
     border: 1px solid #ccc;
     box-sizing: border-box;
 	font-size:16px;
 	resize: none;
+	width: 100%;
 }
 
 
@@ -36,22 +35,26 @@ textarea{
 .modal {
 	display:none;
     position: fixed;
-    left: 0;
+    left: 20%;
     top: 0;
-    width: 100%,;
+    width: 70%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
     background-color: #337ab7;
-    margin: 4% auto 15% auto;
-    border: 1px solid #888;
-    width: 40%; 
-    padding-bottom: 30px;
+    margin: 0% auto 0% auto;
+    border: 0px solid #337ab7;
+    padding-bottom: 10px;
+     width: 60%; 
+    height: 100%;
+    -webkit-box-shadow: 0 5px 15px rgba(0,0,0,0);
+    -moz-box-shadow: 0 5px 15px rgba(0,0,0,0);
+    -o-box-shadow: 0 5px 15px rgba(0,0,0,0);
+    box-shadow: 0 5px 15px rgba(0,0,0,0);
+    
 }
-
 .close {
     position: absolute;
     right: 25px;

@@ -30,7 +30,7 @@
 	href="https://unpkg.com/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css"
 	rel="stylesheet">
 
-<script src="resources/scripts/sidebar.js"></script>
+
 
 <script src="resources/scripts/example.js"></script>
 <script src="resources/scripts/helpers.js"></script>
@@ -49,7 +49,8 @@
 </head>
 <body>
 
-	<div class="wrapper">
+
+	<div class="wrapper"  >
 		<!-- Sidebar Holder -->
 		<nav id="sidebar">
 			<div class="sidebar-header">
@@ -90,7 +91,8 @@
 						Update profile
 				</a></li>
 				<li>
-				<a  onclick="document.getElementById('modal-wrapper2').style.display='block'"> <i class="glyphicon glyphicon-briefcase"></i>
+
+		<a  onclick="document.getElementById('modal-wrapper2').style.display='block'"> <i class="glyphicon glyphicon-briefcase"></i>
 						About us
 				</a>
 				
@@ -115,9 +117,6 @@
 						</button>
 					</div>
 					
-					
-					
-
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
@@ -127,7 +126,7 @@
 							<form action="logout">
 								<div class="navbar-header">
 								<button type="submit" id="logout-btn" 
-										class="btn btn-info navbar-btn" style="background: #337ab7; margin-left: 20px;">
+										class="btn btn-info navbar-btn" style="background: #337ab7; ">
 									 <i class="glyphicon glyphicon-log-out"></i> 
 						        </button>
 					</div>
@@ -144,15 +143,13 @@
 			<div class="line"></div>
 
 			<!-- CALENDAR -->
-			<div class="container">
+		<div class="container col-sm-12">
 				<div class="row">
-
-					<div class=col-sm-10>
+					<div>
 						<div data-ng-controller="KitchenSinkCtrl as vm">
 							<h2 class="text-center">{{ vm.calendarTitle }}</h2>
 
 							<div class="row">
-
 								<div class="col-md-6 text-center">
 									<div class="btn-group">
 
@@ -270,95 +267,98 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> 
 
-
-		</div>
+</div>
 	</div>
 
 	 <!-- MODAL PAGE  -->
 	
 	<!-- ADD NEW CALENDAR-->
 	<div id="modal-wrapper" class="modal">
+		<div>
 		<form class="modal-content animate" action="/action_page.php">
 			<div class="imgcontainer">
 				<span
 					onclick="document.getElementById('modal-wrapper').style.display='none'"
 					class="close" title="Close PopUp">&times;</span> 
-					<h1 style="text-align: center; color: white">New Calendar</h1>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">New Calendar</h1>
 					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
 					</div>
 					
-					<div class="container">
-      				 <input type="text" placeholder="Name" name="uname" style="margin: 8px 26px;">
-    				 <input type="text" placeholder="Color" name="psw" style="margin: 8px 26px;">
-    				 <textarea rows="4" cols="100" placeholder="Description" ></textarea>
-    				 <div>
-    				 <button type="button" id="newCalendar" class="btn btn-info navbar-btn" style="background: #42A5F5; margin-left:535px; ">
+					<div class="modal-content">
+      				 <input type="text" placeholder="Name" name="uname" >
+    				 <input type="text" placeholder="Color" name="psw" >
+    				 <textarea rows="4" placeholder="Description" ></textarea>
+    				 <div style="text-align:center;">
+    				 	 <button type="button" id="newCalendar" class="btn btn-info navbar-btn" style="background: #42A5F5">
 						 <span><strong>Create New Calendar</strong></span>
-						</button>
-    				 </div> 
-    	    		</div> 		
-								
-			</form>
+					</button>
+    				</div>
+    				 </div> 		
+		</form>
+		</div>
 	</div>
  
-	<!-- Update Profile-->
+ <!-- UPDATE PROFILE-->
 	<div id="modal-wrapper1" class="modal">
+		<div>
 		<form class="modal-content animate" action="/action_page.php">
 			<div class="imgcontainer">
 				<span
 					onclick="document.getElementById('modal-wrapper1').style.display='none'"
 					class="close" title="Close PopUp">&times;</span> 
-					<h1 style="text-align: center; color: white">Update Profile</h1>
-					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-user"></i></a>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Update Profile</h1>
+					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
 					</div>
 					
-					<div class="container">
-      				 <input type="text" placeholder="Name" name="uname" style="margin: 8px 26px;">
-    				  <input type="password" placeholder="Old Password" name="uname" style="margin: 8px 26px;">
-    				 <input type="password" placeholder="New Password" name="psw" style="margin: 8px 26px;">
-    				 <div>
-    				 <button type="button" id="newCalendar" class="btn btn-info navbar-btn" style="background: #42A5F5; margin-left:575px; ">
-						 <span><strong>Update Profile</strong></span>
+					<div class="modal-content">
+      				 <input type="text" placeholder="Name" name="uname" >
+    				 <input type="password" placeholder="Old Password" name="uname" >
+    				 <input type="password" placeholder="New Password" name="psw" >
+    				 <div style="text-align:center;">
+    				 	  <button type="button" id="newCalendar1" class="btn btn-info navbar-btn" style="background: #42A5F5; ">
+						 <span><strong>Update Your Profile</strong></span>
 						</button>
-    				  </div>
-    	    		</div> 		
-								
-			</form>
+    				</div>
+    				 </div> 		
+		</form>
+		</div>
 	</div>
- 
 
-	<!-- About Us-->
+<!-- ABOUT US-->
 	<div id="modal-wrapper2" class="modal">
+		<div>
 		<form class="modal-content animate" action="/action_page.php">
 			<div class="imgcontainer">
 				<span
 					onclick="document.getElementById('modal-wrapper2').style.display='none'"
 					class="close" title="Close PopUp">&times;</span> 
-					<h1 style="text-align: center; color: white">About us</h1>
-					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-briefcase"></i></a>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Update Profile</h1>
+					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
 					</div>
 					
-					
-      				<p style="color: white; text-align: center; font-size: 16px;"><strong>We are five Unical's students and we have developed this Web Application for ASDE exam.</strong></p>
+					<div class="modal-content">
+      				 <p style="color: white; text-align: center; font-size: 16px;"><strong>We are five Unical's students and we have developed this Web Application for ASDE exam.</strong></p>
       				<p ></p>
       				<p style="color: white; text-align: center;">Marco Amato</p>
       				<p style="color: white; text-align: center;">Giuseppe Benvenuto</p>
       				<p style="color: white; text-align: center;">Mario Carricato  - 187799 </p>
       				<p style="color: white; text-align: center;">Fabio Fabiano</p>
       				<p style="color: white; text-align: center;">Caterina Versace</p>
-      					
-								
-			</form>
+    				 </div> 		
+		</form>
+		</div>
 	</div>
+
+ 
+ 	
  
 	<!-- jQuery CDN -->
 	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 	<!-- Bootstrap Js CDN -->
 	<script
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
 	<script type="text/javascript">
              $(document).ready(function () {
                  $('#sidebarCollapse').on('click', function () {
@@ -366,6 +366,10 @@
                  });
              });
     </script>
+ 
+ 
+ 
+
 
 
 <!-- <script>
