@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.model.User;
@@ -17,6 +18,15 @@ public class LoginService {
 	@Autowired
 	private UserDAOImpl udao;
 
+	//form visible
+		private String visible="block";
+		private String active="active";
+		//form hidden
+		private String hidden="none";
+		private String inactive="inactive";
+		
+		
+	
 	@PostConstruct
 	public void initialize() {
 
@@ -67,4 +77,24 @@ public class LoginService {
 	public String getUsername(String email){
 		return udao.getUsernameByEmail(email);
 	}
+	
+	
+	public void showLoginForm(Model model){
+		model.addAttribute("login_block",visible);
+		model.addAttribute("login_title", active);
+		
+		model.addAttribute("register_title", inactive);
+		model.addAttribute("register_block",hidden);
+	}
+
+	public void showRegisterForm(Model model){
+		model.addAttribute("login_block",hidden);
+		model.addAttribute("login_title", inactive);
+		
+		model.addAttribute("register_block",visible);
+		model.addAttribute("register_title", active);	
+	}
+	
+	
+	
 }

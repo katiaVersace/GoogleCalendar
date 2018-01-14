@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import it.unical.googlecalendar.dao.UserDAO;
-
+import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.User;
 
 
@@ -86,6 +87,9 @@ public class UserDAOImpl implements UserDAO {
 		return result.get(0);
 		
 	}
+	
+	
+	
 	
 	
 }

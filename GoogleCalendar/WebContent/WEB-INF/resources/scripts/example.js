@@ -1,3 +1,15 @@
+var test = [
+	{
+        title: 'An event',
+ //     color: calendarConfig.colorTypes.warning,
+        startsAt: moment().startOf('week').subtract(2, 'days').add(8, 'hours').toDate(),
+        endsAt: moment().startOf('week').add(1, 'week').add(9, 'hours').toDate(),
+        draggable: true,
+        resizable: true,
+      //actions: actions
+      },
+];
+
 angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
 angular
   .module('mwl.calendar.docs') //you will need to declare your module with the dependencies ['mwl.calendar', 'ui.bootstrap', 'ngAnimate']
@@ -19,7 +31,7 @@ angular
         alert.show('Deleted', args.calendarEvent);
       }
     }];
-    vm.events = [
+    vm.events = test/*[
       {
         title: 'An event',
         color: calendarConfig.colorTypes.warning,
@@ -46,7 +58,7 @@ angular
         resizable: true,
         actions: actions
       }
-    ];
+    ];*/;
 
     vm.cellIsOpen = true;
 
