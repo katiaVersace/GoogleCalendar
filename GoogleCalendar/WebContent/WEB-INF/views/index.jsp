@@ -30,13 +30,30 @@
 	href="https://unpkg.com/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css"
 	rel="stylesheet">
 
-
-
 <script src="resources/scripts/example.js"></script>
-<script src="resources/scripts/helpers.js"></script>
 
+<script type="text/javascript">
+    <c:forEach items="${calendars}" var="c">
+    edb["${c.id}"] = {
+        events : [],
+    };
+    </c:forEach>
 
-<script>console.log(angular.events);</script>
+    <c:forEach items="${events}" var="e">
+    edb["${e.calendar.id}"]["events"].push({
+        id : "${e.id}",
+        title : "${e.title}",
+        startsAt : new Date("${e.date}"),
+        endsAt : new Date("${e.date}"),
+        color : {
+            primary : "#555555",
+            secondary : "#aaaaaa",
+        }
+    });
+    </c:forEach>
+    
+    console.log(JSON.stringify(edb, null, 4));
+</script>
 
 <!-- Bootstrap CSS CDN -->
 
@@ -47,7 +64,7 @@
   <link rel="stylesheet" type="text/css" href="resources/css/popup.css"> 
 
 </head>
-<body>
+<body data-ng-controller="KitchenSinkCtrl as vm">
 
 
 	<div class="wrapper"  >
@@ -69,7 +86,12 @@
 						<form action="">
 							<fieldset>
 								<c:forEach items="${calendars}" var="cal">
-									<li><a href="#" title="${cal.title}"> ${cal.title}<br /></a></li>
+									<li><input 
+                      type="checkbox" 
+                      name="${cal.id}"
+                      value="${cal.title}"
+                      ng-model="vm.checkedCalendars['${cal.id}']"
+                      ng-change="vm.toggleCalendar('${cal.id}')"/>${cal.title}<br /></li>
 								</c:forEach>
 							</fieldset>
 						</form>
@@ -146,7 +168,7 @@
 		<div class="container col-sm-12">
 				<div class="row">
 					<div>
-						<div data-ng-controller="KitchenSinkCtrl as vm">
+						<div>
 							<h2 class="text-center">{{ vm.calendarTitle }}</h2>
 
 							<div class="row">
@@ -162,6 +184,7 @@
 										<button class="btn btn-primary" mwl-date-modifier
 											date="vm.viewDate" increment="vm.calendarView"
 											ng-click="vm.cellIsOpen = false">Next</button>
+                                         <button class="btn btn-primary" ng-click="vm.deleteCalendar()"/>delete</button>
 									</div>
 								</div>
 

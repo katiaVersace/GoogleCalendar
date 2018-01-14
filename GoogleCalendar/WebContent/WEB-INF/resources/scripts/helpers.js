@@ -1,4 +1,6 @@
-angular
+// THIS FILE CAN BE DELETE AND SURE AS FUCK WILL BE SCREW YOU HELPERS.JS ROT IN HELL
+
+/*angular
   .module('mwl.calendar.docs')
   .factory('alert', function($uibModal) {
 
@@ -19,3 +21,4 @@ angular
     };
 
   });
+*/
