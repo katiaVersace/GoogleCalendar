@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import it.unical.googlecalendar.dao.OccurrenceDAO;
 import it.unical.googlecalendar.model.Calendar;
+import it.unical.googlecalendar.model.Event;
+import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 
@@ -127,6 +130,139 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	
 	
 	
+	}
+
+	@Override
+	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description) {
+		Session session = sessionFactory.openSession();
+		User u = (User) session.get(User.class, creator_id);
+		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
+		Event ev=new Event(c,u,title,data,description);
+		int result=ev.getId();
+				Transaction tx = null;
+
+				try {
+					tx = session.beginTransaction();
+					session.saveOrUpdate(ev);
+					tx.commit();
+					
+
+				} catch (Exception e) {
+					result=-1;
+					tx.rollback();
+				}
+
+				session.close();
+return result;
+	}
+
+	
+	@Override
+	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description) {
+		Session session = sessionFactory.openSession();
+		User u = (User) session.get(User.class, creator_id);
+		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
+		Memo m=new Memo(c,u,title,data,description);
+		int result=m.getId();
+				Transaction tx = null;
+
+				try {
+					tx = session.beginTransaction();
+					session.saveOrUpdate(m);
+					tx.commit();
+					
+
+				} catch (Exception e) {
+					result=-1;
+					tx.rollback();
+				}
+
+				session.close();
+return result;
+	}
+
+	@Override
+	public boolean deleteById(int occurrenceId) {
+		Session session = sessionFactory.openSession();
+		Occurrence c = null;
+		Transaction tx = null;
+		boolean result = false;
+		try {
+			c = (Occurrence) session.get(Occurrence.class, occurrenceId);
+			tx = session.beginTransaction();
+						result = true;
+			session.delete(c);
+			session.flush();
+			
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+			tx.rollback();
+		}
+
+		session.close();
+		return result;
+	}
+
+	
+	@Override
+	public boolean updateEventById(int event_id, String title, Date data, String description) {
+		Session session = sessionFactory.openSession();
+		Event v = (Event) session.get(Event.class, event_id);
+		
+		
+		boolean result=false;
+				Transaction tx = null;
+
+				try {
+					
+					tx = session.beginTransaction();
+					v.setTitle(title);
+					v.setDate(data);
+					v.setDescription(description);
+					session.update(v);
+					tx.commit();
+					result=true;
+					
+
+				} catch (Exception e) {
+					result=false;
+					tx.rollback();
+				}
+
+				session.close();
+return result;
+	}
+	
+	@Override
+	public boolean updateMemoById(int memo_id, String title, Date data, String description) {
+		Session session = sessionFactory.openSession();
+		Memo m = (Memo) session.get(Memo.class,memo_id);
+		
+		
+		boolean result=false;
+				Transaction tx = null;
+
+				try {
+					
+					tx = session.beginTransaction();
+					m.setTitle(title);
+					m.setDate(data);
+					m.setDescription(description);
+					session.update(m);
+					tx.commit();
+					result=true;
+					
+
+				} catch (Exception e) {
+					result=false;
+					tx.rollback();
+				}
+
+				session.close();
+return result;
 	}
 
 }

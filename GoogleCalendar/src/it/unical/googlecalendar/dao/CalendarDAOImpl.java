@@ -66,6 +66,7 @@ public class CalendarDAOImpl implements CalendarDAO {
 		return result;
 	}
 
+	@Override
 	public boolean deleteById(int calendarId) {
 		Session session = sessionFactory.openSession();
 		Calendar c = null;
@@ -90,4 +91,56 @@ public class CalendarDAOImpl implements CalendarDAO {
 		return result;
 	}
 
+	@Override
+	public int insertNewCalendar(int user_id, String title, String description) {
+		Session session = sessionFactory.openSession();
+		User u = (User) session.get(User.class, user_id);
+		Calendar c=new Calendar(u,title,description);
+		int result=c.getId();
+				Transaction tx = null;
+
+				try {
+					tx = session.beginTransaction();
+					session.saveOrUpdate(c);
+					tx.commit();
+					
+
+				} catch (Exception e) {
+					result=-1;
+					tx.rollback();
+				}
+
+				session.close();
+return result;
+	}
+
+	@Override
+	public boolean updateCalendarById(int calendar_id,String title, String description) {
+		Session session = sessionFactory.openSession();
+		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
+		
+		
+		boolean result=false;
+				Transaction tx = null;
+
+				try {
+					
+					tx = session.beginTransaction();
+					c.setTitle(title);
+					c.setDescription(description);
+					session.update(c);
+					tx.commit();
+					result=true;
+					
+
+				} catch (Exception e) {
+					result=false;
+					tx.rollback();
+				}
+
+				session.close();
+return result;
+	}
+
+	
 }

@@ -84,8 +84,50 @@ public class UserDAOImpl implements UserDAO {
 		List<String>result = session.createQuery("SELECT u.username FROM User u where u.email= :user_email").setParameter("user_email",email).getResultList();
 
 		session.close();
+		if( result.size()>0)
 		return result.get(0);
+		else return null;
 		
+	}
+
+	public int getIdByEmail(String email) {
+		Session session = sessionFactory.openSession();
+
+		//sql query
+		List<Integer>result = session.createQuery("SELECT u.id FROM User u where u.email= :user_email").setParameter("user_email",email).getResultList();
+
+		session.close();
+		if(result.size()>0)
+		return result.get(0);
+		return -1;
+	}
+
+	@Override
+	public boolean updateUserById(int user_id, String username, String password) {
+		Session session = sessionFactory.openSession();
+		User u = (User) session.get(User.class, user_id);
+		
+		
+		boolean result=false;
+				Transaction tx = null;
+
+				try {
+					
+					tx = session.beginTransaction();
+					u.setUsername(username);
+					u.setPassword(password);
+					session.update(u);
+					tx.commit();
+					result=true;
+					
+
+				} catch (Exception e) {
+					result=false;
+					tx.rollback();
+				}
+
+				session.close();
+return result;
 	}
 	
 	

@@ -30,11 +30,11 @@ public class Invitation {
 
 	
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.MERGE)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User receiver;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.MERGE)
 	@JoinColumn(name = "calendar_id", nullable = false)	
 	private Calendar calendar;
 
@@ -59,30 +59,17 @@ public class Invitation {
 		calendar.Invitations.add(this);
 	}
 	
-	//come salvo qui dentro?creo un dao dentro la funzione o la classe?
-	//dopo la chiamata di questa funzione che ritorna true ricorda di cancellare la tupla di invitation dal db(in calendar)
-	public boolean acceptInvitation(User receiver){
-		if (receiver.getId()==this.receiver.getId()){
-			Users_Calendars association=new Users_Calendars(receiver, calendar, privilege,Color.CYAN, calendar.getTitle());
-					return true;
-		}
+	
 		
-		else return false;
+
+	public String getPrivilege() {
+		return privilege;
 	}
-	
-	
-	//come salvo qui dentro?creo un dao dentro la funzione o la classe?
-		//dopo la chiamata di questa funzione che ritorna true ricorda di cancellare la tupla di invitation dal db(in calendar)
-		public boolean declineInvitation(User receiver){
-			if (receiver.getId()==this.receiver.getId()){
-				return true;
-			}
-			else return false;
-		}
-		
-	
-	
-	
+
+	public void setPrivilege(String privilege) {
+		this.privilege = privilege;
+	}
+
 	
 	
 	public int getId() {

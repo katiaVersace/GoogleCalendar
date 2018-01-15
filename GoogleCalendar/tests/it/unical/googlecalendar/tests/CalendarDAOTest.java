@@ -54,13 +54,13 @@ public class CalendarDAOTest {
 				SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
 				String dateInString = "21-01-2018 10:20:56";
 				String dateInString2 = "24-01-2018 16:20:00";
-				int minutes=5;
+				//int minutes=5;
 		Occurrence memo3=null;
 		Occurrence memo1=null;
 		try {
 			
-			memo3=new Memo(ciccinoCalendar,ciccino,"memo di ciccio",sdf.parse(dateInString2),minutes * 60000);
-			memo1=new Memo(ciccinoCalendar,ciccino,"memo 1 di ciccio",sdf.parse(dateInString2),minutes * 60000);
+			memo3=new Memo(ciccinoCalendar,ciccino,"memo di ciccio",sdf.parse(dateInString2),"Ricordati di comprare lo zucchero");
+			memo1=new Memo(ciccinoCalendar,ciccino,"memo 1 di ciccio",sdf.parse(dateInString2),"Ricordati di comprare il prosciutto");
 			
 			
 		} catch (ParseException e) {
@@ -68,13 +68,17 @@ public class CalendarDAOTest {
 		}
 		
 	
-	
-		cdao.save(ciccinoCalendar);
+//	cdao.save(ciccinoCalendar);
+		odao.save(memo3);
+		odao.save(memo1);
 		
 		//System.out.println("size of calendars"+allCalendars.size());
 		List<Calendar> allCalendars = cdao.getAllCalendars();
 		Assert.assertTrue(allCalendars.contains(ciccinoCalendar));
+		Assert.assertTrue(ciccinoCalendar.getOccurrences().contains(memo1));
 		Assert.assertTrue(cdao.getCalendarsByEmail(ciccino.getEmail()).size()==2);
+		
+		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccinoCalendar).size()==2);
 		
 		if(cdao.deleteById(ciccinoCalendar.getId())){
 			System.out.println("Eliminato ciccino's Calendar ");

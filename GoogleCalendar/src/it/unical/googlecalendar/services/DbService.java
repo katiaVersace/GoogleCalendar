@@ -51,12 +51,12 @@ cdao.save(katiaCalendar);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
 		String dateInString = "21-01-2018 10:20:56";
 		String dateInString2 = "24-01-2018 16:20:00";
-		int minutes=5;
+		//int minutes=5;
 		Occurrence memo1=null;
 		Occurrence memo2=null;
 		try {
-			memo1=new Memo(katiaCalendar,katia,"Comprare il latte",sdf.parse(dateInString),minutes * 60000);
-			memo2=new Memo(katiaCalendar,katia,"Comprare il pane",sdf.parse(dateInString2),minutes * 60000);
+			memo1=new Memo(katiaCalendar,katia,"Comprare il latte",sdf.parse(dateInString),"Ricordati di comprare il latte");
+			memo2=new Memo(katiaCalendar,katia,"Comprare il pane",sdf.parse(dateInString2),"Ricordati di comprare il latte");
 			
 			
 		} catch (ParseException e) {
@@ -92,6 +92,44 @@ cdao.save(katiaCalendar);
 	public boolean deleteCalendarById(int calendarId) {
 		return cdao.deleteById(calendarId);
 	}
-	
+
+
+	public int insertNewCalendar(int user_id, String title, String description) {
+		
+		return cdao.insertNewCalendar(user_id, title, description);
+		
+	}
+
+
+	public boolean updateCalendarById(int calendar_id, String title, String description) {
+		return cdao.updateCalendarById(calendar_id, title, description);
+	}
+
+
+	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description) {
+	return odao.insertNewEvent(calendar_id,creator_id, title,  data, description);
+	}
+
+
+	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description) {
+		return odao.insertNewMemo(calendar_id,creator_id, title,  data, description);
+	}
+
+
+	public boolean deleteOccurrenceById(int occurrenceId) {
+		return odao.deleteById(occurrenceId);
+	}
+
+
+	public boolean updateEventById(int event_id, String title, Date data, String description) {
+		return odao.updateEventById(event_id, title,data, description);
+	}
+	public boolean updateMemoById(int memo_id, String title, Date data, String description) {
+		return odao.updateMemoById(memo_id, title,data, description);
+	}
+
+
+	public boolean updateUserById(int user_id, String username, String password) {
+		return udao.updateUserById(user_id, username,password);}
 	
 }
