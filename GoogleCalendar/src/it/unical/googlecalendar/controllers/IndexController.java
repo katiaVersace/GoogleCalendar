@@ -1,7 +1,5 @@
 package it.unical.googlecalendar.controllers;
 
-import java.util.Collection;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import it.unical.googlecalendar.services.DbService;
@@ -32,11 +29,9 @@ public class IndexController {
 		return "index";
 	}
 	
-	  @RequestMapping(value = "/delete/{calendarId}",method = RequestMethod.POST)
-	  @ResponseBody
-	  public String deleteCalendarId(@PathVariable("calendarId") String calendarId){
-
-		  return dbService.deleteCalendarById(Integer.parseInt(calendarId)) ? "YES" : "NO";
-	  }
-
+	@RequestMapping(value = "/delete/{calendarId}",method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteCalendarId(@PathVariable("calendarId") String calendarId){
+		return dbService.deleteCalendarById(Integer.parseInt(calendarId)) ? "YES" : "NO";
+	}
 }

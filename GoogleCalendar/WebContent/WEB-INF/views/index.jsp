@@ -33,6 +33,7 @@
 <script src="resources/scripts/example.js"></script>
 
 <script type="text/javascript">
+	// TODO: use JSON instead of jstl
     <c:forEach items="${calendars}" var="c">
     edb["${c.id}"] = {
         events : [],
@@ -51,8 +52,6 @@
         }
     });
     </c:forEach>
-    
-    console.log(JSON.stringify(edb, null, 4));
 </script>
 
 <!-- Bootstrap CSS CDN -->
@@ -86,12 +85,17 @@
 						<form action="">
 							<fieldset>
 								<c:forEach items="${calendars}" var="cal">
-									<li><input 
-                      type="checkbox" 
-                      name="${cal.id}"
-                      value="${cal.title}"
-                      ng-model="vm.checkedCalendars['${cal.id}']"
-                      ng-change="vm.toggleCalendar('${cal.id}')"/>${cal.title}<br /></li>
+									<li>
+                                        <label id="cal_entry_${cal.id}">
+                                          <input
+                                            id="cal_entry_${cal.id}"
+                                            type="checkbox" 
+                                            name="${cal.id}"
+                                            value="${cal.title}"
+                                            ng-model="vm.checkedCalendars['${cal.id}']"
+                                            ng-change="vm.toggleCalendar('${cal.id}')"/>${cal.title}
+                                        </label>
+                                     </li>
 								</c:forEach>
 							</fieldset>
 						</form>
@@ -184,7 +188,6 @@
 										<button class="btn btn-primary" mwl-date-modifier
 											date="vm.viewDate" increment="vm.calendarView"
 											ng-click="vm.cellIsOpen = false">Next</button>
-                                         <button class="btn btn-primary" ng-click="vm.deleteCalendar()"/>delete</button>
 									</div>
 								</div>
 

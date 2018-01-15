@@ -7,14 +7,12 @@ angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(mome
     vm.calendarView = 'month';
     vm.viewDate = new Date();
 
-    var actions = [
-        {
-            label: '<i class=\'glyphicon glyphicon-remove\'></i>',
-            onClick: function(args) {
-                vm.deleteEvent(args.calendarEvent);
-          }
-        },
-    ];
+    var actions = [{
+        label: '<i class=\'glyphicon glyphicon-remove\'></i>',
+        onClick: function(args) {
+            vm.deleteEvent(args.calendarEvent);
+      },
+    }];
 
     vm.events = [];
     
@@ -38,6 +36,11 @@ angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(mome
         edb[event.calendar].events = edb[event.calendar].events.filter(function (item) {
             return item.id != event.id;
         });
+    };
+    
+    vm.deleteEventsByCalendar = function (id) {
+        vm.hideCalendar(id);
+        delete edb[id];
     };
     
     vm.shownCalendars = [];
@@ -85,12 +88,7 @@ angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(mome
         }
     };
     
-    // --------
-    // - TEST -
-    // --------
-    
-    vm.deleteCalendar = function () {
-        var id = "2";
+    vm.deleteCalendar = function (id) {
         
         $.ajax({
             type: "POST",
@@ -102,6 +100,10 @@ angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(mome
                 console.log("ERROR ERROR ERROR ERROR ERROR");
             },
         });
+        
+        
+        vm.deleteEventsByCalendar(id);
+        $("#cal_entry_" + id).remove();
     };
 
     vm.cellIsOpen = true;
