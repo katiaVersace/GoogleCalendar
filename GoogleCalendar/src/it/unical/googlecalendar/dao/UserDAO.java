@@ -14,7 +14,7 @@ public interface UserDAO {
 	List<User> getAllUsers();
 	public boolean existsUser(String email, String password);
 	public String getUsernameByEmail(String email);
-
+	public boolean updateUserById(int user_id, String username, String password);
 	
 	
 }

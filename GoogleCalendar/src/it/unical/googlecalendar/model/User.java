@@ -38,11 +38,11 @@ public class User {
 	private String password;
 
 	//calendari a cui è associato l'utente
-	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
     public List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
 	    
     //invitation received
-    @OneToMany(mappedBy = "receiver",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "receiver")
     public List<Invitation> receivedInvitations=new ArrayList<Invitation>();
        
     

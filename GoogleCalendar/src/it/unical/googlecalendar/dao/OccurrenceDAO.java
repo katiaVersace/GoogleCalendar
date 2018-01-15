@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import it.unical.googlecalendar.model.Calendar;
@@ -21,5 +22,10 @@ public interface OccurrenceDAO {
 
 	public List<Occurrence> getOccurrencesByGuest(User guest);
 	public List<Occurrence> filterOccurrencesOfUserByCalendars(List<Calendar> calendars, User user); 
+	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description);
+	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description);
+	public boolean deleteById(int occurrenceId);
+	public boolean updateEventById(int memo_id, String title, Date data, String description);
+	public boolean updateMemoById(int memo_id, String title, Date data, String description);
 	
 }

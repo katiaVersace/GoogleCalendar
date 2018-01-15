@@ -35,6 +35,7 @@ public class LoginController {
 		if (loginService.loginAttempt(email, password)) {
 			session.setAttribute("email", email);
 			session.setAttribute("username", loginService.getUsername(email));
+			session.setAttribute("user_id", loginService.getId(email));
 			return "redirect:/index";
 		}
 		

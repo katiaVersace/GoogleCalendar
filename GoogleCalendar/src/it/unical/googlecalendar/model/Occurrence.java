@@ -36,11 +36,11 @@ public abstract class Occurrence {
 	@Column(nullable = false)
 	private Date date;
 
-	@ManyToOne 
+	@ManyToOne (cascade=CascadeType.MERGE)
 	@JoinColumn(name="calendar_id", nullable=false)
 	private Calendar calendar;
 	
-	@ManyToOne  
+	@ManyToOne  (cascade=CascadeType.MERGE)
 	@JoinColumn(name="user_id", nullable=false)
 	private User creator;
 

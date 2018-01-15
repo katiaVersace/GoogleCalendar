@@ -48,7 +48,7 @@ public class InvitationDAOTest {
 		Calendar c=new Calendar(peppe,"peppe calendar","jshdjs");
 		cdao.save(c);
 		Invitation i=new Invitation(peppe.getId(), mario, c, "ADMIN");
-		udao.save(mario);
+		idao.save(i);
 		List<User> allUsers = udao.getAllUsers();
 		Assert.assertTrue(idao.getAllInvitations().size()==1);
 		

@@ -14,28 +14,26 @@ public class Memo extends Occurrence {
 	
 
 	@Column
-	private long repetition;
+	private String description;
 	
 	
 	public Memo(){
 		super();
 	}
 	
-	public Memo (Calendar calendar,User creator,String title, Date date, long repetition){
+	public Memo (Calendar calendar,User creator,String title, Date date, String description){
 		super(calendar,creator,title,date);
-		this.repetition=repetition;
+		this.description=description;
 	
 	}
-
-	public long getRepetition() {
-		return repetition;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setRepetition(long repetition) {
-		this.repetition = repetition;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

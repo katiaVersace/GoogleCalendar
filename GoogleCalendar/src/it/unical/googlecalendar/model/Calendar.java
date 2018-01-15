@@ -29,15 +29,15 @@ public class Calendar {
 	@Column(nullable = false)
 	private String description;
 
-	@OneToMany(mappedBy = "calendar",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE)
 	private List<Occurrence> occurrences = new ArrayList<Occurrence>();
 
 	// User che condividono questo calendario
-	@OneToMany(mappedBy = "calendar",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.ALL)
 	private List<Users_Calendars> users_calendars = new ArrayList<Users_Calendars>();
 
 //	// invitation
-	@OneToMany(mappedBy = "calendar",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE)
 	public List<Invitation> Invitations = new ArrayList<Invitation>();
 
 	public Calendar() {
@@ -87,21 +87,6 @@ public class Calendar {
 		
 	}
 	
-	public void acceptInvitationToCalendar(Invitation i, User receiver) {
-		if (i.acceptInvitation(receiver)) {
-			// cancella l'Invitation dal db
-		} else {
-			// ritorna qualche errore
-		}
-	}
-
-	public void declineInvitationToCalendar(Invitation i, User receiver) {
-		if (i.declineInvitation(receiver)) {
-			// cancella l'Invitation dal db
-		} else {
-			// ritorna qualche errore
-		}
-	}
 
 	// elimina calendario(se sei ADMIN)
 	// elimina R o RW(se sei ADMIN)

@@ -94,4 +94,8 @@ public class LoginService {
 		model.addAttribute("register_block",visible);
 		model.addAttribute("register_title", active);	
 	}
+
+	public int getId(String email) {
+		return udao.getIdByEmail(email);
+	}
 }

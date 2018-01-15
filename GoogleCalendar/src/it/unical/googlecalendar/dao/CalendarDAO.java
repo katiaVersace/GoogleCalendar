@@ -13,4 +13,7 @@ public interface CalendarDAO {
 
 	List<Calendar> getAllCalendars();
 	List<Calendar> getCalendarsByEmail(String email);	
+	public boolean deleteById(int calendarId);
+	public int insertNewCalendar(int user_id, String title, String description);
+	public boolean updateCalendarById(int calendar_id,String title, String description);
 }
