@@ -25,6 +25,7 @@ import it.unical.googlecalendar.dao.UserDAO;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
+import it.unical.googlecalendar.model.Invitation;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
@@ -85,7 +86,9 @@ public class OccurrenceDAOTest {
     	
 		
 		idao.sendInvitation(ciccio.getId(),katia.getEmail(), ciccioCalendar.getId(),"ADMIN");
+		Invitation i=idao.getInvitationsByCalendarAndReceiver(katia.getId(), ciccioCalendar.getId()).get(0);
 		
+		idao.acceptInvitation(katia.getId(),i.getId());
 			cdao.save(ciccioCalendar);
 			udao.save(katia);
 				

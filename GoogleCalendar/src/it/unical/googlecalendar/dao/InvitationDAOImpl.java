@@ -55,13 +55,28 @@ public class InvitationDAOImpl implements InvitationDAO {
 		return result;
 
 	}
+	public List<Invitation> getInvitationsByCalendarAndReceiver(int receiver_id, int calendar_id) {
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Query query1 = session.createQuery(
+				"SELECT i FROM Invitation i WHERE i.receiver.id= :user_id and i.calendar.id= :calendar_id");
+		query1.setParameter("user_id", receiver_id).setParameter("calendar_id", calendar_id);
+
+		List<Invitation> result = query1.getResultList();
+		session.close();
+		return result;
+
+	}
 
 	@Override
 	public boolean acceptInvitation(int receiver_id, int invitation_id) {
 		boolean result = false;
 		Session session = sessionFactory.openSession();
 		Invitation i = (Invitation) session.get(Invitation.class, invitation_id);
-		if (receiver_id == i.getId()) {
+		if (receiver_id == i.getReceiver().getId()) {
+
+			System.out.println("Sono il ricevente");
 			Transaction tx = null;
 			try {
 				User u = (User) session.get(User.class, receiver_id);
@@ -74,10 +89,13 @@ public class InvitationDAOImpl implements InvitationDAO {
 				session.saveOrUpdate(c);
 				session.saveOrUpdate(u);
 				tx.commit();
+
+				System.out.println("commit fatto");
 				u.receivedInvitations.remove(i);
 				result = true;
 
 			} catch (Exception e) {
+				System.out.println("Sono entrato nel catch");
 				result = false;
 				tx.rollback();
 			}
@@ -91,7 +109,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 		boolean result = false;
 		Session session = sessionFactory.openSession();
 		Invitation i = (Invitation) session.get(Invitation.class, invitation_id);
-		if (receiver_id == i.getId()) {
+		if (receiver_id == i.getReceiver().getId()) {
 
 			Transaction tx = null;
 
