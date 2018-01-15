@@ -36,20 +36,15 @@ public class Users_Calendars {
 
 	// association
 
-	@ManyToOne
-
+	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "user_id")
-
 	private User user;
 
-	@ManyToOne
-
+	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "calendar_id")
-
 	private Calendar calendar;
 
 	// additional attributes
-
 	@Column(nullable = false)
 
 	private String privileges;

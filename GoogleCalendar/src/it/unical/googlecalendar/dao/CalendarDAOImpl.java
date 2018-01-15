@@ -13,13 +13,18 @@ import org.springframework.stereotype.Repository;
 import it.unical.googlecalendar.dao.CalendarDAO;
 
 import it.unical.googlecalendar.model.Calendar;
+import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
+import it.unical.googlecalendar.model.Users_Calendars;
 
 @Repository
 public class CalendarDAOImpl implements CalendarDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+@Autowired
+private Users_CalendarsDAOImpl ucdao;
+
 
 	public CalendarDAOImpl() {
 	}
@@ -67,30 +72,92 @@ public class CalendarDAOImpl implements CalendarDAO {
 	}
 
 	@Override
-	public boolean deleteById(int calendarId) {
+	public boolean deleteById(int calendarId, int user_id) {
 		Session session = sessionFactory.openSession();
 		Calendar c = null;
 		Transaction tx = null;
 		boolean result = false;
+		Users_Calendars resultAssociation;
+		List<Users_Calendars> resultsId=ucdao.getAssociationByUserIdAndCalendarId(user_id, calendarId);
+		if(resultsId.size()!=0){
+		resultAssociation = resultsId.get(0);
+		
+		//gestire se sei l'ultimo admin chi diventa admin?
+		    if(resultAssociation.getPrivileges().equals("ADMIN")){
+		c = (Calendar) session.get(Calendar.class, calendarId);
+		
 		try {
-			c = (Calendar) session.get(Calendar.class, calendarId);
+			
 			tx = session.beginTransaction();
-						result = true;
+			User u= (User) session.get(User.class, user_id);
 			session.delete(c);
 			session.flush();
 			
 			tx.commit();
+			
+			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
+			//session.save(u);
+			u.users_calendars.remove(resultAssociation);
+			//c.getUsers_calendars().remove(uc);
+			result = true;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = false;
 			tx.rollback();
 		}
-
+		}
+		}
+		
 		session.close();
 		return result;
 	}
 
+
+	
+	@Override
+	public boolean disconnectUserFromCalendarById(int calendarId, int user_id) {
+		Session session = sessionFactory.openSession();
+		Calendar c = null;
+		Transaction tx = null;
+		boolean result = false;
+		int resultId=0;
+		List<Users_Calendars> resultsId=ucdao.getAssociationByUserIdAndCalendarId(user_id, calendarId);
+		if(resultsId.size()!=0){
+		resultId = resultsId.get(0).getId();
+		Users_Calendars uc = (Users_Calendars) session.get(Users_Calendars.class, resultId);
+		
+		
+		try {
+			
+			tx = session.beginTransaction();
+			User u= (User) session.get(User.class, user_id);
+			session.delete(uc);
+			session.flush();
+			
+			tx.commit();
+			
+			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
+			//session.save(u);
+			u.users_calendars.remove(uc);
+			//c.getUsers_calendars().remove(uc);
+			result = true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+			tx.rollback();
+		}
+		}
+		//}
+		
+		session.close();
+		return result;
+	}
+
+	
+	
+	
 	@Override
 	public int insertNewCalendar(int user_id, String title, String description) {
 		Session session = sessionFactory.openSession();
@@ -102,6 +169,7 @@ public class CalendarDAOImpl implements CalendarDAO {
 				try {
 					tx = session.beginTransaction();
 					session.saveOrUpdate(c);
+					session.update(u);
 					tx.commit();
 					
 
@@ -115,12 +183,24 @@ return result;
 	}
 
 	@Override
-	public boolean updateCalendarById(int calendar_id,String title, String description) {
+	public boolean updateCalendarById(int calendar_id,String title, String description, int user_id) {
 		Session session = sessionFactory.openSession();
 		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
 		
 		
 		boolean result=false;
+		
+		Query query = session.createQuery(
+				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+		query.setParameter("calendar_id", calendar_id).setParameter("user_id", user_id);
+
+		List<Users_Calendars> resultsId = query.getResultList();
+		if (resultsId.size() != 0) {
+			Users_Calendars uc = resultsId.get(0);
+
+			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
+		
+
 				Transaction tx = null;
 
 				try {
@@ -136,7 +216,7 @@ return result;
 				} catch (Exception e) {
 					result=false;
 					tx.rollback();
-				}
+				}}}
 
 				session.close();
 return result;

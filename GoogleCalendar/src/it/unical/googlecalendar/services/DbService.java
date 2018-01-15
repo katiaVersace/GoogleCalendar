@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
+import it.unical.googlecalendar.dao.InvitationDAOImpl;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
@@ -37,6 +38,8 @@ public class DbService {
 	private CalendarDAOImpl cdao;
 	@Autowired
 	private UserDAOImpl udao;
+	@Autowired
+	private InvitationDAOImpl idao;
 	
 @PostConstruct
 	public void initialize() {
@@ -89,8 +92,8 @@ cdao.save(katiaCalendar);
 	
 
 
-	public boolean deleteCalendarById(int calendarId) {
-		return cdao.deleteById(calendarId);
+	public boolean deleteCalendarById(int calendarId,int user_id) {
+		return cdao.deleteById(calendarId,user_id);
 	}
 
 
@@ -101,8 +104,8 @@ cdao.save(katiaCalendar);
 	}
 
 
-	public boolean updateCalendarById(int calendar_id, String title, String description) {
-		return cdao.updateCalendarById(calendar_id, title, description);
+	public boolean updateCalendarById(int calendar_id, String title, String description, int user_id) {
+		return cdao.updateCalendarById(calendar_id, title, description, user_id);
 	}
 
 
@@ -116,20 +119,34 @@ cdao.save(katiaCalendar);
 	}
 
 
-	public boolean deleteOccurrenceById(int occurrenceId) {
-		return odao.deleteById(occurrenceId);
+	public boolean deleteOccurrenceById(int occurrenceId, int user_id) {
+		return odao.deleteById(occurrenceId,user_id);
 	}
 
 
-	public boolean updateEventById(int event_id, String title, Date data, String description) {
-		return odao.updateEventById(event_id, title,data, description);
+	public boolean updateEventById(int event_id, String title, Date data, String description, int user_id) {
+		return odao.updateEventById(event_id, title,data, description, user_id);
 	}
-	public boolean updateMemoById(int memo_id, String title, Date data, String description) {
-		return odao.updateMemoById(memo_id, title,data, description);
+	public boolean updateMemoById(int memo_id, String title, Date data, String description, int user_id) {
+		return odao.updateMemoById(memo_id, title,data, description,user_id);
 	}
 
 
 	public boolean updateUserById(int user_id, String username, String password) {
 		return udao.updateUserById(user_id, username,password);}
 	
+	public boolean disconnectMeByCalendar(int user_id, int calendarId) {
+		return cdao.disconnectUserFromCalendarById(calendarId, user_id);
 }
+
+
+	public boolean sendInvitation(int user_id, String receiver_email, int calendar,String privilege) {
+		return idao.sendInvitation(user_id, receiver_email ,calendar,privilege);
+	}
+	
+	
+	
+	
+}
+
+

@@ -80,7 +80,7 @@ public class CalendarDAOTest {
 		
 		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccinoCalendar).size()==2);
 		
-		if(cdao.deleteById(ciccinoCalendar.getId())){
+		if(cdao.deleteById(ciccinoCalendar.getId(),ciccino.getId())){
 			System.out.println("Eliminato ciccino's Calendar ");
 		}
 		

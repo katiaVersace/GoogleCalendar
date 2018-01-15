@@ -15,5 +15,8 @@ public interface InvitationDAO {
 	boolean acceptInvitation(int receiver_id, int invitation_id);
 
 	boolean declineInvitation(int receiver_id, int invitation_id);
+
+	
+	boolean sendInvitation(int sender_id, String receiver_email, int calendar_id, String privilege);
 	
 }

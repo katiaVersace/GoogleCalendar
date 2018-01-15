@@ -54,6 +54,34 @@ public class Users_CalendarsDAOImpl implements Users_CalendarsDAO{
 
 	}
 	
+	@Override
+	public List<Users_Calendars> getAssociationByUserIdAndCalendarId(int user_id,int calendar_id) {
+		Session session = sessionFactory.openSession();
+
+		
+		Query query = session.createQuery("SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+		
+		query.setParameter("user_id", user_id).setParameter("calendar_id", calendar_id);
+		List<Users_Calendars> result = query.getResultList();
+		
+		session.close();
+		return result;
+
+	}
+	@Override
+	public List<Users_Calendars> getAssociationByCalendarId(int calendar_id) {
+		Session session = sessionFactory.openSession();
+
+		
+		Query query = session.createQuery("SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id");
+		
+		query.setParameter("calendar_id", calendar_id);
+		List<Users_Calendars> result = query.getResultList();
+		
+		session.close();
+		return result;
+
+	}
 	
 
 

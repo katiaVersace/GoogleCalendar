@@ -3,6 +3,8 @@ package it.unical.googlecalendar.dao;
 import java.awt.Color;
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -54,7 +56,6 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 	}
 
-
 	@Override
 	public boolean acceptInvitation(int receiver_id, int invitation_id) {
 		boolean result = false;
@@ -66,13 +67,14 @@ public class InvitationDAOImpl implements InvitationDAO {
 				User u = (User) session.get(User.class, receiver_id);
 				Calendar c = (Calendar) session.get(Calendar.class, i.getCalendar().getId());
 				Users_Calendars association = new Users_Calendars(u, c, i.getPrivilege(), Color.CYAN, c.getTitle());
-u.receivedInvitations.remove(i);
+				
 				tx = session.beginTransaction();
 				session.delete(i);
-				//session.saveOrUpdate(association);
+				// session.saveOrUpdate(association);
 				session.saveOrUpdate(c);
 				session.saveOrUpdate(u);
 				tx.commit();
+				u.receivedInvitations.remove(i);
 				result = true;
 
 			} catch (Exception e) {
@@ -85,7 +87,7 @@ u.receivedInvitations.remove(i);
 	}
 
 	@Override
-		public boolean declineInvitation(int receiver_id, int invitation_id) {
+	public boolean declineInvitation(int receiver_id, int invitation_id) {
 		boolean result = false;
 		Session session = sessionFactory.openSession();
 		Invitation i = (Invitation) session.get(Invitation.class, invitation_id);
@@ -94,10 +96,13 @@ u.receivedInvitations.remove(i);
 			Transaction tx = null;
 
 			try {
-
+				User u = (User) session.get(User.class, receiver_id);
+				
 				tx = session.beginTransaction();
 				session.delete(i);
+				session.save(u);
 				tx.commit();
+				u.receivedInvitations.remove(i);
 				result = true;
 
 			} catch (Exception e) {
@@ -107,6 +112,56 @@ u.receivedInvitations.remove(i);
 
 		}
 		session.close();
+		return result;
+	}
+
+	@Override
+	public boolean sendInvitation(int sender_id, String receiver_email, int calendar_id, String privilege) {
+		
+		Session session = sessionFactory.openSession();
+		boolean result=false;
+		
+		Query query1 = session.createQuery(
+				"SELECT u.id FROM User u WHERE u.email= :email");
+		query1.setParameter("email", receiver_email);
+
+		List<Integer> receiverId = query1.getResultList();
+		if (receiverId.size() != 0) {
+			int receiver_id=receiverId.get(0);
+		Query query = session.createQuery(
+				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+		query.setParameter("calendar_id", calendar_id).setParameter("user_id", sender_id);
+
+		List<Users_Calendars> resultsId = query.getResultList();
+		if (resultsId.size() != 0) {
+			
+			Users_Calendars uc = resultsId.get(0);
+
+			if (uc.getPrivileges().equals("ADMIN")) {
+		
+
+		Transaction tx = null;
+
+		try {
+			
+			User receiver = (User) session.get(User.class, receiver_id);
+			Calendar calendar = (Calendar) session.get(Calendar.class, calendar_id);
+			
+			Invitation i=new Invitation(sender_id,receiver,calendar,privilege);
+			tx = session.beginTransaction();
+			session.saveOrUpdate(i);
+			tx.commit();
+			receiver.receivedInvitations.add(i);
+			result=true;
+
+		} catch (Exception e) {
+			tx.rollback();
+			result=false;
+		}
+			}}}
+		session.close();
+
+		
 		return result;
 	}
 }

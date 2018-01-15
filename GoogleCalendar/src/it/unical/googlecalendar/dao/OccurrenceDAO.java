@@ -24,8 +24,11 @@ public interface OccurrenceDAO {
 	public List<Occurrence> filterOccurrencesOfUserByCalendars(List<Calendar> calendars, User user); 
 	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description);
 	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description);
-	public boolean deleteById(int occurrenceId);
-	public boolean updateEventById(int memo_id, String title, Date data, String description);
-	public boolean updateMemoById(int memo_id, String title, Date data, String description);
+	
+	boolean deleteById(int occurrenceId, int user_id);
+
+	boolean updateEventById(int event_id, String title, Date data, String description, int user_id);
+
+	boolean updateMemoById(int memo_id, String title, Date data, String description, int user_id);
 	
 }

@@ -57,35 +57,6 @@ public class Calendar {
 	}
 	
 
-	// Sharing of calendars(aggiungere il fatto che deve essere mandata una
-	// richiesta che deve essere accettata prima di creare l'associazione
-	// create association between User and Calendar, ritorna un'associazione
-	// cosi che possa essere salvata all'esterno
-	// nel caso invertissimo la cascata non ci sarà bisogno di ritornare
-	// l'associazione perchè il salvataggio verrà fatto su user e calendar
-	public void sendInvitationToCalendar(User owner, User guest, String privilege) {
-		/*
-		 * //Ora che ho creato la classe Invitation questo metodo diventerà cosi
-		 * e dovra ritornare una Invitation
-		 * if(getAssociationByUser(owner).getPrivileges().equals("ADMIN") ){
-		 * Invitation i=new Invitation(owner.getId(), guest, this, privilege); } return
-		 * invitation;
-		 */
-		Users_Calendars association = null;
-		if (getAssociationByUser(owner).getPrivileges().equals("ADMIN")) {
-			association = new Users_Calendars(guest, this, privilege, Color.CYAN, this.title);
-		}
-		
-
-	}
-
-	
-	public void cancelInvitationToCalendar(Invitation i, User sender){
-		if(i.getSenderId()==sender.getId()){
-			//cancella l'invito dal db
-		}
-		
-	}
 	
 
 	// elimina calendario(se sei ADMIN)

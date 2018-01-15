@@ -18,6 +18,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import it.unical.googlecalendar.configuration.AppConfiguration;
 import it.unical.googlecalendar.dao.CalendarDAO;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
+import it.unical.googlecalendar.dao.InvitationDAOImpl;
 import it.unical.googlecalendar.dao.OccurrenceDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAO;
@@ -40,6 +41,8 @@ public class OccurrenceDAOTest {
 	private OccurrenceDAOImpl odao;
 	@Autowired
 	private CalendarDAOImpl cdao;
+	@Autowired
+	private InvitationDAOImpl idao;
 	
 	@Test
 	public void saveTest() {
@@ -81,8 +84,8 @@ public class OccurrenceDAOTest {
 		odao.save(memo3);
     	
 		
+		idao.sendInvitation(ciccio.getId(),katia.getEmail(), ciccioCalendar.getId(),"ADMIN");
 		
-		ciccioCalendar.sendInvitationToCalendar(ciccio,katia, "ADMIN");
 			cdao.save(ciccioCalendar);
 			udao.save(katia);
 				
