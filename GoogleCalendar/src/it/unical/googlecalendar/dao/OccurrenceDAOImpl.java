@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
+import javax.sound.midi.SysexMessage;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -138,14 +139,14 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		User u = (User) session.get(User.class, creator_id);
 		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
 		Event ev=new Event(c,u,title,data,description);
-		int result=ev.getId();
+		int result = -1;
 				Transaction tx = null;
 
 				try {
 					tx = session.beginTransaction();
 					session.saveOrUpdate(ev);
 					tx.commit();
-					
+					result = ev.getId();
 
 				} catch (Exception e) {
 					result=-1;
@@ -163,14 +164,14 @@ return result;
 		User u = (User) session.get(User.class, creator_id);
 		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
 		Memo m=new Memo(c,u,title,data,description);
-		int result=m.getId();
+		int result = -1;
 				Transaction tx = null;
 
 				try {
 					tx = session.beginTransaction();
 					session.saveOrUpdate(m);
 					tx.commit();
-					
+					result = m.getId();
 
 				} catch (Exception e) {
 					result=-1;
@@ -212,12 +213,10 @@ return result;
 		Session session = sessionFactory.openSession();
 		Event v = (Event) session.get(Event.class, event_id);
 		
-		
 		boolean result=false;
 				Transaction tx = null;
 
 				try {
-					
 					tx = session.beginTransaction();
 					v.setTitle(title);
 					v.setDate(data);
@@ -225,15 +224,14 @@ return result;
 					session.update(v);
 					tx.commit();
 					result=true;
-					
-
 				} catch (Exception e) {
 					result=false;
 					tx.rollback();
+					e.printStackTrace();
 				}
 
 				session.close();
-return result;
+				return result;
 	}
 	
 	@Override
@@ -241,6 +239,7 @@ return result;
 		Session session = sessionFactory.openSession();
 		Memo m = (Memo) session.get(Memo.class,memo_id);
 		
+		System.err.println("memo null?" + (m == null));
 		
 		boolean result=false;
 				Transaction tx = null;

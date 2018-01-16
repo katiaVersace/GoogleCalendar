@@ -44,13 +44,15 @@
     <c:forEach items="${events}" var="e">
     edb["${e.calendar.id}"]["events"].push({
         id : "${e.id}",
+        calendar: "${e.calendar.id}",
         title : "${e.title}",
+        description: "${e.description}",
         startsAt : new Date("${e.date}"),
         endsAt : new Date("${e.date}"),
         color : {
             primary : "#555555",
             secondary : "#aaaaaa",
-        }
+        },
     });
     </c:forEach>
 </script>
@@ -86,8 +88,8 @@
             <form action="">
               <fieldset id="calendarsList">
                 <c:forEach items="${calendars}" var="cal">
-                  <li>
-                    <label id="cal_entry_${cal.id}">
+                  <li id="cal_entry_${cal.id}">
+                    <label>
                       <input
                         type="checkbox"
                         name="${cal.id}"
@@ -188,7 +190,11 @@
                     <button class="btn btn-primary" mwl-date-modifier
                       date="vm.viewDate" increment="vm.calendarView"
                       ng-click="vm.cellIsOpen = false">Next</button>
-                    <button class="btn btn-primary" ng-click='vm.createCalendar(${user_id}, "TEST_title", "TEST_description")'>TEST</button>
+                    <button
+                      class="btn btn-primary"
+                      ng-click='vm.updateEvent("6", "Test Event Update TITLE", "fuffa", "Test Event Update DESCRIPTION")'>
+                      TEST
+                    </button>
                   </div>
                 </div>
 

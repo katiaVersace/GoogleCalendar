@@ -96,22 +96,21 @@ public class CalendarDAOImpl implements CalendarDAO {
 		Session session = sessionFactory.openSession();
 		User u = (User) session.get(User.class, user_id);
 		Calendar c=new Calendar(u,title,description);
-		int result=c.getId();
+		int result = -1;
 				Transaction tx = null;
 
 				try {
 					tx = session.beginTransaction();
 					session.saveOrUpdate(c);
 					tx.commit();
-					
-
+					result = c.getId();
 				} catch (Exception e) {
 					result=-1;
 					tx.rollback();
 				}
 
 				session.close();
-return result;
+				return result;
 	}
 
 	@Override

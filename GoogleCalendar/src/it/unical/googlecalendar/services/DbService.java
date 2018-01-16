@@ -120,10 +120,10 @@ cdao.save(katiaCalendar);
 		return odao.deleteById(occurrenceId);
 	}
 
-
 	public boolean updateEventById(int event_id, String title, Date data, String description) {
 		return odao.updateEventById(event_id, title,data, description);
 	}
+	
 	public boolean updateMemoById(int memo_id, String title, Date data, String description) {
 		return odao.updateMemoById(memo_id, title,data, description);
 	}

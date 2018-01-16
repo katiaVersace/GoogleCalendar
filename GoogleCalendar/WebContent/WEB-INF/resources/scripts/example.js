@@ -18,9 +18,34 @@ angular
     var actions = [{
         label: '<i class=\'glyphicon glyphicon-remove\'></i>',
         onClick: function(args) {
-            vm.deleteEvent(args.calendarEvent);
+            vm.deleteOccurrence(args.calendarEvent.id);
       },
     }];
+    
+    // Utility: looks for an element in vm.events by id,
+    // returning the event or null if not found.
+    vm.getEventViewByID = function (id) {
+        var event = vm.events.filter(function (item) {
+            return item.id = id;
+        })
+        return event ? event[0] : null;
+    }
+    
+    vm.getEventDataByID = function (id) {
+        // FIXME: uses view for data, can be done better
+        var event = vm.getEventViewByID(id);
+        
+        if (event != null) {
+            for (var i = 0; i < edb[event.calendar][events].length; i++) {
+                var current = edb[event.calendar][events][i];
+                if (current.id == id) {
+                    event = current;
+                }
+            }
+        }
+        
+        return event;
+    }
 
     // Events to be displayed
     vm.events = [];
@@ -39,22 +64,108 @@ angular
         });
     };
     
-    // Delete an event from a calendar
-    // TODO: no DB update atm
-    vm.deleteEvent = function (event) {
-        vm.events = vm.events.filter(function (item) {
-            return item.id != event.id;
-        });
+    // Update event
+    vm.updateEvent = function (id, title, date, description) {
+        // DEBUG
+        date = new Date();
+        // END DEBUG
         
-        edb[event.calendar].events = edb[event.calendar].events.filter(function (item) {
-            return item.id != event.id;
-        });
+        $.ajax({
+            type: "POST",
+            url: "updateMemo/" + id,
+            data: {
+                title: title,
+                data: date,
+                description: description,
+            },
+            success: function (result) {
+                if (result == "YES") {
+                    var eventView = vm.getEventViewByID(id);
+                    var eventData = vm.getEventDataByID(id);
+                    var now = new Date();
+                    
+                    // FIXME: la storia delle date
+                    if (eventView != null) {
+                        eventView.title = title;
+                        eventView.startsAt = now;
+                        eventView.endsAt = now;
+                        eventView.description = description;
+                    }
+                    
+                    if (eventData != null) {
+                        eventData.title = title;
+                        eventData.startsAt = now;
+                        eventData.endsAt = now;
+                        eventData.description = description;
+                    }
+                } else {
+                    console.log(
+                        "[UNSUCCESSFUL] vm.updateEvent:\n"
+                      + "{\n"
+                      + "    eventId: " + id + "\n"
+                      + "    title: " + title + "\n"
+                      + "    date: " + date + "\n"
+                      + "    description: " + description + "\n"
+                      + "    result: " + JSON.stringify(result, null, 4) + "\n"
+                      + "}\n"
+                    );
+                }
+            },
+            error: function (result) {
+                console.log(
+                    "[ERROR] vm.updateEvent:\n"
+                  + "{\n"
+                  + "    eventId: " + id + "\n"
+                  + "    title: " + title + "\n"
+                  + "    date: " + date + "\n"
+                  + "    description: " + description + "\n"
+                  + "}\n"
+                );
+            },
+        })
     };
     
-    // Hides a calendar (graphically), then updates the edb
-    vm.deleteEventsByCalendar = function (id) {
-        vm.hideCalendar(id);
-        delete edb[id];
+    // Delete an event from a calendar
+    vm.deleteOccurrence = function (id) {
+        var event = vm.getEventViewByID(id);
+        if (event != null) {
+            $.ajax({
+                type: "POST",
+                url: "deleteOccurrence/" + id,
+                success: function (result) {
+                    if (result == "YES") {
+                        // view is updated
+                        vm.events = vm.events.filter(function (item) {
+                            return item.id != id;
+                        });
+                        
+                        // edb is updated
+                        edb[event.calendar].events = edb[event.calendar].events.filter(function (item) {
+                            return item.id != id;
+                        });
+                        
+                        // DEBUG
+                        console.log("[SUCCESS] vm.deleteOccurrence | result: " + result);
+                        // END DEBUG
+                    } else {
+                        console.log(
+                            "[UNSUCCESSFUL] vm.deleteOccurrence:\n"
+                          + "{\n"
+                          + "    eventId: " + id + "\n"
+                          + "}\n"
+                        );
+                    }
+                },
+                error: function (result) {
+                    console.log(
+                        "[ERROR] vm.deleteOccurrence:\n"
+                      + "{\n"
+                      + "    eventId: " + id + "\n"
+                      + "}\n"
+                    );
+                },
+            });
+        }
     };
     
     // Calendars currently shown, by id
@@ -66,19 +177,25 @@ angular
     vm.checkedCalendars = [];
     
     // Makes a calendar's events visible
-    vm.showCalendar = function (id) {            
+    vm.showCalendar = function (id) {        
         if (edb.hasOwnProperty(id) && !vm.shownCalendars.includes(id)) {
             for (var i = 0; i < edb[id]["events"].length; i++) {
-                var event;
-                event = edb[id]["events"][i];
-                event.calendar = id;
-                event.startsAt = new Date(event.startsAt);
-                event.endsAt = new Date(event.endsAt);
-                event.actions = actions;
-                event.draggable = false;
-                event.resizable = false;
-                
-                vm.events.push(event);
+                var blueprint = edb[id]["events"][i];
+                vm.events.push({
+                    id: blueprint.id,
+                    calendar: blueprint.calendar,
+                    title: blueprint.title,
+                    description: blueprint.description,
+                    startsAt: new Date(blueprint.startsAt),
+                    endsAt: new Date(blueprint.endsAt),
+                    color: {
+                        primary: blueprint.color.primary,
+                        secondary: blueprint.color.secondary,
+                    },
+                    actions: actions,
+                    draggable: false,
+                    resizable: false,
+                });
             }
             vm.shownCalendars.push(id);
         }
@@ -109,48 +226,106 @@ angular
     };
     
     vm.createCalendar = function (userId, title, description) {
-        /* DB asks for: user_id, title, description
-         * 
-         * 1. ajax call to db - retrieve calendar's id
-         * 2. add calendar to edb
-         * 3. add calendar's title to sidebar 
-         */
         $.ajax({
             type: "POST",
             url: "insertNewCalendar/" + userId,
+            data: {
+                title: title,
+                description: description,
+            },
             success: function (result) {
                 if (result != -1) {
                     // add new calendar to edb
                     edb[result] = {
+                        title: title,
+                        description: description,
                         events: [],
-                    }
+                    };
                     
-                    // add new calendar to sidebar
+                    // create new entry and add it to the sidebar menu
                     var entry = 
                         "<li>\n"
                       + "  <label id=\"cal_entry_" + result + "\">\n"
                       + "    <input\n"
                       + "      type=\"checkbox\"\n"
                       + "      name=\"" + result + "\"\n"
-                      + "      value=\"" + title + "\"\n"
+                      + "      value=\"" + edb[result].title + "\"\n"
                       + "      ng-model=\"vm.checkedCalendars['" + result + "']\"\n"
                       + "      ng-change=\"vm.toggleCalendar('" + result + "')\"\n/>"
-                      + "     " + result + "\n"
+                      + "     " + edb[result].title + "\n"
                       + "  </label>\n"
                       + "</li>\n";
-                      
+                    
+                    // FIXME: clicking on this entry doesn't work without a page refresh!
                     $("#calendarsList").append(entry);
                     
-                    // DEBUG
-                    console.log(JSON.stringify(edb, null, 4));
-                    // END DEBUG
                 } else {
-                    // TODO: server returned -1, handle troubles
+                    console.log(
+                        "[UNSUCCESSFUL] vm.createCalendar:\n"
+                      + "{\n"
+                      + "    userId: " + userId + "\n"
+                      + "    title: " + title + "\n"
+                      + "    description: " + description + "\n"
+                      + "}\n"
+                    );
                 }
             },
             error: function (result) {
-                // TODO
-            }
+                console.log(
+                    "[ERROR] vm.createCalendar:\n"
+                  + "{\n"
+                  + "    userId: " + userId + "\n"
+                  + "    title: " + title + "\n"
+                  + "    description: " + description + "\n"
+                  + "}\n"
+                );
+            },
+        });
+    };
+    
+    // FIXME: what is date
+    vm.updateCalendar = function (calendarId, title, date, description) {
+        $.ajax({
+            type: "POST",
+            url: "update/" + calendarId,
+            data: {
+                title: title,
+                data: date,
+                description: description,
+            },
+            success: function (result) {
+                if (result == "YES") {
+                    // update edb
+                    edb[calendarId].title = title;
+                    edb[calendarId].description = description;
+                    // TODO: update date (?)
+                    
+                    // update calendar list entry
+                    $("#cal_entry_" + calendarId + " > label > input").attr("value", title);
+                    $("#cal_entry_" + calendarId + " > label").contents().last().replaceWith(title);
+                } else {
+                    console.log(
+                        "[UNSUCCESSFUL] vm.updateCalendar:\n"
+                      + "{\n"
+                      + "    calendarId: " + calendarId + "\n"
+                      + "    title: " + title + "\n"
+                      + "    date: " + date + "\n"
+                      + "    description: " + description + "\n"
+                      + "}\n"
+                    );
+                }
+            },
+            error: function (result) {
+                console.log(
+                    "[ERROR] vm.updateCalendar:\n"
+                  + "{\n"
+                  + "    calendarId: " + calendarId + "\n"
+                  + "    title: " + title + "\n"
+                  + "    date: " + date + "\n"
+                  + "    description: " + description + "\n"
+                  + "}\n"
+                );
+            },
         });
     }
     
@@ -160,22 +335,21 @@ angular
             type: "POST",
             url: "delete/" + id,
             success: function (result) {
-                console.log("vm.deleteCalendar: " + result);
+                // Client-side deletion (vm.events is updated accordingly)
+                vm.hideCalendar(id);
+                delete edb[id];
+                
+                // Calendar's entry in sidebar is deleted
+                $("#cal_entry_" + id).remove();
             },
             error: function (result) {
                 console.log("ERROR ERROR ERROR ERROR ERROR");
             },
         });
-        
-        // Client-side deletion (vm.events is updated accordingly)
-        vm.deleteEventsByCalendar(id);
-        
-        // Calendar's entry in sidebar is deleted
-        $("#cal_entry_" + id).remove();
     };
 
     // ---------------------------- //
-    // --        WASTELAND       -- //
+    // --       WASTELAND        -- //
     // -- enter at your own risk -- //
     // ---------------------------- //
     
