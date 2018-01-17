@@ -59,9 +59,10 @@ public class CalendarDAOTest {
 		Occurrence ev1=null;
 		try {
 			
-			ev3=new Occurrence(ciccinoCalendar,ciccino,"memo di ciccio",sdf.parse(dateInString2),"Ricordati di comprare lo zucchero");
-			ev1=new Occurrence(ciccinoCalendar,ciccino,"memo 1 di ciccio",sdf.parse(dateInString2),"Ricordati di comprare il prosciutto");
+			ev3=new Occurrence(ciccinoCalendar,ciccino,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
+			ev1=new Occurrence(ciccinoCalendar,ciccino,"memo 1 di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
 			
+
 			
 		} catch (ParseException e) {
 			e.printStackTrace();

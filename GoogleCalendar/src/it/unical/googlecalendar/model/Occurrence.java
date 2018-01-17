@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.model;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,21 +38,24 @@ public class Occurrence {
 	@Expose
 	private String title;
 
-	@Column(nullable = false)
-	@Expose
-	private Date date;
+	@Column
+	private Date startTime;
+
+	@Column
+	private Date endTime;
+	
 	@Column	
 	private String description;
+	
+	@Column
+	Color primaryColor;
+	
+	@Column
+	Color secondaryColor;
+	
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@ManyToOne (cascade=CascadeType.REFRESH)
+	
+@ManyToOne (cascade=CascadeType.REFRESH)
 	@JoinColumn(name="calendar_id", nullable=false)
 	private Calendar calendar;
 	
@@ -63,10 +67,14 @@ public class Occurrence {
 		super();
 	}
 	
-	public Occurrence(Calendar calendar,User creator,String title, Date date,String description){
+	public Occurrence(Calendar calendar,User creator,String title, String description,Date startTime,Date endTime,Color c1, Color c2){
 		super();
 		this.title=title;
-		this.date=date;
+		
+		this.startTime=startTime;
+		this.endTime=endTime;
+		this.primaryColor=c1;
+		this.secondaryColor=c2;
 		//many to one association
 		setCalendar(calendar);
 		setCreator(creator);
@@ -77,7 +85,45 @@ public class Occurrence {
 	}
 	
 	
-	
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public Color getPrimaryColor() {
+		return primaryColor;
+	}
+
+	public void setPrimaryColor(Color primaryColor) {
+		this.primaryColor = primaryColor;
+	}
+
+	public Color getSecondaryColor() {
+		return secondaryColor;
+	}
+
+	public void setSecondaryColor(Color secondaryColor) {
+		this.secondaryColor = secondaryColor;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}	
 
 	public String getTitle() {
 		return title;
@@ -87,13 +133,7 @@ public class Occurrence {
 		this.title = title;
 	}
 
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
+	
 
 	public Calendar getCalendar() {
 		return calendar;

@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.dao;
 
+import java.awt.Color;
 import java.util.Date;
 import java.util.List;
 
@@ -147,9 +148,9 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public int insertNewEvent(Calendar c, User u, String title, Date data, String description) {
+	public int insertNewEvent(Calendar c, User u, String title, String description,Date startTime,Date endTime,Color c1, Color c2) {
 		Session session = sessionFactory.openSession();
-		Occurrence ev = new Occurrence(c, u, title, data, description);
+		Occurrence ev = new Occurrence(c, u, title, description,startTime,endTime, c1, c2);
 		int result =-1;
 		Transaction tx = null;
 
@@ -230,7 +231,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public boolean updateEventById(Occurrence v, String title, Date data, String description, int user_id) {
+	public boolean updateEventById(Occurrence v, String title,  String description, Date startTime,Date endTime,Color c1, Color c2,int user_id) {
 		Session session = sessionFactory.openSession();
 		
 		boolean result = false;
@@ -252,7 +253,10 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 			tx = session.beginTransaction();
 			v.setTitle(title);
-			v.setDate(data);
+			v.setStartTime(startTime);
+			v.setEndTime(endTime);
+			v.setPrimaryColor(c1);
+			v.setSecondaryColor(c2);
 			v.setDescription(description);
 			session.update(v);
 			tx.commit();

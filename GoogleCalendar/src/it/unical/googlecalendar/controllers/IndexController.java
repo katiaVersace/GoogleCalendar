@@ -96,9 +96,9 @@ public class IndexController {
 	@RequestMapping(value = "/insertNewEvent/{calendar_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public int insertNewEvent(HttpSession session, @PathVariable("calendar_id") String calendar_id,
-			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
+			@RequestParam String title, @RequestParam String description, @RequestParam Date startTime,@RequestParam Date endTime,@RequestParam Color c1,@RequestParam  Color c2) {
 		return dbService.insertNewEvent(Integer.parseInt(calendar_id), (Integer) session.getAttribute("user_id"), title,
-				data, description);
+				 description,startTime,endTime, c1,  c2);
 	}
 
 	  
@@ -129,8 +129,8 @@ public class IndexController {
 	@RequestMapping(value = "/updateEvent/{occurrence_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public String updateEvent(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
-			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
-		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, data, description,
+			@RequestParam String title,  @RequestParam String description,@RequestParam Date startTime,@RequestParam Date endTime,@RequestParam Color c1,@RequestParam  Color c2) {
+		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, description,startTime,endTime, c1,  c2,
 				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
 

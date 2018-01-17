@@ -57,8 +57,8 @@ public class DbService {
 		Occurrence ev1=null;
 		Occurrence ev2=null;
 		try {
-			ev1=new Occurrence(katiaCalendar,katia,"Comprare il latte",sdf.parse(dateInString),"Ricordati di comprare il latte");
-			ev2=new Occurrence(katiaCalendar,katia,"Comprare il pane",sdf.parse(dateInString2),"Ricordati di comprare il latte");
+			ev1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
+			ev2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
 			
 			
 		} catch (ParseException e) {
@@ -111,11 +111,11 @@ public class DbService {
 	}
 
 
-	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description) {
+	public int insertNewEvent(int calendar_id, int creator_id, String title, String description, Date startTime, Date endTime, Color c1,Color c2) {
 		Calendar c=cdao.getCalendarById(calendar_id);
 		User u=udao.getUserById(creator_id);
 		
-	return odao.insertNewEvent(c,u, title,  data, description);
+	return odao.insertNewEvent(c,u, title, description,startTime,endTime, c1,  c2);
 	}
 
 
@@ -133,9 +133,9 @@ public class DbService {
 		return odao.deleteById(c,u,ca);
 	}
 
-	public boolean updateEventById(int event_id, String title, Date data, String description, int user_id) {
+	public boolean updateEventById(int event_id, String title, String description, Date startTime, Date endTime, Color c1,Color c2,int user_id) {
 		Occurrence e=(Occurrence) odao.getOccurrenceById(event_id);		
-		return odao.updateEventById(e, title,data, description, user_id);
+		return odao.updateEventById(e, title,  description,startTime,endTime, c1,  c2, user_id);
 	}
 
 
