@@ -82,8 +82,9 @@ public class IndexController {
 	  @ResponseBody
 	  public int insertNewMemo( HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam Color c1,@RequestParam Color c2){
 
-		  return dbService.insertNewMemo((Integer) session.getAttribute("user_id"), title,data, description,c1,c2) ;
-	  }
+//		  return dbService.insertNewMemo((Integer) session.getAttribute("user_id"), title,data, description,c1,c2) ;
+	
+	  		  	  return 0;}
 
 	  
 	  @RequestMapping(value = "/deleteOccurrence/{occurrenceId}/{calendar_id}",method = RequestMethod.POST)

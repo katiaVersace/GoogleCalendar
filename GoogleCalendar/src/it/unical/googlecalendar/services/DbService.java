@@ -168,10 +168,9 @@ return gson.toJson(cdao.getCalendarsByEmail(email));
 
 	public boolean updateMemoById(int memo_id, int user_id, String title, Date data, String description,
 			Color c1, Color c2) {
-	//	Memo m=mdao.getMemoById(memo_id);
-	//return mdao. updateMemoById(m,user_id, title,data, description,c1,c2);
+		Memo m=mdao.getMemoById(memo_id);
+	return mdao. updateMemoById(m,user_id, title,data, description,c1,c2);
 
-	return true;
 	}
 
 

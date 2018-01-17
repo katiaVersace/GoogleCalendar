@@ -9,9 +9,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.User;
 
+@Repository
 public class MemoDAO {
 
 	@Autowired
@@ -150,7 +153,13 @@ public class MemoDAO {
 	}
 
 	public Memo getMemoById(int memo_id) {
-		// TODO Auto-generated method stub
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Memo result = session.get(Memo.class,memo_id);
+
+		session.close();
+		return result;
 	
 	}
 

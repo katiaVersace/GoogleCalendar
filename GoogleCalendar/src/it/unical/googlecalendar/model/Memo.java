@@ -16,8 +16,6 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"memo_id"})})
-
-
 public class Memo  {
 	
 	@Id
