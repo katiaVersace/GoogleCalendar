@@ -26,7 +26,6 @@ import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Invitation;
-import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 import it.unical.googlecalendar.model.Users_Calendars;
@@ -70,9 +69,9 @@ public class OccurrenceDAOTest {
 		Occurrence memo3=null;
 		try {
 			System.out.println("Ciccio calendar id "+ciccioCalendar.getId());
-			memo1=new Memo(katiaCalendar,katia,"Comprare il latte",sdf.parse(dateInString),"Ricordati di comprare il latte");
-			memo2=new Memo(katiaCalendar,katia,"Comprare il pane",sdf.parse(dateInString2),"Ricordati di comprare il pane");
-			memo3=new Memo(ciccioCalendar,ciccio,"memo di ciccio",sdf.parse(dateInString2),"Ricordati di comprare qualcosa");
+			memo1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
+			memo2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
+			memo3=new Occurrence(ciccioCalendar,ciccio,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
 			
 			
 		} catch (ParseException e) {
@@ -100,12 +99,13 @@ public class OccurrenceDAOTest {
 //			for(Occurrence o:occList){
 //				System.out.println(o.getTitle());
 //			}
-//			List<Occurrence> occ2List=odao.getAllOccurrences();
-//			System.out.println("Tutti gli Eventi : "+occ2List.size());
-//			for(Occurrence o:occ2List){
-//				System.out.println(o.getTitle()+" "+o.getCalendar().getId());
-//			}
-//			
+			List<Occurrence> occ2List=odao.getAllOccurrences();
+			System.out.println("Tutti gli Eventi : "+occ2List.size());
+			for(Occurrence o:occ2List){
+				System.out.println(o.getTitle()+" Id: "+o.getCalendar().getId()+" Start: "+o.getStartTime()+" End: "+o.getEndTime()+" Color1: "+o.getPrimaryColor()+" Color 2"+o.getSecondaryColor());
+			}
+			
+	
 				
 		Assert.assertTrue(occList.contains(memo3));
 		

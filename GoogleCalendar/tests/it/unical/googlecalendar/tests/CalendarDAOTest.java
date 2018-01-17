@@ -19,10 +19,9 @@ import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
-import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
-import it.unical.googlecalendar.model.Users_Calendars;
+
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfiguration.class)
@@ -50,21 +49,20 @@ public class CalendarDAOTest {
 		cdao.save(ciccinoCalendar);
 		cdao.save(ciccinoCalendar2);
 		
-		System.out.println("Associazion con calendari, di ciccino "+ciccino.getUsers_Calendars().size());
-		System.out.println("Associazion per calendario, di ciccinoCalendar "+ciccinoCalendar.getUsers_calendars().size());
 		
 		//ora creo un evento e lo associo al mio calendario
 				SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
 				String dateInString = "21-01-2018 10:20:56";
 				String dateInString2 = "24-01-2018 16:20:00";
 				//int minutes=5;
-		Occurrence memo3=null;
-		Occurrence memo1=null;
+		Occurrence ev3=null;
+		Occurrence ev1=null;
 		try {
 			
-			memo3=new Memo(ciccinoCalendar,ciccino,"memo di ciccio",sdf.parse(dateInString2),"Ricordati di comprare lo zucchero");
-			memo1=new Memo(ciccinoCalendar,ciccino,"memo 1 di ciccio",sdf.parse(dateInString2),"Ricordati di comprare il prosciutto");
+			ev3=new Occurrence(ciccinoCalendar,ciccino,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
+			ev1=new Occurrence(ciccinoCalendar,ciccino,"memo 1 di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
 			
+
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -72,13 +70,13 @@ public class CalendarDAOTest {
 		
 	
 //	cdao.save(ciccinoCalendar);
-		odao.save(memo3);
-		odao.save(memo1);
+		odao.save(ev3);
+		odao.save(ev1);
 		
 		//System.out.println("size of calendars"+allCalendars.size());
 		List<Calendar> allCalendars = cdao.getAllCalendars();
 		Assert.assertTrue(allCalendars.contains(ciccinoCalendar));
-		Assert.assertTrue(ciccinoCalendar.getOccurrences().contains(memo1));
+		Assert.assertTrue(ciccinoCalendar.getOccurrences().contains(ev1));
 		Assert.assertTrue(cdao.getCalendarsByEmail(ciccino.getEmail()).size()==2);
 		
 		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccinoCalendar).size()==2);

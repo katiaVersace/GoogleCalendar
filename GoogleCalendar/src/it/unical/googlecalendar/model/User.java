@@ -31,11 +31,28 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 
-	//calendari a cui ï¿½ associato l'utente
+
+	//calendari a cui è associato l'utente
 	@OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
     public List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
+    
+    
+    //promemoria
+    @OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
+    private List<Memo> memos=new ArrayList<Memo>();
+    
+    
+
 	    
-   //separated by pipe
+   public List<Memo> getMemos() {
+		return memos;
+	}
+
+	public void setMemos(List<Memo> memos) {
+		this.memos = memos;
+	}
+
+	//separated by pipe
     @Column
     private String notifications="";   
     
@@ -77,9 +94,9 @@ public class User {
 	}
 	
 	
-	public List<Users_Calendars> getUsers_Calendars() {
-		return users_calendars;
-	}
+//	public List<Users_Calendars> getUsers_Calendars() {
+//		return users_calendars;
+//	}
 	
 	public String[] getNotifications(){
 		if(notifications.isEmpty()){
@@ -95,23 +112,23 @@ public class User {
 		
 	}
 		
-	public String getPriviledgesForCalendar(Calendar c){
-		for( Users_Calendars uc: users_calendars){
-			if(c.getId()==uc.getCalendar().getId()){
-				return uc.getPrivileges();
-			}
-			
-	}
-		return null;
-		
-	}
+//	public String getPriviledgesForCalendar(Calendar c){
+//		for( Users_Calendars uc: users_calendars){
+//			if(c.getId()==uc.getCalendar().getId()){
+//				return uc.getPrivileges();
+//			}
+//			
+//	}
+//		return null;
+//		
+//	}
 	
-	public void removeAssociationWithCalendar(Calendar c){
-		for(Users_Calendars uc: users_calendars){
-			if(uc.getCalendar()==c)
-				users_calendars.remove(c);
-		}
-	}
+//	public void removeAssociationWithCalendar(Calendar c){
+//		for(Users_Calendars uc: users_calendars){
+//			if(uc.getCalendar()==c)
+//				users_calendars.remove(c);
+//		}
+//	}
 
 		public int getId() {
 		return id;

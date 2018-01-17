@@ -1,11 +1,10 @@
 package it.unical.googlecalendar.dao;
 
+import java.awt.Color;
 import java.util.Date;
 import java.util.List;
 
 import it.unical.googlecalendar.model.Calendar;
-import it.unical.googlecalendar.model.Event;
-import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 
@@ -30,17 +29,22 @@ public interface OccurrenceDAO {
 	
 	void update(Occurrence Occurrence);
 
-	int insertNewEvent(Calendar c, User u, String title, Date data, String description);
-
+	
 
 	boolean deleteById(Occurrence o, User u, Calendar c);
 
-	int insertNewMemo(Calendar c, User u, String title, Date data, String description);
+	
+	//boolean updateEventById(Event v, String title, Date data, String description, int user_id);
 
-	boolean updateEventById(Event v, String title, Date data, String description, int user_id);
-
-	boolean updateMemoById(Memo m, String title, Date data, String description, int user_id);
+//	boolean updateMemoById(Memo m, String title, Date data, String description, int user_id);
 
 	Occurrence getOccurrenceById(int o_id);
+
+	
+	int insertNewEvent(Calendar c, User u, String title, String description, Date startTime, Date endTime, Color c1,
+			Color c2);
+
+	boolean updateEventById(Occurrence v, String title, String description, Date startTime, Date endTime, Color c1,
+			Color c2, int user_id);
 	
 }

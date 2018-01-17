@@ -1,5 +1,8 @@
 package it.unical.googlecalendar.controllers;
 
+
+import java.awt.Color;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -62,7 +65,7 @@ public class IndexController {
 	 * insertNewCalendar
 	 */
 	// se ritorna -1 significa che l'inserimento non � andato a buon fine
-	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// FIXME: nel path che verrà chiamato lato client togliere user_id perché adesso
 	// viene preso dalla sessione
 	@RequestMapping(value = "/insertNewCalendar", method = RequestMethod.POST)
 	@ResponseBody
@@ -74,7 +77,7 @@ public class IndexController {
 	/*
 	 * updateCalendar
 	 */
-	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// FIXME: nel path che verrà chiamato lato client togliere user_id perché adesso
 	// viene preso dalla sessione
 	@RequestMapping(value = "/update/{calendar_id}", method = RequestMethod.POST)
 	@ResponseBody
@@ -83,34 +86,33 @@ public class IndexController {
 		return dbService.updateCalendarById(Integer.parseInt(calendar_id), title, description,
 				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
-
+	
 	/*
 	 * insertNewEvent
 	 */
-	// se ritorna -1 significa che l'inserimento non � andato a buon fine (manca la
+	// se ritorna -1 significa che l'inserimento non è andato a buon fine (manca la
 	// ripetizione negli eventi)
-	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// FIXME: nel path che verrà chiamato lato client togliere user_id perché adesso
 	// viene preso dalla sessione
 	@RequestMapping(value = "/insertNewEvent/{calendar_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public int insertNewEvent(HttpSession session, @PathVariable("calendar_id") String calendar_id,
-			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
+			@RequestParam String title, @RequestParam String description, @RequestParam Date startTime,@RequestParam Date endTime,@RequestParam Color c1,@RequestParam  Color c2) {
 		return dbService.insertNewEvent(Integer.parseInt(calendar_id), (Integer) session.getAttribute("user_id"), title,
-				data, description);
+				 description,startTime,endTime, c1,  c2);
 	}
 
 	/*
-	 * insertMemo [X]
+	 * insertMemo
 	 */
 	// se ritorna -1 significa che l'inserimento non � andato a buon fine
-	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// FIXME: nel path che verrà chiamato lato client togliere user_id perché adesso
 	// viene preso dalla sessione
-	@RequestMapping(value = "/insertNewMemo/{calendar_id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/insertNewMemo", method = RequestMethod.POST)
 	@ResponseBody
-	public int insertNewMemo(HttpSession session, @PathVariable("calendar_id") String calendar_id,
-			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
-		return dbService.insertNewMemo(Integer.parseInt(calendar_id), (Integer) session.getAttribute("user_id"), title,
-				data, description);
+	public int insertNewMemo(HttpSession session, @RequestParam String title, @RequestParam Date data,
+			@RequestParam String description, @RequestParam Color c1, @RequestParam Color c2) {
+		return dbService.insertNewMemo((Integer) session.getAttribute("user_id"), title, data, description, c1, c2);
 	}
 
 	/*
@@ -130,27 +132,25 @@ public class IndexController {
 	@RequestMapping(value = "/updateEvent/{occurrence_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public String updateEvent(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
-			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
-		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, data, description,
+			@RequestParam String title,  @RequestParam String description,@RequestParam Date startTime,@RequestParam Date endTime,@RequestParam Color c1,@RequestParam  Color c2) {
+		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, description,startTime,endTime, c1,  c2,
 				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
-
 	}
 
 	/*
-	 * updateMemo [X]
+	 * updateMemo
 	 */
-	@RequestMapping(value = "/updateMemo/{occurrence_id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateMemo/{memo_id}",method = RequestMethod.POST)
 	@ResponseBody
-	public String updateMemo(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
-			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
-		return dbService.updateMemoById(Integer.parseInt(occurrence_id), title, data, description,
-				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+	public String updateMemo(@PathVariable("memo_id")String memo_id, HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam Color c1,@RequestParam Color c2){
+		  return dbService.updateMemoById(Integer.parseInt(memo_id),(Integer)session.getAttribute("user_id"),title,data,description,c1,c2) ? "YES" : "NO";
+		  
 	}
 
 	/*
 	 * updateUser
 	 */
-	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// FIXME: nel path che verrà chiamato lato client togliere user_id perché adesso
 	// viene preso dalla sessione
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	@ResponseBody
@@ -167,6 +167,16 @@ public class IndexController {
 			@PathVariable("calendar_id") String calendar_id, @RequestParam String privilege) {
 		return dbService.sendInvitation((Integer) session.getAttribute("user_id"), receiver_email,
 				Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
+	}
+
+	/*
+	 * deleteMemoById
+	 */
+	@RequestMapping(value = "/deleteMemo/{memo_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteMemoById(@PathVariable("memo_id") String memo_id,
+			@PathVariable("memo_id") String calendar_id, HttpSession session) {
+		return dbService.deleteMemoById(Integer.parseInt(memo_id), (Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
 
 	/*

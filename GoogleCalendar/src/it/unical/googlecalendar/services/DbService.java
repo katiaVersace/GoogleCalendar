@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.services;
 
+import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -16,10 +17,10 @@ import com.google.gson.Gson;
 
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
 import it.unical.googlecalendar.dao.InvitationDAOImpl;
+import it.unical.googlecalendar.dao.MemoDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
-import it.unical.googlecalendar.model.Event;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
@@ -36,6 +37,8 @@ public class DbService {
 	private UserDAOImpl udao;
 	@Autowired
 	private InvitationDAOImpl idao;
+	@Autowired
+	private MemoDAO mdao;
 	
 	@PostConstruct
 	public void initialize() {
@@ -51,18 +54,18 @@ public class DbService {
 		String dateInString = "21-01-2018 10:20:56";
 		String dateInString2 = "24-01-2018 16:20:00";
 		//int minutes=5;
-		Occurrence memo1=null;
-		Occurrence memo2=null;
+		Occurrence ev1=null;
+		Occurrence ev2=null;
 		try {
-			memo1=new Memo(katiaCalendar,katia,"Comprare il latte",sdf.parse(dateInString),"Ricordati di comprare il latte");
-			memo2=new Memo(katiaCalendar,katia,"Comprare il pane",sdf.parse(dateInString2),"Ricordati di comprare il latte");
+			ev1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
+			ev2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
 			
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		odao.save(memo1);
-		odao.save(memo2);
+		odao.save(ev1);
+		odao.save(ev2);
 		
 		
 		
@@ -108,20 +111,20 @@ public class DbService {
 	}
 
 
-	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description) {
+	public int insertNewEvent(int calendar_id, int creator_id, String title, String description, Date startTime, Date endTime, Color c1,Color c2) {
 		Calendar c=cdao.getCalendarById(calendar_id);
 		User u=udao.getUserById(creator_id);
 		
-	return odao.insertNewEvent(c,u, title,  data, description);
+	return odao.insertNewEvent(c,u, title, description,startTime,endTime, c1,  c2);
 	}
 
 
-	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description) {
-		Calendar c=cdao.getCalendarById(calendar_id);
-		User u=udao.getUserById(creator_id);
-				return odao.insertNewMemo(c,u, title,  data, description);
+	public int insertNewMemo(int creator_id, String title, Date data, String description, Color c1, Color c2) {
+				User u=udao.getUserById(creator_id);
+				return mdao.insertNewMemo(u,title,data,description,c1,c2);
 	}
 
+	
 
 	public boolean deleteOccurrenceById(int occurrenceId, int user_id,int calendar_id) {
 		Occurrence c=odao.getOccurrenceById(occurrenceId);
@@ -130,14 +133,9 @@ public class DbService {
 		return odao.deleteById(c,u,ca);
 	}
 
-	public boolean updateEventById(int event_id, String title, Date data, String description, int user_id) {
-		Event e=(Event) odao.getOccurrenceById(event_id);		
-		return odao.updateEventById(e, title,data, description, user_id);
-	}
-
-	public boolean updateMemoById(int memo_id, String title, Date data, String description, int user_id) {
-		Memo m=(Memo)odao.getOccurrenceById(memo_id);
-		return odao.updateMemoById(m, title,data, description,user_id);
+	public boolean updateEventById(int event_id, String title, String description, Date startTime, Date endTime, Color c1,Color c2,int user_id) {
+		Occurrence e=(Occurrence) odao.getOccurrenceById(event_id);		
+		return odao.updateEventById(e, title,  description,startTime,endTime, c1,  c2, user_id);
 	}
 
 	public boolean updateUserById(int user_id, String username, String password) {
@@ -158,4 +156,27 @@ public class DbService {
 	public List<Calendar> getAllMyCalendars(String email) {
 		return cdao.getCalendarsByEmail(email);
 	}
+
+
+	public boolean updateMemoById(int memo_id, int user_id, String title, Date data, String description,
+			Color c1, Color c2) {
+		Memo m=mdao.getMemoById(memo_id);
+	return mdao. updateMemoById(m,user_id, title,data, description,c1,c2);
+
+	}
+
+
+	public boolean deleteMemoById(int memo_id, int user_id) {
+		Memo c=mdao.getMemoById(memo_id);
+		User u=udao.getUserById(user_id);
+	
+		return mdao.deleteMemoById(c,u);
+	}
+
+
+	
+	
+	
+
+
 }
