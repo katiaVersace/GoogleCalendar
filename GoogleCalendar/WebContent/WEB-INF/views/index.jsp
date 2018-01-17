@@ -190,11 +190,15 @@
                     <button class="btn btn-primary" mwl-date-modifier
                       date="vm.viewDate" increment="vm.calendarView"
                       ng-click="vm.cellIsOpen = false">Next</button>
+                      
+                    <!-- DEBUG BUTTON -->
                     <button
                       class="btn btn-primary"
-                      ng-click='vm.updateEvent("6", "Test Event Update TITLE", "fuffa", "Test Event Update DESCRIPTION")'>
-                      TEST
+                      ng-click=''>
+                      DEBUG
                     </button>
+                    <!-- /DEBUG BUTTON -->
+                    
                   </div>
                 </div>
 

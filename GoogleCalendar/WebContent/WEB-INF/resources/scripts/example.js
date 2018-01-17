@@ -29,6 +29,8 @@ angular
     //        there may be a better way to do this
     vm.checkedCalendars = [];
     
+    vm.cellIsOpen = true;
+    
     // List of glyphs shown after entries in a day's event list,
     // with behavior
     var actions = [{
@@ -412,8 +414,6 @@ angular
     // -- enter at your own risk -- //
     // ---------------------------- //
     
-    vm.cellIsOpen = true;
-
     vm.eventClicked = function(event) {
         // TODO
     };
