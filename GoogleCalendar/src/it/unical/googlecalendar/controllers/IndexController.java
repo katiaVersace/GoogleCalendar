@@ -100,7 +100,7 @@ public class IndexController {
 	}
 
 	/*
-	 * insertMemo
+	 * insertMemo [X]
 	 */
 	// se ritorna -1 significa che l'inserimento non � andato a buon fine
 	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
@@ -137,7 +137,7 @@ public class IndexController {
 	}
 
 	/*
-	 * updateMemo
+	 * updateMemo [X]
 	 */
 	@RequestMapping(value = "/updateMemo/{occurrence_id}", method = RequestMethod.POST)
 	@ResponseBody
@@ -172,9 +172,9 @@ public class IndexController {
 	/*
 	 * JSON_getAllCalendars
 	 */
-	@RequestMapping(value = "/JSON_getAllCalendars", method = RequestMethod.POST)
+	@RequestMapping(value = "/JSON_getAllMyCalendars", method = RequestMethod.POST)
 	@ResponseBody
-	public String JSON_getAllCalendars(HttpSession session) {
+	public String JSON_getAllMyCalendars(HttpSession session) {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		return gson.toJson(dbService.getAllMyCalendars((String) session.getAttribute("email")));
 	}

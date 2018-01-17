@@ -7,7 +7,7 @@ angular
       
     // Controller
     var vm = this;
-    
+        
     // ---------- //
     // -- DATA -- //
     // ---------- //
@@ -51,7 +51,7 @@ angular
             return item.id = id;
         })
         return event ? event[0] : null;
-    }
+    };
     
     vm.getEventDataByID = function (id) {
         // FIXME: uses view for data, can be done better
@@ -67,7 +67,14 @@ angular
         }
         
         return event;
-    }
+    };
+    
+    vm.getViewDateBoundaries = function () {
+        return {
+            start: moment(vm.viewDate).startOf(vm.calendarView).subtract(10, "days").toDate(),
+            end: moment(vm.viewDate).endOf(vm.calendarView).add(10, "days").toDate(),
+        };
+    };
     
     // ------------------- //
     // -- VIEW HANDLING -- //
@@ -416,10 +423,10 @@ angular
     /*
      * JSON_getAllCalendars
      */
-    vm.JSON_getAllCalendars = function () {
+    vm.JSON_getAllMyCalendars = function () {
         $.ajax({
             type: "POST",
-            url: "JSON_getAllCalendars",
+            url: "JSON_getAllMyCalendars",
             success: function (response) {
                 // TODO
             },
@@ -427,7 +434,7 @@ angular
                 // TODO
             },
         });
-    }
+    };
 
     // ---------------------------- //
     // --       WASTELAND        -- //
@@ -473,4 +480,12 @@ angular
             }
         }    
     };
+    
+    // ----------- //
+    // -- DEBUG -- //
+    // ----------- //
+    
+    vm.debugfn = function () {
+        
+    }
 });

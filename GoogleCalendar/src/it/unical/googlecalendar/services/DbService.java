@@ -140,7 +140,6 @@ public class DbService {
 		return odao.updateMemoById(m, title,data, description,user_id);
 	}
 
-
 	public boolean updateUserById(int user_id, String username, String password) {
 		User u=udao.getUserById(user_id);
 		return udao.updateUserById(u, username,password);}
@@ -157,7 +156,6 @@ public class DbService {
 	}
 
 	public List<Calendar> getAllMyCalendars(String email) {
-//		return (new Gson()).toJson(cdao.getCalendarsByEmail(email));
 		return cdao.getCalendarsByEmail(email);
 	}
 }
