@@ -22,9 +22,8 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"occurrence_id"})})
-@DiscriminatorColumn(name = "type")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Occurrence {
+
+public class Occurrence {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -36,6 +35,16 @@ public abstract class Occurrence {
 
 	@Column(nullable = false)
 	private Date date;
+	@Column	
+	private String description;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	@ManyToOne (cascade=CascadeType.REFRESH)
 	@JoinColumn(name="calendar_id", nullable=false)
@@ -51,7 +60,7 @@ public abstract class Occurrence {
 		super();
 	}
 	
-	public Occurrence(Calendar calendar,User creator,String title, Date date){
+	public Occurrence(Calendar calendar,User creator,String title, Date date,String description){
 		super();
 		this.title=title;
 		this.date=date;
@@ -60,6 +69,7 @@ public abstract class Occurrence {
 		setCreator(creator);
 		//One to many association 
 		calendar.getOccurrences().add(this);
+		this.description=description;
 		
 	}
 	

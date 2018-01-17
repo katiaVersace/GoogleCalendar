@@ -41,8 +41,23 @@ public class User {
 	//calendari a cui è associato l'utente
 	@OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
     public List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
+    
+    
+    //promemoria
+    @OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
+    private List<Memo> memos=new ArrayList<Memo>();
+    
+    
 	    
-   //separated by pipe
+   public List<Memo> getMemos() {
+		return memos;
+	}
+
+	public void setMemos(List<Memo> memos) {
+		this.memos = memos;
+	}
+
+	//separated by pipe
     @Column
     private String notifications="";   
     

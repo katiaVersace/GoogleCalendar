@@ -19,11 +19,11 @@ import com.google.gson.Gson;
 
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
 import it.unical.googlecalendar.dao.InvitationDAOImpl;
+import it.unical.googlecalendar.dao.MemoDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
-import it.unical.googlecalendar.model.Event;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
@@ -41,6 +41,8 @@ public class DbService {
 	private UserDAOImpl udao;
 	@Autowired
 	private InvitationDAOImpl idao;
+	@Autowired
+	private MemoDAO mdao;
 	
 @PostConstruct
 	public void initialize() {
@@ -56,18 +58,18 @@ cdao.save(katiaCalendar);
 		String dateInString = "21-01-2018 10:20:56";
 		String dateInString2 = "24-01-2018 16:20:00";
 		//int minutes=5;
-		Occurrence memo1=null;
-		Occurrence memo2=null;
+		Occurrence ev1=null;
+		Occurrence ev2=null;
 		try {
-			memo1=new Memo(katiaCalendar,katia,"Comprare il latte",sdf.parse(dateInString),"Ricordati di comprare il latte");
-			memo2=new Memo(katiaCalendar,katia,"Comprare il pane",sdf.parse(dateInString2),"Ricordati di comprare il latte");
+			ev1=new Occurrence(katiaCalendar,katia,"Comprare il latte",sdf.parse(dateInString),"Ricordati di comprare il latte");
+			ev2=new Occurrence(katiaCalendar,katia,"Comprare il pane",sdf.parse(dateInString2),"Ricordati di comprare il latte");
 			
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		odao.save(memo1);
-		odao.save(memo2);
+		odao.save(ev1);
+		odao.save(ev2);
 		
 		
 		
@@ -121,10 +123,9 @@ cdao.save(katiaCalendar);
 	}
 
 
-	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description) {
-		Calendar c=cdao.getCalendarById(calendar_id);
-		User u=udao.getUserById(creator_id);
-				return odao.insertNewMemo(c,u, title,  data, description);
+	public int insertNewMemo(int creator_id, String title, Date data, String description, Color c1, Color c2) {
+				User u=udao.getUserById(creator_id);
+				return mdao.insertNewMemo(u,title,data,description,c1,c2);
 	}
 
 
@@ -137,12 +138,8 @@ cdao.save(katiaCalendar);
 
 
 	public boolean updateEventById(int event_id, String title, Date data, String description, int user_id) {
-		Event e=(Event) odao.getOccurrenceById(event_id);		
+		Occurrence e=(Occurrence) odao.getOccurrenceById(event_id);		
 		return odao.updateEventById(e, title,data, description, user_id);
-	}
-	public boolean updateMemoById(int memo_id, String title, Date data, String description, int user_id) {
-		Memo m=(Memo)odao.getOccurrenceById(memo_id);
-		return odao.updateMemoById(m, title,data, description,user_id);
 	}
 
 
@@ -167,7 +164,17 @@ cdao.save(katiaCalendar);
 Gson gson=new Gson();
 return gson.toJson(cdao.getCalendarsByEmail(email));
 	}
-	
+
+
+	public boolean updateMemoById(int memo_id, int user_id, String title, Date data, String description,
+			Color c1, Color c2) {
+	//	Memo m=mdao.getMemoById(memo_id);
+	//return mdao. updateMemoById(m,user_id, title,data, description,c1,c2);
+
+	return true;
+	}
+
+
 	
 	
 	

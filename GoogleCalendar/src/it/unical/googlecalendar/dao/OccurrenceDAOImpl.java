@@ -13,8 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import it.unical.googlecalendar.dao.OccurrenceDAO;
 import it.unical.googlecalendar.model.Calendar;
-import it.unical.googlecalendar.model.Event;
-import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 import it.unical.googlecalendar.model.Users_Calendars;
@@ -150,7 +148,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	@Override
 	public int insertNewEvent(Calendar c, User u, String title, Date data, String description) {
 		Session session = sessionFactory.openSession();
-		Event ev = new Event(c, u, title, data, description);
+		Occurrence ev = new Occurrence(c, u, title, data, description);
 		int result =-1;
 		Transaction tx = null;
 
@@ -169,27 +167,27 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		return result;
 	}
 
-	@Override
-	public int insertNewMemo(Calendar c, User u, String title, Date data, String description) {
-		Session session = sessionFactory.openSession();
-		Memo m = new Memo(c, u, title, data, description);
-		int result =-1;
-		Transaction tx = null;
-
-		try {
-			tx = session.beginTransaction();
-			session.save(m);
-			result=m.getId();
-			tx.commit();
-
-		} catch (Exception e) {
-			result = -1;
-			tx.rollback();
-		}
-
-		session.close();
-		return result;
-	}
+//	@Override
+//	public int insertNewMemo(Calendar c, User u, String title, Date data, String description) {
+//		Session session = sessionFactory.openSession();
+//		Memo m = new Memo(c, u, title, data, description);
+//		int result =-1;
+//		Transaction tx = null;
+//
+//		try {
+//			tx = session.beginTransaction();
+//			session.save(m);
+//			result=m.getId();
+//			tx.commit();
+//
+//		} catch (Exception e) {
+//			result = -1;
+//			tx.rollback();
+//		}
+//
+//		session.close();
+//		return result;
+//	}
 
 	@Override
 	public boolean deleteById(Occurrence oc,User u, Calendar ca) {
@@ -232,7 +230,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public boolean updateEventById(Event v, String title, Date data, String description, int user_id) {
+	public boolean updateEventById(Occurrence v, String title, Date data, String description, int user_id) {
 		Session session = sessionFactory.openSession();
 		
 		boolean result = false;
@@ -269,44 +267,44 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		return result;
 	}
 
-	@Override
-	public boolean updateMemoById(Memo m, String title, Date data, String description, int user_id) {
-		Session session = sessionFactory.openSession();
-		
-		boolean result = false;
-
-		// l'utente e il calendario dell'occurrence
-		Query query = session.createQuery(
-				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-		query.setParameter("calendar_id", m.getCalendar().getId()).setParameter("user_id", user_id);
-
-		List<Users_Calendars> resultsId = query.getResultList();
-		if (resultsId.size() != 0) {
-			Users_Calendars uc = resultsId.get(0);
-
-			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
-		
-
-		Transaction tx = null;
-
-		try {
-
-			tx = session.beginTransaction();
-			m.setTitle(title);
-			m.setDate(data);
-			m.setDescription(description);
-			session.update(m);
-			tx.commit();
-			result = true;
-
-		} catch (Exception e) {
-			result = false;
-			tx.rollback();
-		}}}
-
-		session.close();
-		return result;
-	}
+//	@Override
+//	public boolean updateMemoById(Memo m, String title, Date data, String description, int user_id) {
+//		Session session = sessionFactory.openSession();
+//		
+//		boolean result = false;
+//
+//		// l'utente e il calendario dell'occurrence
+//		Query query = session.createQuery(
+//				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+//		query.setParameter("calendar_id", m.getCalendar().getId()).setParameter("user_id", user_id);
+//
+//		List<Users_Calendars> resultsId = query.getResultList();
+//		if (resultsId.size() != 0) {
+//			Users_Calendars uc = resultsId.get(0);
+//
+//			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
+//		
+//
+//		Transaction tx = null;
+//
+//		try {
+//
+//			tx = session.beginTransaction();
+//			m.setTitle(title);
+//			m.setDate(data);
+//			m.setDescription(description);
+//			session.update(m);
+//			tx.commit();
+//			result = true;
+//
+//		} catch (Exception e) {
+//			result = false;
+//			tx.rollback();
+//		}}}
+//
+//		session.close();
+//		return result;
+//	}
 	
 	@Override
 	public Occurrence getOccurrenceById(int o_id){
@@ -319,6 +317,8 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		return result;
 		
 	}
+
+
 	
 
 }

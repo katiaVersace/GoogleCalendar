@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.controllers;
 
+import java.awt.Color;
 import java.util.Collection;
 import java.util.Date;
 
@@ -77,11 +78,11 @@ public class IndexController {
 	  
 	  //se ritorna -1 significa che l'inserimento non è andato a buon fine
 	  	//FIXME: nel path che verrà chiamato lato client togliere user_id perchè adesso viene preso dalla sessione
-	  		  	  @RequestMapping(value = "/insertNewMemo/{calendar_id}",method = RequestMethod.POST)
+	  		  	  @RequestMapping(value = "/insertNewMemo",method = RequestMethod.POST)
 	  @ResponseBody
-	  public int insertNewMemo( HttpSession session, @PathVariable("calendar_id")String calendar_id,@RequestParam String title,@RequestParam Date data,@RequestParam String description){
+	  public int insertNewMemo( HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam Color c1,@RequestParam Color c2){
 
-		  return dbService.insertNewMemo(Integer.parseInt(calendar_id),(Integer) session.getAttribute("user_id"), title,data, description) ;
+		  return dbService.insertNewMemo((Integer) session.getAttribute("user_id"), title,data, description,c1,c2) ;
 	  }
 
 	  
@@ -98,10 +99,10 @@ public class IndexController {
 		  return dbService.updateEventById(Integer.parseInt(occurrence_id),title,data,description,(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 		  
 	  }
-	  @RequestMapping(value = "/updateMemo/{occurrence_id}",method = RequestMethod.POST)
+	  @RequestMapping(value = "/updateMemo/{memo_id}",method = RequestMethod.POST)
 	  @ResponseBody
-	  public String updateMemo(HttpSession session,@PathVariable("occurrence_id")String occurrence_id, @RequestParam String title,@RequestParam Date data,@RequestParam String description){
-		  return dbService.updateMemoById(Integer.parseInt(occurrence_id),title,data,description,(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+	  public String updateMemo(@PathVariable("memo_id")String memo_id, HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam Color c1,@RequestParam Color c2){
+		  return dbService.updateMemoById(Integer.parseInt(memo_id),(Integer)session.getAttribute("user_id"),title,data,description,c1,c2) ? "YES" : "NO";
 		  
 	  }
 	  
