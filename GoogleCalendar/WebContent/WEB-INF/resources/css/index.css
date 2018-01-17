@@ -20,6 +20,10 @@ td.fc-today {
 
 }
 
+.cal-week-box-cell{
+	display: none;
+}
+
 .fc-first th{
 	font-family: 'Roboto', sans-serif;
     background:#1c6c13!important;

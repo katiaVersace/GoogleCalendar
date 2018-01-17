@@ -34,10 +34,7 @@
 <script src="resources/scripts/example.js"></script>
 <script src="resources/scripts/openModal.js"></script>
 <script type="text/javascript">
-
-
-
-    <c:forEach items="${calendars}" var="c">
+<c:forEach items="${calendars}" var="c">
     edb["${c.id}"] = {
         events : [],
     };
@@ -56,13 +53,18 @@
     });
     </c:forEach>
     
-    console.log(JSON.stringify(edb, null, 4));
+console.log(JSON.stringify(edb, null, 4));
 </script>
 
+<style type="text/css">
+.clicked-cell {
+    background-color: #d9edf7 !important;
+  }
+</style>
 
 <style type="text/css">
-  .odd-cell {
-    background-color: aqua !important;
+.clear-cell {
+    background-color: white!important;
   }
 </style>
 
@@ -79,6 +81,7 @@
 <body data-ng-controller="KitchenSinkCtrl as vm">
 
 
+
 	<div class="wrapper"  >
 		<!-- Sidebar Holder -->
 		<nav id="sidebar">
@@ -93,8 +96,7 @@
 				
 				<li class="active">
 				 <a href="#homeSubmenu"
-					data-toggle="collapse" aria-expanded="false"> <i
-						class="glyphicon glyphicon-calendar"></i> My Calendar
+					data-toggle="collapse" aria-expanded="false"> <i class="glyphicon glyphicon-calendar"></i> My Calendar
 				</a>
 					<ul class="collapse list-unstyled" id="homeSubmenu">
 					 <form action="">
@@ -227,8 +229,9 @@
 											uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Week</label>
 										<label class="btn btn-primary" ng-model="vm.calendarView"
 											uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
-											
-									<button class="btn btn-primary pull-right" ng-click="vm.addEvent()" style="margin-left: 30px;" onclick='modal("5")' >Add event</button>
+										
+										<!-- TASTO CHE STA IN ALTO A DESTRA -->	
+									<button class="btn btn-primary pull-right" ng-click="vm.openEventModal()" style="margin-left: 30px;" onclick='modal("5")' >Add event</button>
 		
 									</div>
 								</div>
@@ -241,7 +244,7 @@
     Select range on a day on the view.
     <strong ng-show="vm.lastDateClicked" >You selected on this day: from {{ vm.firstDateClicked | date:'medium' }} to {{ vm.lastDateClicked | date:'medium' }}</strong>
   </div>
-							<mwl-calendar 
+							 <mwl-calendar 
 								events="vm.events" 
 								view="vm.calendarView"
 								view-title="vm.calendarTitle" 
@@ -251,23 +254,13 @@
 								on-event-click="vm.eventClicked(calendarEvent)"
 								on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
 								cell-is-open="vm.cellIsOpen" 
-								day-view-split="30"
-								cell-modifier="vm.modifyCell(calendarCell)"
+								day-view-split="30"		
 								cell-auto-open-disabled="true"
 								on-timespan-click="vm.timespanClicked(calendarDate, calendarCell)"
 								on-date-range-select="vm.rangeSelected(calendarRangeStartDate, calendarRangeEndDate)"
-								>
+								>	
 							</mwl-calendar>
-
-							<br> <br> <br>
-
-							<h3 id="event-editor">
-								Edit events
-								
-								<div class="clearfix"></div>
-							</h3>
-
-						
+													
 						</div>
 					</div>
 				</div>
@@ -450,7 +443,7 @@
 										<td><input class="form-control" colorpicker type="text"
 											ng-model="vm.temp.color.primary"></td>
 										<td><input class="form-control" colorpicker type="text"
-											ng-model="vm.temp.title.secondary"></td>
+											ng-model="vm.temp.color.secondary"></td>
 										<td>
 											<p class="input-group" >
 												<input type="text" class="form-control" readonly
@@ -482,24 +475,19 @@
 												minute-step="15" show-meridian="false">
 											</div>
 										</td>
-										<!-- 
-										<td>
-										     	<button class="btn btn-danger"
-												ng-click="vm.events.splice($index, 1)">Delete</button>
-										</td> -->
 								</tbody>
 							</table> 
-						
-
-      			         </div> 
+						  </div> 
       			         <div style=" text-align: center;">
-    				 	  <button type="button" id="addEvnt"    class="btn btn-info navbar-btn" style="background: #42A5F5">
-						 <span><strong>Add Event</strong></span>
+      			         
+      			         <!-- TASTO CHE STA NEL MODAL -->
+    				 	  <button type="button" id="addEvnt" ng-click="vm.addEvent()" class="btn btn-info navbar-btn" style="background: #42A5F5">
+						 <span><strong>Add Event Modal</strong></span>
+						
 						</button -->
 						</div>
     				</div>
-    				
-    				
+    			    				
       			<!-- DELETEEEEE GRAPHIC EVENT
       				<button class="btn btn-danger" ng-click="vm.events.splice($index, 1)">Delete</button>
 					 <td>
@@ -509,8 +497,6 @@
 		</form>
 		</div>
 	</div>
- 	
- 	
 
 <!-- ADD CALENDAR Madal(1)-->
 <script type="text/javascript">
@@ -523,8 +509,6 @@ var addCalendar = function() {
 		document.getElementById('modal-wrapper1').style.display='none';
 }
 </script>
-
-
     
 
 <!-- UPDATE PROFILE Madal(2)-->
@@ -560,7 +544,6 @@ var closeMadal4 = function() {
 }
 </script>
 
-
 <!-- ADD EVENT Madal(5)-->
 <!-- <script>
 function addEventInCalendar(){
@@ -586,16 +569,9 @@ function addEventInCalendar(){
     alert(timeEnd);
      */ 
     //TO DO ******************** aggiungere l'evento appena generato al calendario
-    
-    
-    
-    
 	 document.getElementById('modal-wrapper5').style.display='none';
 }
 </script> -->
-
-
-
 
 
 <!-- jQuery CDN -->
@@ -610,7 +586,6 @@ function addEventInCalendar(){
                  });
              });
     </script>
-
 
 </body>
 </html>

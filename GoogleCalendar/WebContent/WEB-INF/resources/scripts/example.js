@@ -1,15 +1,11 @@
 var edb = {};
-
 var imported = document.createElement('script');
 imported.src = 'resources/scripts/openModal.js';
 document.head.appendChild(imported);
 
-
 angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
-
 angular.module('mwl.calendar.docs').controller('KitchenSinkCtrl', function(moment, calendarConfig) {     
     var vm = this;
-    
     vm.calendarView = 'month';
     vm.viewDate = new Date();
 
@@ -24,20 +20,15 @@ angular.module('mwl.calendar.docs').controller('KitchenSinkCtrl', function(momen
 
 
     vm.events = [];
+    vm.vtrCell = [];
+        
+    vm.temp = undefined;
+    vm.lastCellClicked=undefined;
+  
     
-    vm.temp ;
-    
-    vm.addEvent = function() {
-        vm.events.push({
-            title: 'New event',
-            startsAt: moment().startOf('day').toDate(),
-            endsAt: moment().endOf('day').toDate(),
-            color: calendarConfig.colorTypes.important,
-            draggable: false,
-            resizable: false,
-            actions: actions
-        });
-    };
+    vm.openEventModal = function() {
+    	modal(5);
+     };
     
     vm.deleteEvent = function (event) {
         vm.events = vm.events.filter(function (item) {
@@ -63,7 +54,6 @@ angular.module('mwl.calendar.docs').controller('KitchenSinkCtrl', function(momen
                 event.actions = actions;
                 event.draggable = false;
                 event.resizable = false;
-                
                 vm.events.push(event);
             }
             vm.shownCalendars.push(id);
@@ -115,11 +105,7 @@ angular.module('mwl.calendar.docs').controller('KitchenSinkCtrl', function(momen
 
     vm.cellIsOpen = true;
 
-    
-    
-
-
-    
+        
     vm.eventClicked = function(event) {
        
     };
@@ -144,75 +130,108 @@ angular.module('mwl.calendar.docs').controller('KitchenSinkCtrl', function(momen
 
     
     vm.rangeSelected = function(startDate, endDate) {
-    
+    	
+    	 if(vm.lastCellClicked != undefined){
+         	 vm.lastCellClicked.cssClass = '.clear-cell';
+         	}
+    	 
+    	 
         vm.firstDateClicked = startDate;
         vm.lastDateClicked = endDate;
-      };
-    
-      
+        vm.temp = {
+     		    title: 'New event',
+                startsAt: startDate,
+                endsAt: endDate,
+                color: {
+                	primary: "#123456",
+                	secondary: "#123458"	
+                },
+                draggable: false,
+                resizable: false,
+                actions: actions
+         		};
+        vm.openEventModal();
    
-    vm.timespanClicked = function(date, cell) { 
-    	 
-//        alert(date);
-    	vm.temp = {
-    		   title: 'New event',
-               startsAt: date,
-               endsAt: date,
-               color: calendarConfig.colorTypes.important,
-               draggable: false,
-               resizable: false,
-               actions: actions
-        			};
-    	
-        	vm.events.push(vm.temp);
-    	
-    		 modal(5);
-    	
-    	
-    	    if (vm.calendarView === 'month' ) {
-    	    	vm.lastDateClicked = date;
-    	    	//modal(5);
-    	    	if ((vm.cellIsOpen && moment(date).startOf('day').isSame(moment(vm.viewDate).startOf('day'))) || cell.events.length === 0 || !cell.inMonth) {
-                vm.cellIsOpen = false;
-            } else {
-                vm.cellIsOpen = true;
-                vm.viewDate = date;
-            }
-        } else if (vm.calendarView === 'year') {
-            if ((vm.cellIsOpen && moment(date).startOf('month').isSame(moment(vm.viewDate).startOf('month'))) || cell.events.length === 0) {
-                vm.cellIsOpen = false;
-            } else {
-                vm.cellIsOpen = true;
-                vm.viewDate = date;
-            }
-        }    
+    
     };
-    
-    
-    vm.fn = function() {
+   
+   
+ vm.timespanClicked = function(date, cell) {
+		
+    	  vm.firstDateClicked = date;
+    	  vm.lastDateClicked = date;
+     
+    	  if(vm.lastCellClicked != undefined){
+         	 vm.lastCellClicked.cssClass = '.clear-cell';
+         	}
+     
+           hoverCell(vm.firstDateClicked,vm.lastDateClicked,cell);
+           vm.lastCellClicked = cell;
     	
-    		alert("coap");
-	
-//    		vm.temp = [];
-    		
+    	  vm.temp = {
+       		   title: 'New event',
+                  startsAt: vm.firstDateClicked,
+                  endsAt: vm.lastDateClicked,
+                  color: {
+                  	primary: "#123456",
+                  	secondary: "#123456",	
+                  },
+                  draggable: false,
+                  resizable: false,
+                  actions: actions
+           	    };
+		
+		if (vm.calendarView === 'month') {
+			if ((vm.cellIsOpen && moment(date).startOf('day').isSame(
+					moment(vm.viewDate).startOf('day')))
+					|| cell.events.length === 0 || !cell.inMonth) {
+				vm.cellIsOpen = false;
+			} else {
+				vm.cellIsOpen = true;
+				vm.viewDate = date;
+			}
+		} else if (vm.calendarView === 'year') {
+			if ((vm.cellIsOpen && moment(date).startOf('month').isSame(
+					moment(vm.viewDate).startOf('month')))
+					|| cell.events.length === 0) {
+				vm.cellIsOpen = false;
+			} else {
+				vm.cellIsOpen = true;
+				vm.viewDate = date;
+			}
+		}
+};
+    
+vm.addEvent= function() {
+
+    	
+			vm.events.push(vm.temp);
+    	    
+     	  
     		//contenuto del modale evento
-//    	    var id = document.querySelector('input[name = "rr"]:checked').value;
-//    	    var title = document.getElementById('titl').value;
+    	//   var id = document.querySelector('input[name = "rr"]:checked').value;
+    	   //var title = document.getElementById('titl').value;
 //    	    var colP = document.getElementById('colP').value;
 //    	    var colS = document.getElementById('colS').value; 	 
 //    	    var dataStart = document.getElementById('dataStart').value;
 //    	    var timeStart = document.getElementById('timeStart').value ;
 //    	    var dataEnd = document.getElementById('dataEnd').value;
 //    	    var timeEnd = document.getElementById('timeEnd').value;
-//    	    
-//    	    
-//    	    
-//    		// chiusura modale 
-//    	    document.getElementById('modal-wrapper5').style.display='none';
- 	    	
+
+			document.getElementById('modal-wrapper5').style.display='none';
+}
+    
+vm.cellModifier = function(cell) {
+    	vm.vtrCell.push(cell);
+    	console.log(vm.vtrCell.length);
+    	console.log(vm.vtrCell[length-1]);
     	
-	}
-    
-    
+    };
 
 });
+
+hoverCell = function(date,date1,cell) {
+	if(cell.date>=date && cell.date<=date1){
+        cell.cssClass = 'clicked-cell';
+       }
+};
