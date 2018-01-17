@@ -129,7 +129,7 @@ private Users_CalendarsDAOImpl ucdao;
 			
 			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
 			//session.save(u);
-			u.removeAssociationWithCalendar(c);
+			//u.removeAssociationWithCalendar(c);
 			//c.getUsers_calendars().remove(uc);
 			result = true;
 
@@ -170,7 +170,7 @@ private Users_CalendarsDAOImpl ucdao;
 			
 			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
 			//session.save(u);
-			u.removeAssociationWithCalendar(c);
+			//u.removeAssociationWithCalendar(c);
 			//c.getUsers_calendars().remove(uc);
 			result = true;
 

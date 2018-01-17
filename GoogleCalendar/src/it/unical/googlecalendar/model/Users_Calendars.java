@@ -145,7 +145,7 @@ super();
 		this.color = color;
 
 		this.calendarName = calendarName;
-	u.getUsers_Calendars().add(this);
+	//u.getUsers_Calendars().add(this);
 	c.getUsers_calendars().add(this);
 	
 	
