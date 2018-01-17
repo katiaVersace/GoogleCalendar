@@ -1,7 +1,13 @@
 var edb = {};
 
+var imported = document.createElement('script');
+imported.src = 'resources/scripts/openModal.js';
+document.head.appendChild(imported);
+
+
 angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
-angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(moment, calendarConfig) {     
+
+angular.module('mwl.calendar.docs').controller('KitchenSinkCtrl', function(moment, calendarConfig) {     
     var vm = this;
     
     vm.calendarView = 'month';
@@ -16,7 +22,10 @@ angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(mome
         },
     ];
 
+
     vm.events = [];
+    
+    vm.temp ;
     
     vm.addEvent = function() {
         vm.events.push({
@@ -106,8 +115,13 @@ angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(mome
 
     vm.cellIsOpen = true;
 
+    
+    
+
+
+    
     vm.eventClicked = function(event) {
-        // TODO
+       
     };
 
     vm.eventEdited = function(event) {
@@ -128,9 +142,37 @@ angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(mome
         event[field] = !event[field];
     };
 
+    
+    vm.rangeSelected = function(startDate, endDate) {
+    
+        vm.firstDateClicked = startDate;
+        vm.lastDateClicked = endDate;
+      };
+    
+      
+   
     vm.timespanClicked = function(date, cell) { 
-        if (vm.calendarView === 'month') {
-            if ((vm.cellIsOpen && moment(date).startOf('day').isSame(moment(vm.viewDate).startOf('day'))) || cell.events.length === 0 || !cell.inMonth) {
+    	 
+//        alert(date);
+    	vm.temp = {
+    		   title: 'New event',
+               startsAt: date,
+               endsAt: date,
+               color: calendarConfig.colorTypes.important,
+               draggable: false,
+               resizable: false,
+               actions: actions
+        			};
+    	
+        	vm.events.push(vm.temp);
+    	
+    		 modal(5);
+    	
+    	
+    	    if (vm.calendarView === 'month' ) {
+    	    	vm.lastDateClicked = date;
+    	    	//modal(5);
+    	    	if ((vm.cellIsOpen && moment(date).startOf('day').isSame(moment(vm.viewDate).startOf('day'))) || cell.events.length === 0 || !cell.inMonth) {
                 vm.cellIsOpen = false;
             } else {
                 vm.cellIsOpen = true;
@@ -145,4 +187,32 @@ angular.module('mwl.calendar.docs') .controller('KitchenSinkCtrl', function(mome
             }
         }    
     };
+    
+    
+    vm.fn = function() {
+    	
+    		alert("coap");
+	
+//    		vm.temp = [];
+    		
+    		//contenuto del modale evento
+//    	    var id = document.querySelector('input[name = "rr"]:checked').value;
+//    	    var title = document.getElementById('titl').value;
+//    	    var colP = document.getElementById('colP').value;
+//    	    var colS = document.getElementById('colS').value; 	 
+//    	    var dataStart = document.getElementById('dataStart').value;
+//    	    var timeStart = document.getElementById('timeStart').value ;
+//    	    var dataEnd = document.getElementById('dataEnd').value;
+//    	    var timeEnd = document.getElementById('timeEnd').value;
+//    	    
+//    	    
+//    	    
+//    		// chiusura modale 
+//    	    document.getElementById('modal-wrapper5').style.display='none';
+ 	    	
+    	
+	}
+    
+    
+
 });

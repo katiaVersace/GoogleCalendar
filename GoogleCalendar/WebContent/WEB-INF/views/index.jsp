@@ -10,8 +10,6 @@
 
 
 <script type="text/javascript" src="resources/opensource/angular.min.js"></script>
-
-
 <script src="https://unpkg.com/moment@2.17.1"></script>
 <script src="https://unpkg.com/interactjs@1"></script>
 <script src="https://unpkg.com/angular@1.6.6/angular.js"></script>
@@ -30,9 +28,15 @@
 	href="https://unpkg.com/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css"
 	rel="stylesheet">
 
-<script src="resources/scripts/example.js"></script>
 
+
+
+<script src="resources/scripts/example.js"></script>
+<script src="resources/scripts/openModal.js"></script>
 <script type="text/javascript">
+
+
+
     <c:forEach items="${calendars}" var="c">
     edb["${c.id}"] = {
         events : [],
@@ -55,6 +59,13 @@
     console.log(JSON.stringify(edb, null, 4));
 </script>
 
+
+<style type="text/css">
+  .odd-cell {
+    background-color: aqua !important;
+  }
+</style>
+
 <!-- Bootstrap CSS CDN -->
 
 <link rel="stylesheet" type="text/css"
@@ -62,6 +73,7 @@
 	
 <link rel="stylesheet" type="text/css" href="resources/css/sidebar.css">
   <link rel="stylesheet" type="text/css" href="resources/css/popup.css"> 
+
 
 </head>
 <body data-ng-controller="KitchenSinkCtrl as vm">
@@ -72,33 +84,46 @@
 		<nav id="sidebar">
 			<div class="sidebar-header">
 				<h3>ASDE Calendar</h3>
-				<strong>AS</strong>
 			</div>
 
 
 			<div class="col-sm-2" id="myCalendarsBox"></div>
+			
 			<ul class="list-unstyled components">
-				<li class="active"><a href="#homeSubmenu"
+				
+				<li class="active">
+				 <a href="#homeSubmenu"
 					data-toggle="collapse" aria-expanded="false"> <i
 						class="glyphicon glyphicon-calendar"></i> My Calendar
 				</a>
 					<ul class="collapse list-unstyled" id="homeSubmenu">
-						<form action="">
+					 <form action="">
 							<fieldset>
 								<c:forEach items="${calendars}" var="cal">
-									<li><input 
-                      type="checkbox" 
-                      name="${cal.id}"
-                      value="${cal.title}"
-                      ng-model="vm.checkedCalendars['${cal.id}']"
-                      ng-change="vm.toggleCalendar('${cal.id}')"/>${cal.title}<br /></li>
-								</c:forEach>
+									<li>
+									<label id="cal_entry_${cal.id}">
+									 <input
+                       					type="checkbox"
+                       					id="${cal.id}"
+                        				name="${cal.id}"
+                       					value="${cal.title}"
+                        				ng-model="vm.checkedCalendars['${cal.id}']"
+                       					 ng-change="vm.toggleCalendar('${cal.id}')"/>
+                      		   		   <label for="${cal.id}"><span></span> ${cal.title}</label>
+                      		   		  </label>
+                      		   		  <label><i class="glyphicon glyphicon-cog" onclick="manageCalendar('${cal.title}','${cal.id}')" style="margin-left: 80%;" ></i></label>
+							    	</li>
+     								</c:forEach>
 							</fieldset>
-						</form>
-					</ul></li>
-
-
-				<li><a onclick="document.getElementById('modal-wrapper').style.display='block'"> <i class="glyphicon glyphicon-plus"></i>
+						</form> 
+					</ul>					
+					</li>
+					
+					
+					
+					
+		
+				<li><a onclick='modal("1")'> <i class="glyphicon glyphicon-plus"></i>
 						Add New Calendar
 				</a> <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">
 						<i class="glyphicon glyphicon-calendar"></i> Default Calendar
@@ -109,12 +134,12 @@
                             <li><a href="#">Page 3</a></li> -->
 					</ul></li>
 
-				<li><a onclick="document.getElementById('modal-wrapper1').style.display='block'"> <i class="glyphicon glyphicon-user"></i>
+				<li><a onclick='modal("2")'> <i class="glyphicon glyphicon-user"></i>
 						Update profile
 				</a></li>
 				<li>
 
-		<a  onclick="document.getElementById('modal-wrapper2').style.display='block'"> <i class="glyphicon glyphicon-briefcase"></i>
+				<a   onclick='modal("3")'> <i class="glyphicon glyphicon-briefcase"></i>
 						About us
 				</a>
 				
@@ -132,12 +157,13 @@
 			<nav class="navbar navbar-default">
 				<div class="container-fluid">
 
-					<div class="navbar-header">
-						<button type="button" id="sidebarCollapse"
-							class="btn btn-info navbar-btn" style="background: #3c92db;">
-							<i class="glyphicon glyphicon-align-left"></i> <span>Toggle	Sidebar</span>
-						</button>
-					</div>
+					<div class="navbar-header" >
+                            <button type="button" id="sidebarCollapse" class="navbar-btn"  >
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
 					
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-1">
@@ -151,8 +177,8 @@
 										class="btn btn-info navbar-btn" style="background: #337ab7; ">
 									 <i class="glyphicon glyphicon-log-out"></i> 
 						        </button>
-					</div>
-					</form>
+								</div>
+							</form>
 							
 							</li>
 						     <!-- <li><a href="#">Page</a></li>-->
@@ -164,7 +190,7 @@
 
 			<div class="line"></div>
 
-			<!-- CALENDAR -->
+		<!-- CALENDAR -->
 		<div class="container col-sm-12">
 				<div class="row">
 					<div>
@@ -184,8 +210,9 @@
 										<button class="btn btn-primary" mwl-date-modifier
 											date="vm.viewDate" increment="vm.calendarView"
 											ng-click="vm.cellIsOpen = false">Next</button>
-                                         <button class="btn btn-primary" ng-click="vm.deleteCalendar()"/>delete</button>
-									</div>
+                                    <!--      <button class="btn btn-primary" ng-click="vm.deleteCalendar()"/>delete</button>
+									 -->
+									 </div>
 								</div>
 
 								<br class="visible-xs visible-sm">
@@ -200,156 +227,91 @@
 											uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Week</label>
 										<label class="btn btn-primary" ng-model="vm.calendarView"
 											uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
+											
+									<button class="btn btn-primary pull-right" ng-click="vm.addEvent()" style="margin-left: 30px;" onclick='modal("5")' >Add event</button>
+		
 									</div>
 								</div>
 
 							</div>
 
 							<br>
-
-							<mwl-calendar events="vm.events" view="vm.calendarView"
-								view-title="vm.calendarTitle" view-date="vm.viewDate"
+							
+						  <div class="alert alert-info">
+    Select range on a day on the view.
+    <strong ng-show="vm.lastDateClicked" >You selected on this day: from {{ vm.firstDateClicked | date:'medium' }} to {{ vm.lastDateClicked | date:'medium' }}</strong>
+  </div>
+							<mwl-calendar 
+								events="vm.events" 
+								view="vm.calendarView"
+								view-title="vm.calendarTitle" 
+								view-date="vm.viewDate"
+								day-view-start="00:00"
+    							day-view-end="24:00"
 								on-event-click="vm.eventClicked(calendarEvent)"
 								on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
-								cell-is-open="vm.cellIsOpen" day-view-start="06:00"
-								day-view-end="22:59" day-view-split="30"
+								cell-is-open="vm.cellIsOpen" 
+								day-view-split="30"
 								cell-modifier="vm.modifyCell(calendarCell)"
 								cell-auto-open-disabled="true"
-								on-timespan-click="vm.timespanClicked(calendarDate, calendarCell)">
-
-
+								on-timespan-click="vm.timespanClicked(calendarDate, calendarCell)"
+								on-date-range-select="vm.rangeSelected(calendarRangeStartDate, calendarRangeEndDate)"
+								>
 							</mwl-calendar>
 
 							<br> <br> <br>
 
 							<h3 id="event-editor">
 								Edit events
-								<button class="btn btn-primary pull-right"
-									ng-click="vm.addEvent()">Add new</button>
+								
 								<div class="clearfix"></div>
 							</h3>
 
-							<table class="table table-bordered">
-
-								<thead>
-									<tr>
-										<th>Title</th>
-										<th>Primary color</th>
-										<th>Secondary color</th>
-										<th>Starts at</th>
-										<th>Ends at</th>
-										<th>Remove</th>
-									</tr>
-								</thead>
-
-								<tbody>
-									<tr ng-repeat="event in vm.events track by $index">
-										<td><input type="text" class="form-control"
-											ng-model="event.title"></td>
-										<td><input class="form-control" colorpicker type="text"
-											ng-model="event.color.primary"></td>
-										<td><input class="form-control" colorpicker type="text"
-											ng-model="event.color.secondary"></td>
-										<td>
-											<p class="input-group" style="max-width: 250px">
-												<input type="text" class="form-control" readonly
-													uib-datepicker-popup="dd MMMM yyyy"
-													ng-model="event.startsAt" is-open="event.startOpen"
-													close-text="Close"> <span class="input-group-btn">
-													<button type="button" class="btn btn-default"
-														ng-click="vm.toggle($event, 'startOpen', event)">
-														<i class="glyphicon glyphicon-calendar"></i>
-													</button>
-												</span>
-											</p>
-											<div uib-timepicker ng-model="event.startsAt" hour-step="1"
-												minute-step="15" show-meridian="true"></div>
-										</td>
-										<td>
-											<p class="input-group" style="max-width: 250px">
-												<input type="text" class="form-control" readonly
-													uib-datepicker-popup="dd MMMM yyyy" ng-model="event.endsAt"
-													is-open="event.endOpen" close-text="Close"> <span
-													class="input-group-btn">
-													<button type="button" class="btn btn-default"
-														ng-click="vm.toggle($event, 'endOpen', event)">
-														<i class="glyphicon glyphicon-calendar"></i>
-													</button>
-												</span>
-											</p>
-											<div uib-timepicker ng-model="event.endsAt" hour-step="1"
-												minute-step="15" show-meridian="true"></div>
-										</td>
-										<td>
-											<button class="btn btn-danger"
-												ng-click="vm.events.splice($index, 1)">Delete</button>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+						
 						</div>
 					</div>
 				</div>
+			</div>
+			
+					
+		   <button
+            class="btn btn-danger"
+            ng-click="vm.events.splice($index, 1)">
+            Delete
+          </button>
+					
+				</div>
 			</div> 
 
-</div>
-	</div>
 
 	 <!-- MODAL PAGE  -->
-	
-	<!-- ADD NEW CALENDAR-->
-	<div id="modal-wrapper" class="modal">
-		<div>
-		<form class="modal-content animate" action="/action_page.php">
-			<div class="imgcontainer">
-				<span
-					onclick="document.getElementById('modal-wrapper').style.display='none'"
-					class="close" title="Close PopUp">&times;</span> 
-					<h1 style="text-align: center; color: white; padding-top: 10px;">New Calendar</h1>
-					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
-					</div>
-					
-					<div class="modal-content">
-      				 <input type="text" placeholder="Name" name="uname" >
-    				 <input type="text" placeholder="Color" name="psw" >
-    				 <textarea rows="4" placeholder="Description" ></textarea>
-    				 <div style="text-align:center;">
-    				 	 <button type="button" id="newCalendar" class="btn btn-info navbar-btn" style="background: #42A5F5">
-						 <span><strong>Create New Calendar</strong></span>
-					</button>
-    				</div>
-    				 </div> 		
-		</form>
-		</div>
-	</div>
- 
- <!-- UPDATE PROFILE-->
-	<div id="modal-wrapper1" class="modal">
+	 <!-- ADD NEW CALENDAR-->
+	<div id="modal-wrapper1" class="modal" >
 		<div>
 		<form class="modal-content animate" action="/action_page.php">
 			<div class="imgcontainer">
 				<span
 					onclick="document.getElementById('modal-wrapper1').style.display='none'"
 					class="close" title="Close PopUp">&times;</span> 
-					<h1 style="text-align: center; color: white; padding-top: 10px;">Update Profile</h1>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">New calendar</h1>
 					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
 					</div>
 					
 					<div class="modal-content">
-      				 <input type="text" placeholder="Name" name="uname" >
-    				 <input type="password" placeholder="Old Password" name="uname" >
-    				 <input type="password" placeholder="New Password" name="psw" >
+      				 <input type="text" placeholder="Name" name="uname" id="nameCal" >
+    				 <input type="text" placeholder="Color" name="psw" id="colCal" >
+    				 <textarea rows="4" placeholder="Description" id="desc"></textarea>
     				 <div style="text-align:center;">
-    				 	  <button type="button" id="newCalendar1" class="btn btn-info navbar-btn" style="background: #42A5F5; ">
-						 <span><strong>Update Your Profile</strong></span>
-						</button>
+    				 	 <button type="button" id="newCalendar" class="btn btn-info navbar-btn" onclick="addCalendar()" style="background: #42A5F5">
+						 <span><strong>Create New Calendar</strong></span>
+					</button>
     				</div>
-    				 </div> 		
+    				</div> 		
 		</form>
 		</div>
 	</div>
-
-<!-- ABOUT US-->
+ 
+ <!-- UPDATE PROFILE-->
 	<div id="modal-wrapper2" class="modal">
 		<div>
 		<form class="modal-content animate" action="/action_page.php">
@@ -357,7 +319,36 @@
 				<span
 					onclick="document.getElementById('modal-wrapper2').style.display='none'"
 					class="close" title="Close PopUp">&times;</span> 
-					<h1 style="text-align: center; color: white; padding-top: 10px;">Update Profile</h1>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Update profile</h1>
+					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
+					</div>
+					
+					<div class="modal-content">
+      				 <input type="text" placeholder="Name" name="uname" id="naM">
+    				 <input type="password" placeholder="Old Password" id="oldP" >
+    				 <input type="password" placeholder="New Password" id="newP" >
+    				 <div style="text-align:center;">
+    				 	  <button type="button" id="newCalendar1" class="btn btn-info navbar-btn"
+    				 	  onclick="updateInfo()"
+    				 	   style="background: #42A5F5; ">
+						 <span><strong>Update Your Profile</strong></span>
+						</button>
+    				</div>
+    				 </div> 		
+		</form>
+		</div>
+	</div>
+ 
+ 
+ <!-- ABOUT US-->
+	<div id="modal-wrapper3" class="modal">
+		<div>
+		<form class="modal-content animate" action="/action_page.php">
+			<div class="imgcontainer">
+				<span
+					onclick="document.getElementById('modal-wrapper3').style.display='none'"
+					class="close" title="Close PopUp">&times;</span> 
+					<h1 style="text-align: center; color: white; padding-top: 10px;">About us</h1>
 					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
 					</div>
 					
@@ -373,37 +364,253 @@
 		</form>
 		</div>
 	</div>
+ 
+	
+	<!-- Info Calendar-->
+	<div id="modal-wrapper4" class="modal">
+		<div>
+		<form class="modal-content animate" action="/action_page.php">
+			<div class="imgcontainer">
+				<span
+					onclick="document.getElementById('modal-wrapper4').style.display='none'"
+					class="close" title="Close PopUp">&times;</span> 
+					<h1 id="calendarNm" style="text-align: center; color: white; padding-top: 10px;"></h1>
+					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
+					</div>
+					
+					 <div class="modal-content">
+      				 <input type="text" placeholder="Change Name" name="uname" id="newNameCalndar" >
+    		     <!--<input type="text" placeholder="Old Password" name="uname" >
+    				 <input type="password" placeholder="New Password" name="psw" >
+    				  -->
+    				  <div style="text-align:center;">
+    				 	  <button type="button" id="btn-dlCalendar" class="btn btn-info navbar-btn" onclick="closeMadal4()" ng-click="vm.deleteCalendar()" style="background: #C62828; ">
+						 <span><strong>Delete Calendar</strong></span>
+						 </button>    				 	
+    				 	 <button type="button" id="btn-upCalendar" class="btn btn-info navbar-btn" onclick="closeMadal4()" style="background: #42A5F5; ">
+    				 	 <span><strong>Update Calendar</strong></span>
+						</button>
+					</div>
+    				</div>
+		</form>
+		</div>
+	</div>
 
- 
  	
+ 	<!-- ADD EVENT-->
+	<div id="modal-wrapper5" class="modal" style="width: 100%; left: 0%;">
+		<div>
+		<form class="modal-content animate" action="/action_page.php">
+			<div class="imgcontainer">
+				<span
+					onclick="document.getElementById('modal-wrapper5').style.display='none'"
+					class="close" title="Close PopUp">&times;</span> 
+					<h1  style="text-align: center; color: white; padding-top: 10px;">Your Calendars</h1>
+					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-calendar"></i></a>
+					</div>
+					
+					 <div class="modal-content" style="width: 90%;" >
+      			         <div >
+      			         	  <fieldset>
+      			         		<form id="form-btn" style="position: relative; text-align: center;">
+      			         		 <c:forEach items="${calendars}" var="cal">
+									<li style="list-style-type: none;">
+						 	    	<input
+                       					type="radio"
+                       					id="${cal.id}+1"
+                       					name="rr"
+                        				value="${cal.id}"
+                        				ng-model="vm.checkedCalendars['${cal.id}']"
+                       					ng-change="vm.toggleCalendar('${cal.id}')"
+                       					/>
+                      		   		   <label for="${cal.id}+1"><span></span> ${cal.title}</label>
+                      		   		  	</li>
+     					     			</c:forEach> 
+								</form>
+     							</fieldset>
+     						 
+      			         
+      			          <h3  style="text-align: center; color: white; padding-top: 10px;" >Add Event</h3>
+					 
+      		 	         <div id="event_tmp" >
+      			          <table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Title</th>
+										<th>Primary color</th>
+										<th>Secondary color</th>
+										<th>Starts at</th>
+										<th>Ends at</th>
+										</tr>
+								</thead>
+
+								<tbody>
+										<td><input type="text" class="form-control"
+											ng-model="vm.temp.title"></td>
+										<td><input class="form-control" colorpicker type="text"
+											ng-model="vm.temp.color.primary"></td>
+										<td><input class="form-control" colorpicker type="text"
+											ng-model="vm.temp.title.secondary"></td>
+										<td>
+											<p class="input-group" >
+												<input type="text" class="form-control" readonly
+													uib-datepicker-popup="dd MMMM yyyy"
+													ng-model="vm.temp.startsAt" is-open="vm.temp.startOpen"
+													close-text="Close"> <span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+														ng-click="vm.toggle($event, 'startOpen', vm.temp)">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</p>
+											<div uib-timepicker ng-model="vm.temp.startsAt" hour-step="1"
+												minute-step="15" show-meridian="false"></div>
+										</td>
+										<td>
+											<p class="input-group" >
+												<input type="text" class="form-control" readonly
+													uib-datepicker-popup="dd MMMM yyyy" ng-model="vm.temp.endsAt"
+													is-open="vm.temp.endOpen" close-text="Close"> <span
+													class="input-group-btn">
+													<button type="button" class="btn btn-default"
+														ng-click="vm.toggle($event, 'endOpen', vm.temp)">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</p>
+											<div uib-timepicker ng-model="vm.temp.endsAt" hour-step="1"
+												minute-step="15" show-meridian="false">
+											</div>
+										</td>
+										<!-- 
+										<td>
+										     	<button class="btn btn-danger"
+												ng-click="vm.events.splice($index, 1)">Delete</button>
+										</td> -->
+								</tbody>
+							</table> 
+						
+
+      			         </div> 
+      			         <div style=" text-align: center;">
+    				 	  <button type="button" id="addEvnt"    class="btn btn-info navbar-btn" style="background: #42A5F5">
+						 <span><strong>Add Event</strong></span>
+						</button -->
+						</div>
+    				</div>
+    				
+    				
+      			<!-- DELETEEEEE GRAPHIC EVENT
+      				<button class="btn btn-danger" ng-click="vm.events.splice($index, 1)">Delete</button>
+					 <td>
+					</td> -->
+      			
+      			 </div>
+		</form>
+		</div>
+	</div>
+ 	
+ 	
+
+<!-- ADD CALENDAR Madal(1)-->
+<script type="text/javascript">
+var addCalendar = function() {
+	//alert("chiamata f add");
+	var name = document.getElementById("nameCal").value;
+	var oP = document.getElementById("colCal").value;
+	var nP = document.getElementById("desc").value;
+	
+		document.getElementById('modal-wrapper1').style.display='none';
+}
+</script>
+
+
+    
+
+<!-- UPDATE PROFILE Madal(2)-->
+<script type="text/javascript">
+var updateInfo = function() {
+	//alert(chiamata funzione update profile);
+	var name = document.getElementById("naM").value;
+	var oP = document.getElementById("oldP").value;
+	var nP = document.getElementById("newP").value;
+	
+	document.getElementById('modal-wrapper2').style.display='none';
+}
+</script>
+
+
+<!-- CALENDAR SETTINGS Madal(4)-->
+<script type="text/javascript">
+var manageCalendar = function(a,b) {
+	//alert("chiamata funzione impostazion calendario");
+	modal(4);
+	document.getElementById("calendarNm").innerHTML = a + " settings";
+
+}
+</script>
+
+<script type="text/javascript">
+var closeMadal4 = function() {
+//	alert("chiamata funzione impostazion calendario");
+    var a = document.getElementById("newNameCalndar").value;
  
-	<!-- jQuery CDN -->
+    document.getElementById('modal-wrapper4').style.display='none';
+
+}
+</script>
+
+
+<!-- ADD EVENT Madal(5)-->
+<!-- <script>
+function addEventInCalendar(){
+	//alert("funzione aggiungi evento chiamata"); 
+    var id = document.querySelector('input[name = "rr"]:checked').value;
+    var title = document.getElementById('titl').value;
+    var colP = document.getElementById('colP').value;
+    var colS = document.getElementById('colS').value; 	 
+    var dataStart = document.getElementById('dataStart').value;
+    var timeStart = document.getElementById('timeStart').value ;
+    var dataEnd = document.getElementById('dataEnd').value;
+    var timeEnd = document.getElementById('timeEnd').value;
+    
+    
+    /* 
+    alert(id);
+    alert(title);
+    alert(colP);
+    alert(colS);
+    alert(dataStart);
+    alert(timeStart);
+    alert(dataEnd);
+    alert(timeEnd);
+     */ 
+    //TO DO ******************** aggiungere l'evento appena generato al calendario
+    
+    
+    
+    
+	 document.getElementById('modal-wrapper5').style.display='none';
+}
+</script> -->
+
+
+
+
+
+<!-- jQuery CDN -->
 	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 	<!-- Bootstrap Js CDN -->
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
              $(document).ready(function () {
                  $('#sidebarCollapse').on('click', function () {
                      $('#sidebar').toggleClass('active');
+                     $(this).toggleClass('active');
                  });
              });
     </script>
- 
- 
- 
 
-
-
-<!-- <script>
-
-var modal = document.getElementById('modal-wrapper');
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-</script> -->
 
 </body>
 </html>
