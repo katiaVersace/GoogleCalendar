@@ -150,10 +150,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 		}
 		
 
-		System.out.println("Accettando ho creato l'associazione e l ho aggiunta alla lista dell'utente "
-				+ u.getUsername() + ",che è associato a: " + u.getUsers_Calendars().size() + " calendari");
-		System.out.println("Accettando ho creato l'associazione e l ho aggiunta alla lista del calendario "
-				+ c.getTitle() + "che è associato a: " + c.getUsers_calendars().size() + " utenti");
+		
 		session.close();
 		return result;
 	}

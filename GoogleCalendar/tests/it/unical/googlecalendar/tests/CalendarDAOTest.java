@@ -50,8 +50,6 @@ public class CalendarDAOTest {
 		cdao.save(ciccinoCalendar);
 		cdao.save(ciccinoCalendar2);
 		
-		System.out.println("Associazion con calendari, di ciccino "+ciccino.getUsers_Calendars().size());
-		System.out.println("Associazion per calendario, di ciccinoCalendar "+ciccinoCalendar.getUsers_calendars().size());
 		
 		//ora creo un evento e lo associo al mio calendario
 				SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");

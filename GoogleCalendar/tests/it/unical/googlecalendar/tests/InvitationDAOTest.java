@@ -71,13 +71,13 @@ public class InvitationDAOTest {
 		//fabio invita mario a c
 		idao.sendInvitation(fabio.getId(), mario.getEmail(), c, "ADMIN");
 		//mario accetta a c
-		if(idao.acceptInvitation(mario, c))System.out.println("numero associazioni dell'oggetto java mario "+mario.getUsers_Calendars().size()+" numero assoc del calendario: "+c.getUsers_calendars().get(0).getUser().getUsername());
+		Assert.assertTrue(idao.acceptInvitation(mario, c));
 		
 		if(	ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId()).isEmpty())System.out.println("Nessuna associazione creata");
 		else System.out.println("C'è un'associazione tra mario e il calendario nel db");
 		//	String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(), c.getId());
 		
-		String privilegiDiMario=mario.getPriviledgesForCalendar(c);
+		String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(),c.getId());
 
 		if(privilegiDiMario==null)System.out.println("Privilegi null");
 		
