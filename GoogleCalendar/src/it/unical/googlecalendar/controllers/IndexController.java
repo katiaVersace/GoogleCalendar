@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import it.unical.googlecalendar.services.DbService;
 
 @Controller
@@ -169,9 +172,10 @@ public class IndexController {
 	/*
 	 * JSON_getAllCalendars
 	 */
-	@RequestMapping(value = "/myCalendar", method = RequestMethod.POST)
+	@RequestMapping(value = "/JSON_getAllCalendars", method = RequestMethod.POST)
 	@ResponseBody
 	public String JSON_getAllCalendars(HttpSession session) {
-		return dbService.getAllMyCalendars((String) session.getAttribute("email"));
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+		return gson.toJson(dbService.getAllMyCalendars((String) session.getAttribute("email")));
 	}
 }

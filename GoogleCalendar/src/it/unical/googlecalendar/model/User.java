@@ -6,19 +6,12 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.Where;
-
-
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"user_id"})})
@@ -38,7 +31,7 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 
-	//calendari a cui è associato l'utente
+	//calendari a cui ï¿½ associato l'utente
 	@OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
     public List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
 	    

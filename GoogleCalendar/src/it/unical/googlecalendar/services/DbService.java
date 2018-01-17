@@ -4,8 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,10 +37,10 @@ public class DbService {
 	@Autowired
 	private InvitationDAOImpl idao;
 	
-@PostConstruct
+	@PostConstruct
 	public void initialize() {
 		User katia=new User("k@h.it","Katia2","1234");	
-		//udao.save(katia);
+		udao.save(katia);
 		Calendar katiaCalendar = new Calendar(katia,"katias's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia,"Calendar n2", "second list of katia's events");
 		cdao.save(katiaCalendar2);
@@ -153,7 +156,8 @@ public class DbService {
 		return idao.sendInvitation(user_id, receiver_email ,ca,privilege);
 	}
 
-	public  String getAllMyCalendars(String email) {
-		return (new Gson()).toJson(cdao.getCalendarsByEmail(email));
+	public List<Calendar> getAllMyCalendars(String email) {
+//		return (new Gson()).toJson(cdao.getCalendarsByEmail(email));
+		return cdao.getCalendarsByEmail(email);
 	}
 }

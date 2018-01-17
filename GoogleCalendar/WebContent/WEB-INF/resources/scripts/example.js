@@ -419,20 +419,12 @@ angular
     vm.JSON_getAllCalendars = function () {
         $.ajax({
             type: "POST",
-            url: "myCalendars",
+            url: "JSON_getAllCalendars",
             success: function (response) {
                 // TODO
-                
-                // DEBUG
-                console.log("[SUCCESS] JSON_getAllCalendars | response: " + response);
-                // END DEBUG
             },
             error: function (response) {
                 // TODO
-                
-                // DEBUG
-                console.log("[ERROR] JSON_getAllCalendars | response: " + response);
-                // END DEBUG
             },
         });
     }
