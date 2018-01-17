@@ -19,10 +19,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 
-@Table
+@Table(
+       
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "user_calendar_id"),
+                @UniqueConstraint(columnNames = {"user_id", "calendar_id"})
+        }
+)
 
 public class Users_Calendars {
 
@@ -30,18 +37,17 @@ public class Users_Calendars {
 
 	@GeneratedValue(strategy = GenerationType.AUTO)
 
-	@Column(name = "user_calendar_id")
-
+	@Column(name = "user_calendar_id",unique = true)
 	private int id;
 
 	// association
 
 	@ManyToOne(cascade=CascadeType.REFRESH)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id",nullable = false)
 	private User user;
 
 	@ManyToOne(cascade=CascadeType.REFRESH)
-	@JoinColumn(name = "calendar_id")
+	@JoinColumn(name = "calendar_id",nullable = false)
 	private Calendar calendar;
 
 	// additional attributes
@@ -111,6 +117,11 @@ public class Users_Calendars {
 
 	}
 
+	public void setCalendar(Calendar c) {
+
+		this.calendar=c;
+
+	}
 	public void setCalendarName(String calendarName) {
 
 		this.calendarName = calendarName;
@@ -124,7 +135,7 @@ public class Users_Calendars {
 	}
 
 	public Users_Calendars(User u, Calendar c, String privileges, Color color, String calendarName) {
-
+super();
 		this.user = u;
 
 		this.calendar = c;
@@ -134,8 +145,10 @@ public class Users_Calendars {
 		this.color = color;
 
 		this.calendarName = calendarName;
-	user.getUsers_Calendars().add(this);
-	calendar.getUsers_calendars().add(this);
+	u.getUsers_Calendars().add(this);
+	c.getUsers_calendars().add(this);
+	
+	
 	}
 
 	public Calendar getCalendar() {

@@ -29,6 +29,7 @@ private Users_CalendarsDAOImpl ucdao;
 	public CalendarDAOImpl() {
 	}
 
+	@Override
 	public void save(Calendar Calendar) {
 
 		Session session = sessionFactory.openSession();
@@ -37,7 +38,27 @@ private Users_CalendarsDAOImpl ucdao;
 
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(Calendar);
+			session.save(Calendar);
+			tx.commit();
+
+		} catch (Exception e) {
+			tx.rollback();
+		}
+
+		session.close();
+
+	}
+	
+	@Override
+	public void update(Calendar Calendar) {
+
+		Session session = sessionFactory.openSession();
+
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			session.update(Calendar);
 			tx.commit();
 
 		} catch (Exception e) {
@@ -70,26 +91,37 @@ private Users_CalendarsDAOImpl ucdao;
 		session.close();
 		return result;
 	}
+	
+	@Override
+	public String getPrivilegeForCalendarAndUser(int user_id, int calendar_id) {
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Query query = session
+				.createQuery("SELECT uc.privileges FROM Users_Calendars uc WHERE uc.calendar.id = :calendar and uc.user.id = :user");
+		query.setParameter("user", user_id).setParameter("calendar", calendar_id);
+		List<String> result = query.getResultList();
+		session.close();
+		return result.get(0);
+	}
 
 	@Override
-	public boolean deleteById(int calendarId, int user_id) {
+	public boolean deleteById(Calendar c, User u) {
 		Session session = sessionFactory.openSession();
-		Calendar c = null;
 		Transaction tx = null;
 		boolean result = false;
 		Users_Calendars resultAssociation;
-		List<Users_Calendars> resultsId=ucdao.getAssociationByUserIdAndCalendarId(user_id, calendarId);
+		List<Users_Calendars> resultsId=ucdao.getAssociationByUserIdAndCalendarId(u.getId(), c.getId());
 		if(resultsId.size()!=0){
 		resultAssociation = resultsId.get(0);
 		
 		//gestire se sei l'ultimo admin chi diventa admin?
 		    if(resultAssociation.getPrivileges().equals("ADMIN")){
-		c = (Calendar) session.get(Calendar.class, calendarId);
 		
 		try {
 			
 			tx = session.beginTransaction();
-			User u= (User) session.get(User.class, user_id);
+			
 			session.delete(c);
 			session.flush();
 			
@@ -97,7 +129,7 @@ private Users_CalendarsDAOImpl ucdao;
 			
 			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
 			//session.save(u);
-			u.users_calendars.remove(resultAssociation);
+			u.removeAssociationWithCalendar(c);
 			//c.getUsers_calendars().remove(uc);
 			result = true;
 
@@ -116,13 +148,13 @@ private Users_CalendarsDAOImpl ucdao;
 
 	
 	@Override
-	public boolean disconnectUserFromCalendarById(int calendarId, int user_id) {
+	public boolean disconnectUserFromCalendarById(Calendar c, User u) {
 		Session session = sessionFactory.openSession();
-		Calendar c = null;
+		
 		Transaction tx = null;
 		boolean result = false;
 		int resultId=0;
-		List<Users_Calendars> resultsId=ucdao.getAssociationByUserIdAndCalendarId(user_id, calendarId);
+		List<Users_Calendars> resultsId=ucdao.getAssociationByUserIdAndCalendarId(u.getId(), c.getId());
 		if(resultsId.size()!=0){
 		resultId = resultsId.get(0).getId();
 		Users_Calendars uc = (Users_Calendars) session.get(Users_Calendars.class, resultId);
@@ -131,7 +163,6 @@ private Users_CalendarsDAOImpl ucdao;
 		try {
 			
 			tx = session.beginTransaction();
-			User u= (User) session.get(User.class, user_id);
 			session.delete(uc);
 			session.flush();
 			
@@ -139,7 +170,7 @@ private Users_CalendarsDAOImpl ucdao;
 			
 			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
 			//session.save(u);
-			u.users_calendars.remove(uc);
+			u.removeAssociationWithCalendar(c);
 			//c.getUsers_calendars().remove(uc);
 			result = true;
 
@@ -159,16 +190,16 @@ private Users_CalendarsDAOImpl ucdao;
 	
 	
 	@Override
-	public int insertNewCalendar(int user_id, String title, String description) {
+	public int insertNewCalendar(User u, String title, String description) {
 		Session session = sessionFactory.openSession();
-		User u = (User) session.get(User.class, user_id);
 		Calendar c=new Calendar(u,title,description);
-		int result=c.getId();
+		int result=-1;
 				Transaction tx = null;
 
 				try {
 					tx = session.beginTransaction();
-					session.saveOrUpdate(c);
+					session.save(c);
+					result=c.getId();
 					session.update(u);
 					tx.commit();
 					
@@ -183,16 +214,15 @@ return result;
 	}
 
 	@Override
-	public boolean updateCalendarById(int calendar_id,String title, String description, int user_id) {
+	public boolean updateCalendarById(Calendar c,String title, String description, int user_id) {
 		Session session = sessionFactory.openSession();
-		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
 		
 		
 		boolean result=false;
 		
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-		query.setParameter("calendar_id", calendar_id).setParameter("user_id", user_id);
+		query.setParameter("calendar_id", c.getId()).setParameter("user_id", user_id);
 
 		List<Users_Calendars> resultsId = query.getResultList();
 		if (resultsId.size() != 0) {
@@ -222,5 +252,16 @@ return result;
 return result;
 	}
 
+	@Override
+	public Calendar getCalendarById(int c_id){
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Calendar result = session.get(Calendar.class,c_id);
+
+		session.close();
+		return result;
+		
+	}
 	
 }

@@ -84,7 +84,7 @@
 								name = response.name;
 								birthday = response.birthday;
 
-								friends = response.friends.summary.total_count;
+								//friends = response.friends.summary.total_count;
 								events = response.events.data;
 
 								//pass data to LoginController

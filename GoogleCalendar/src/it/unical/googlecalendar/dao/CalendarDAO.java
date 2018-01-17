@@ -13,10 +13,20 @@ public interface CalendarDAO {
 
 	List<Calendar> getAllCalendars();
 	List<Calendar> getCalendarsByEmail(String email);	
-	public boolean deleteById(int calendarId, int user_id);
-	public int insertNewCalendar(int user_id, String title, String description);
 	
-	boolean disconnectUserFromCalendarById(int calendarId, int user_id);
+	
+	
+	void update(Calendar Calendar);
 
-	boolean updateCalendarById(int calendar_id, String title, String description, int user_id);
+	String getPrivilegeForCalendarAndUser(int user_id, int calendar_id);
+
+	boolean deleteById(Calendar c, User u);
+
+	boolean disconnectUserFromCalendarById(Calendar c, User u);
+
+	int insertNewCalendar(User u, String title, String description);
+
+	boolean updateCalendarById(Calendar c, String title, String description, int user_id);
+
+	Calendar getCalendarById(int c_id);
 }

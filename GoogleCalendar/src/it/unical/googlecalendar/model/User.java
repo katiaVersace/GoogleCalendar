@@ -14,24 +14,25 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Where;
 
 
 
 @Entity
-@Table
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"user_id"})})
 public class User {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="user_id")
+	@Column(name="user_id",unique = true)
 	private int id;
 	
 	@Column(nullable=false)
 	private String username;
 	
-	@Column(nullable=false)
+	@Column(nullable=false,unique = true)
 	private String email;
 	
 	@Column(nullable=false)
@@ -41,10 +42,9 @@ public class User {
 	@OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
     public List<Users_Calendars> users_calendars=new ArrayList<Users_Calendars>();
 	    
-    //invitation received
-    @OneToMany(mappedBy = "receiver")
-    public List<Invitation> receivedInvitations=new ArrayList<Invitation>();
-       
+   //separated by pipe
+    @Column
+    private String notifications="";   
     
 	
 	public User() {
@@ -88,7 +88,19 @@ public class User {
 		return users_calendars;
 	}
 	
+	public String[] getNotifications(){
+		if(notifications.isEmpty()){
+			return null;
+		}
+		else{
+			String[] notif=notifications.split("\\|");
+			
+			return notif;
+		}
 		
+		
+		
+	}
 		
 	public String getPriviledgesForCalendar(Calendar c){
 		for( Users_Calendars uc: users_calendars){
@@ -97,8 +109,15 @@ public class User {
 			}
 			
 	}
-		return "";
+		return null;
 		
+	}
+	
+	public void removeAssociationWithCalendar(Calendar c){
+		for(Users_Calendars uc: users_calendars){
+			if(uc.getCalendar()==c)
+				users_calendars.remove(c);
+		}
 	}
 
 		public int getId() {

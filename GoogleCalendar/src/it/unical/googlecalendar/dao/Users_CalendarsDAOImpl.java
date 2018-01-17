@@ -29,7 +29,26 @@ public class Users_CalendarsDAOImpl implements Users_CalendarsDAO{
 
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(uc);
+			session.save(uc);
+			tx.commit();
+
+		} catch (Exception e) {
+			tx.rollback();
+		}
+
+		session.close();
+
+	}
+	
+	@Override
+	public void update(Users_Calendars uc) {
+		Session session = sessionFactory.openSession();
+
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			session.update(uc);
 			tx.commit();
 
 		} catch (Exception e) {

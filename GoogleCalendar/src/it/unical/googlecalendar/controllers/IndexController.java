@@ -85,11 +85,11 @@ public class IndexController {
 	  }
 
 	  
-	  @RequestMapping(value = "/deleteOccurrence/{occurrenceId}",method = RequestMethod.POST)
+	  @RequestMapping(value = "/deleteOccurrence/{occurrenceId}/{calendar_id}",method = RequestMethod.POST)
 	  @ResponseBody
-	  public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId, HttpSession session){
+	  public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId,@PathVariable("calendar_id") String calendar_id, HttpSession session){
 
-		  return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId),(Integer)session.getAttribute("user_id")) ? "YES" : "NO";
+		  return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId),(Integer)session.getAttribute("user_id"),Integer.parseInt(occurrenceId)) ? "YES" : "NO";
 	  }
 	  
 	  @RequestMapping(value = "/updateEvent/{occurrence_id}",method = RequestMethod.POST)
@@ -120,6 +120,13 @@ public class IndexController {
 		  
 	  }
 	 
+	 @RequestMapping(value = "/myCalendar",method = RequestMethod.POST)
+	  @ResponseBody
+	  public String getAllMyCalendars(HttpSession session){
+			
+	 return dbService.getAllMyCalendars((String)session.getAttribute("email"));
+		  
+	  }
 	  
 	  
 

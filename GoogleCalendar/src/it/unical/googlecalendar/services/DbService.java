@@ -15,16 +15,17 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
 import it.unical.googlecalendar.dao.InvitationDAOImpl;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
-import it.unical.googlecalendar.model.Comment;
+import it.unical.googlecalendar.model.Event;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
-import it.unical.googlecalendar.model.Post;
 import it.unical.googlecalendar.model.User;
 import it.unical.googlecalendar.model.Users_Calendars;
 
@@ -43,9 +44,9 @@ public class DbService {
 	
 @PostConstruct
 	public void initialize() {
-		User katia=new User("k@h.it","Katia","1234");	
-udao.save(katia);
-		Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
+		User katia=new User("k@h.it","Katia2","1234");	
+//udao.save(katia);
+		Calendar katiaCalendar = new Calendar(katia,"katias's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia,"Calendar n2", "second list of katia's events");
 cdao.save(katiaCalendar2);
 cdao.save(katiaCalendar);
@@ -93,55 +94,78 @@ cdao.save(katiaCalendar);
 
 
 	public boolean deleteCalendarById(int calendarId,int user_id) {
-		return cdao.deleteById(calendarId,user_id);
+		Calendar c=cdao.getCalendarById(calendarId);
+		User u=udao.getUserById(user_id);
+		return cdao.deleteById(c,u);
 	}
 
 
 	public int insertNewCalendar(int user_id, String title, String description) {
-		
-		return cdao.insertNewCalendar(user_id, title, description);
+		User u=udao.getUserById(user_id);
+		return cdao.insertNewCalendar(u, title, description);
 		
 	}
 
 
 	public boolean updateCalendarById(int calendar_id, String title, String description, int user_id) {
-		return cdao.updateCalendarById(calendar_id, title, description, user_id);
+		Calendar c=cdao.getCalendarById(calendar_id);
+				return cdao.updateCalendarById(c, title, description, user_id);
 	}
 
 
 	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description) {
-	return odao.insertNewEvent(calendar_id,creator_id, title,  data, description);
+		Calendar c=cdao.getCalendarById(calendar_id);
+		User u=udao.getUserById(creator_id);
+		
+	return odao.insertNewEvent(c,u, title,  data, description);
 	}
 
 
 	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description) {
-		return odao.insertNewMemo(calendar_id,creator_id, title,  data, description);
+		Calendar c=cdao.getCalendarById(calendar_id);
+		User u=udao.getUserById(creator_id);
+				return odao.insertNewMemo(c,u, title,  data, description);
 	}
 
 
-	public boolean deleteOccurrenceById(int occurrenceId, int user_id) {
-		return odao.deleteById(occurrenceId,user_id);
+	public boolean deleteOccurrenceById(int occurrenceId, int user_id,int calendar_id) {
+		Occurrence c=odao.getOccurrenceById(occurrenceId);
+		User u=udao.getUserById(user_id);
+		Calendar ca=cdao.getCalendarById(calendar_id);
+		return odao.deleteById(c,u,ca);
 	}
 
 
 	public boolean updateEventById(int event_id, String title, Date data, String description, int user_id) {
-		return odao.updateEventById(event_id, title,data, description, user_id);
+		Event e=(Event) odao.getOccurrenceById(event_id);		
+		return odao.updateEventById(e, title,data, description, user_id);
 	}
 	public boolean updateMemoById(int memo_id, String title, Date data, String description, int user_id) {
-		return odao.updateMemoById(memo_id, title,data, description,user_id);
+		Memo m=(Memo)odao.getOccurrenceById(memo_id);
+		return odao.updateMemoById(m, title,data, description,user_id);
 	}
 
 
 	public boolean updateUserById(int user_id, String username, String password) {
-		return udao.updateUserById(user_id, username,password);}
+		User u=udao.getUserById(user_id);
+		return udao.updateUserById(u, username,password);}
 	
 	public boolean disconnectMeByCalendar(int user_id, int calendarId) {
-		return cdao.disconnectUserFromCalendarById(calendarId, user_id);
+		User u=udao.getUserById(user_id);
+		Calendar ca=cdao.getCalendarById(calendarId);
+		return cdao.disconnectUserFromCalendarById(ca, u);
 }
 
 
-	public boolean sendInvitation(int user_id, String receiver_email, int calendar,String privilege) {
-		return idao.sendInvitation(user_id, receiver_email ,calendar,privilege);
+	public boolean sendInvitation(int user_id, String receiver_email, int calendar_id,String privilege) {
+		Calendar ca=cdao.getCalendarById(calendar_id);
+		return idao.sendInvitation(user_id, receiver_email ,ca,privilege);
+	}
+
+
+	public  String getAllMyCalendars(String email) {
+Gson gson=new Gson();
+return gson.toJson(cdao.getCalendarsByEmail(email));
 	}
 	
 	

@@ -13,14 +13,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"calendar_id"})})
 public class Calendar {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "calendar_id")
+	@Column(name = "calendar_id",unique = true)
 	private int id;
 
 	@Column(nullable = false)
@@ -111,6 +112,8 @@ public class Calendar {
 		this.users_calendars = users_calendars;
 	}
 
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

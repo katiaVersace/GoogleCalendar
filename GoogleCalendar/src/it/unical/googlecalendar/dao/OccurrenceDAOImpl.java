@@ -29,6 +29,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 	}
 
+	@Override
 	public void save(Occurrence Occurrence) {
 
 		Session session = sessionFactory.openSession();
@@ -37,7 +38,27 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(Occurrence);
+			session.save(Occurrence);
+			tx.commit();
+
+		} catch (Exception e) {
+			tx.rollback();
+		}
+
+		session.close();
+
+	}
+	
+	@Override
+	public void update(Occurrence Occurrence) {
+
+		Session session = sessionFactory.openSession();
+
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			session.update(Occurrence);
 			tx.commit();
 
 		} catch (Exception e) {
@@ -61,7 +82,6 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 	public List<Occurrence> getOccurrencesByCalendar(Calendar calendar) {
 		Session session = sessionFactory.openSession();
-
 		// sql query
 		Query query = session.createQuery("SELECT o FROM Occurrence o JOIN o.calendar c WHERE c.id = :calendar_id");
 		query.setParameter("calendar_id", calendar.getId());
@@ -128,17 +148,16 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description) {
+	public int insertNewEvent(Calendar c, User u, String title, Date data, String description) {
 		Session session = sessionFactory.openSession();
-		User u = (User) session.get(User.class, creator_id);
-		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
 		Event ev = new Event(c, u, title, data, description);
-		int result = ev.getId();
+		int result =-1;
 		Transaction tx = null;
 
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(ev);
+			session.save(ev);
+			result=ev.getId();
 			tx.commit();
 
 		} catch (Exception e) {
@@ -151,17 +170,16 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description) {
+	public int insertNewMemo(Calendar c, User u, String title, Date data, String description) {
 		Session session = sessionFactory.openSession();
-		User u = (User) session.get(User.class, creator_id);
-		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
 		Memo m = new Memo(c, u, title, data, description);
-		int result = m.getId();
+		int result =-1;
 		Transaction tx = null;
 
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(m);
+			session.save(m);
+			result=m.getId();
 			tx.commit();
 
 		} catch (Exception e) {
@@ -174,18 +192,16 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public boolean deleteById(int occurrenceId, int user_id) {
+	public boolean deleteById(Occurrence oc,User u, Calendar ca) {
 		Session session = sessionFactory.openSession();
-		Occurrence c = null;
 		Transaction tx = null;
 		boolean result = false;
 
-		Occurrence o = (Occurrence) session.get(Occurrence.class, occurrenceId);
 		// per controllare i privilegi devo prendermi l'associazione tra
 		// l'utente e il calendario dell'occurrence
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-		query.setParameter("calendar_id", o.getCalendar().getId()).setParameter("user_id", user_id);
+		query.setParameter("calendar_id", oc.getCalendar().getId()).setParameter("user_id", u.getId());
 
 		List<Users_Calendars> resultsId = query.getResultList();
 		if (resultsId.size() != 0) {
@@ -194,15 +210,13 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			// gestire se sei l'ultimo admin chi diventa admin?
 			if (uc.getPrivileges().equals("ADMIN")) {
 				try {
-					c = (Occurrence) session.get(Occurrence.class, occurrenceId);
 					tx = session.beginTransaction();
 
-					session.delete(c);
+					session.delete(oc);
 					session.flush();
 
 					tx.commit();
-					Calendar calendar = session.get(Calendar.class, c.getCalendar().getId());
-					calendar.getOccurrences().remove(c);
+					ca.getOccurrences().remove(oc);
 					result = true;
 
 				} catch (Exception e) {
@@ -218,17 +232,15 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public boolean updateEventById(int event_id, String title, Date data, String description, int user_id) {
+	public boolean updateEventById(Event v, String title, Date data, String description, int user_id) {
 		Session session = sessionFactory.openSession();
-		Event v = (Event) session.get(Event.class, event_id);
-
+		
 		boolean result = false;
 		
-		Occurrence o = (Occurrence) session.get(Occurrence.class, event_id);
 		// l'utente e il calendario dell'occurrence
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-		query.setParameter("calendar_id", o.getCalendar().getId()).setParameter("user_id", user_id);
+		query.setParameter("calendar_id", v.getCalendar().getId()).setParameter("user_id", user_id);
 
 		List<Users_Calendars> resultsId = query.getResultList();
 		if (resultsId.size() != 0) {
@@ -258,17 +270,15 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public boolean updateMemoById(int memo_id, String title, Date data, String description, int user_id) {
+	public boolean updateMemoById(Memo m, String title, Date data, String description, int user_id) {
 		Session session = sessionFactory.openSession();
-		Memo m = (Memo) session.get(Memo.class, memo_id);
-
+		
 		boolean result = false;
 
-		Occurrence o = (Occurrence) session.get(Occurrence.class, memo_id);
 		// l'utente e il calendario dell'occurrence
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-		query.setParameter("calendar_id", o.getCalendar().getId()).setParameter("user_id", user_id);
+		query.setParameter("calendar_id", m.getCalendar().getId()).setParameter("user_id", user_id);
 
 		List<Users_Calendars> resultsId = query.getResultList();
 		if (resultsId.size() != 0) {
@@ -297,5 +307,18 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		session.close();
 		return result;
 	}
+	
+	@Override
+	public Occurrence getOccurrenceById(int o_id){
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Occurrence result = session.get(Occurrence.class,o_id);
+
+		session.close();
+		return result;
+		
+	}
+	
 
 }

@@ -49,8 +49,8 @@ public class OccurrenceDAOTest {
 	public void saveTest() {
 		
 	
-		User katia=new User("katia.versace@hotmail.it","Katia","1234");	
-		User ciccio=new User("ciccio.h@hotmail.it","Ciccio","1234");
+		User katia=new User("katia2.versace@hotmail.it","Katia","1234");	
+		User ciccio=new User("ciccio3.h@hotmail.it","Ciccio","1234");
     	udao.save(katia);
     	udao.save(ciccio);
     	Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
@@ -69,6 +69,7 @@ public class OccurrenceDAOTest {
 		Occurrence memo2=null;
 		Occurrence memo3=null;
 		try {
+			System.out.println("Ciccio calendar id "+ciccioCalendar.getId());
 			memo1=new Memo(katiaCalendar,katia,"Comprare il latte",sdf.parse(dateInString),"Ricordati di comprare il latte");
 			memo2=new Memo(katiaCalendar,katia,"Comprare il pane",sdf.parse(dateInString2),"Ricordati di comprare il pane");
 			memo3=new Memo(ciccioCalendar,ciccio,"memo di ciccio",sdf.parse(dateInString2),"Ricordati di comprare qualcosa");
@@ -84,15 +85,29 @@ public class OccurrenceDAOTest {
 		odao.save(memo2);
 		odao.save(memo3);
     	
-		
-		idao.sendInvitation(ciccio.getId(),katia.getEmail(), ciccioCalendar.getId(),"ADMIN");
+		//System.out.println("Ciccio calendar id prima di send invitation "+ciccioCalendar.getId());
+		idao.sendInvitation(ciccio.getId(),katia.getEmail(), ciccioCalendar,"ADMIN");
 		Invitation i=idao.getInvitationsByCalendarAndReceiver(katia.getId(), ciccioCalendar.getId()).get(0);
-		
-		idao.acceptInvitation(katia.getId(),i.getId());
-			cdao.save(ciccioCalendar);
-			udao.save(katia);
+		//System.out.println("Ciccio calendar id dopo send invitation "+ciccioCalendar.getId());
+		idao.acceptInvitation(katia,ciccioCalendar);
+			cdao.update(ciccioCalendar);
+			udao.update(katia);
+			
+		//	System.out.println("Sto cercando gli eventi del calendario con id: "+ciccioCalendar.getId());
+
+			List<Occurrence> occList=odao.getOccurrencesByCalendar(ciccioCalendar);
+//			System.out.println("Eventi del calendario di ciccio: "+occList.size());
+//			for(Occurrence o:occList){
+//				System.out.println(o.getTitle());
+//			}
+//			List<Occurrence> occ2List=odao.getAllOccurrences();
+//			System.out.println("Tutti gli Eventi : "+occ2List.size());
+//			for(Occurrence o:occ2List){
+//				System.out.println(o.getTitle()+" "+o.getCalendar().getId());
+//			}
+//			
 				
-		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccioCalendar).contains(memo3));
+		Assert.assertTrue(occList.contains(memo3));
 		
 		Assert.assertTrue(odao.getOccurrencesByEmail(katia.getEmail()).size()==3);
 			

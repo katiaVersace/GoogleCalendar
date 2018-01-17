@@ -48,7 +48,7 @@ public class AppConfiguration implements WebMvcConfigurer {
 
 		Properties prop = new Properties();
 		prop.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-		prop.put("hibernate.show_sql", true);
+		prop.put("hibernate.show_sql", false);
 		prop.put("hibernate.format_sql", true);
 		prop.put("hibernate.hbm2ddl.auto", "create");
 		return prop;

@@ -26,6 +26,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 	}
 
+	@Override
 	public void save(Invitation invitation) {
 
 		Session session = sessionFactory.openSession();
@@ -34,7 +35,27 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(invitation);
+			session.save(invitation);
+			tx.commit();
+
+		} catch (Exception e) {
+			tx.rollback();
+		}
+
+		session.close();
+
+	}
+
+	@Override
+	public void update(Invitation invitation) {
+
+		Session session = sessionFactory.openSession();
+
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			session.update(invitation);
 			tx.commit();
 
 		} catch (Exception e) {
@@ -55,6 +76,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 		return result;
 
 	}
+
 	public List<Invitation> getInvitationsByCalendarAndReceiver(int receiver_id, int calendar_id) {
 		Session session = sessionFactory.openSession();
 
@@ -69,117 +91,165 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 	}
 
-	@Override
-	public boolean acceptInvitation(int receiver_id, int invitation_id) {
-		boolean result = false;
+	public String getPriviledgeForInvitationsByCalendarAndReceiver(int receiver_id, int calendar_id) {
 		Session session = sessionFactory.openSession();
-		Invitation i = (Invitation) session.get(Invitation.class, invitation_id);
-		if (receiver_id == i.getReceiver().getId()) {
-
-			System.out.println("Sono il ricevente");
-			Transaction tx = null;
-			try {
-				User u = (User) session.get(User.class, receiver_id);
-				Calendar c = (Calendar) session.get(Calendar.class, i.getCalendar().getId());
-				Users_Calendars association = new Users_Calendars(u, c, i.getPrivilege(), Color.CYAN, c.getTitle());
-				
-				tx = session.beginTransaction();
-				session.delete(i);
-				// session.saveOrUpdate(association);
-				session.saveOrUpdate(c);
-				session.saveOrUpdate(u);
-				tx.commit();
-
-				System.out.println("commit fatto");
-				u.receivedInvitations.remove(i);
-				result = true;
-
-			} catch (Exception e) {
-				System.out.println("Sono entrato nel catch");
-				result = false;
-				tx.rollback();
-			}
-		}
-		session.close();
-		return result;
-	}
-
-	@Override
-	public boolean declineInvitation(int receiver_id, int invitation_id) {
-		boolean result = false;
-		Session session = sessionFactory.openSession();
-		Invitation i = (Invitation) session.get(Invitation.class, invitation_id);
-		if (receiver_id == i.getReceiver().getId()) {
-
-			Transaction tx = null;
-
-			try {
-				User u = (User) session.get(User.class, receiver_id);
-				
-				tx = session.beginTransaction();
-				session.delete(i);
-				session.save(u);
-				tx.commit();
-				u.receivedInvitations.remove(i);
-				result = true;
-
-			} catch (Exception e) {
-				result = false;
-				tx.rollback();
-			}
-
-		}
-		session.close();
-		return result;
-	}
-
-	@Override
-	public boolean sendInvitation(int sender_id, String receiver_email, int calendar_id, String privilege) {
-		
-		Session session = sessionFactory.openSession();
-		boolean result=false;
-		
+		String result = null;
+		// sql query
 		Query query1 = session.createQuery(
-				"SELECT u.id FROM User u WHERE u.email= :email");
+				"SELECT i.privilege FROM Invitation i WHERE i.receiver.id= :user_id and i.calendar.id= :calendar_id");
+		query1.setParameter("user_id", receiver_id).setParameter("calendar_id", calendar_id);
+
+		List<String> resultList = query1.getResultList();
+		if (resultList.size() > 0) {
+			if (resultList.contains("ADMIN"))
+				result = "ADMIN";
+			else if (resultList.contains("RW")) {
+				result = "RW";
+			} else
+				result = "R";
+		}
+
+		session.close();
+		return result;
+
+	}
+
+	@Override
+	public boolean acceptInvitation(User u,Calendar c) {
+		boolean result = false;
+		Session session = sessionFactory.openSession();
+		String myPrivilege = getPriviledgeForInvitationsByCalendarAndReceiver(u.getId(), c.getId());
+		
+		if (myPrivilege != null)// signofica che non ho ricevuto inviti da
+								// accettare per questo calendario quindi esco
+		{
+			List<Invitation> invitationToDelete = getInvitationsByCalendarAndReceiver(u.getId(), c.getId());
+
+			Transaction tx = null;
+			try {
+				tx = session.beginTransaction();
+
+				// creo un'associazione tra l'utente e il calendario ed elimino
+				// gli inviti dal db
+				Users_Calendars association = new Users_Calendars(u, c, myPrivilege, Color.CYAN, c.getTitle());
+				for (Invitation inv : invitationToDelete) {
+					session.delete(inv);
+				}
+
+				session.update(c);
+				session.update(u);
+
+				tx.commit();
+
+				result = true;
+
+			} catch (Exception e) {
+				result = false;
+				tx.rollback();
+			}
+		}
+		
+
+		System.out.println("Accettando ho creato l'associazione e l ho aggiunta alla lista dell'utente "
+				+ u.getUsername() + ",che è associato a: " + u.getUsers_Calendars().size() + " calendari");
+		System.out.println("Accettando ho creato l'associazione e l ho aggiunta alla lista del calendario "
+				+ c.getTitle() + "che è associato a: " + c.getUsers_calendars().size() + " utenti");
+		session.close();
+		return result;
+	}
+
+	@Override
+	public boolean declineInvitation(User u, Calendar c) {
+		boolean result = false;
+		Session session = sessionFactory.openSession();
+		List<Invitation> invitationToDelete = getInvitationsByCalendarAndReceiver(u.getId(),c.getId());
+		if (invitationToDelete.size() > 0) {
+			Transaction tx = null;
+			try {
+				
+
+				tx = session.beginTransaction();
+
+				for (Invitation inv : invitationToDelete) {
+					session.delete(inv);
+				}
+				// session.saveOrUpdate(association);
+				session.update(c);
+				session.update(u);
+				tx.commit();
+
+				result = true;
+
+			} catch (Exception e) {
+				result = false;
+				tx.rollback();
+			}
+		}
+
+		session.close();
+		return result;
+	}
+
+	@Override
+	public boolean sendInvitation(int sender_id, String receiver_email, Calendar calendar, String privilege) {
+		Session session = sessionFactory.openSession();
+		boolean result = false;
+
+		Query query1 = session.createQuery("SELECT u FROM User u WHERE u.email= :email");
 		query1.setParameter("email", receiver_email);
 
-		List<Integer> receiverId = query1.getResultList();
-		if (receiverId.size() != 0) {
-			int receiver_id=receiverId.get(0);
-		Query query = session.createQuery(
-				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-		query.setParameter("calendar_id", calendar_id).setParameter("user_id", sender_id);
+		List<User> receiverId = query1.getResultList();
+		if (receiverId.size() != 0) 
+		{
+			int receiver_id = receiverId.get(0).getId();
+			//int receiver_id = receiver.getId();
 
-		List<Users_Calendars> resultsId = query.getResultList();
-		if (resultsId.size() != 0) {
-			
-			Users_Calendars uc = resultsId.get(0);
+			Query query = session.createQuery(
+					"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+			query.setParameter("calendar_id", calendar.getId()).setParameter("user_id", sender_id);
 
-			if (uc.getPrivileges().equals("ADMIN")) {
-		
+			List<Users_Calendars> resultsId = query.getResultList();
+			if (resultsId.size() != 0) {
 
-		Transaction tx = null;
+				Users_Calendars uc = resultsId.get(0);
 
-		try {
-			
-			User receiver = (User) session.get(User.class, receiver_id);
-			Calendar calendar = (Calendar) session.get(Calendar.class, calendar_id);
-			
-			Invitation i=new Invitation(sender_id,receiver,calendar,privilege);
-			tx = session.beginTransaction();
-			session.saveOrUpdate(i);
-			tx.commit();
-			receiver.receivedInvitations.add(i);
-			result=true;
+				if (uc.getPrivileges().equals("ADMIN")) {
 
-		} catch (Exception e) {
-			tx.rollback();
-			result=false;
+					Transaction tx = null;
+
+					try {
+
+						Invitation i = new Invitation(sender_id,receiverId.get(0) , calendar, privilege);
+						tx = session.beginTransaction();
+						session.save(i);
+						tx.commit();
+
+						result = true;
+
+					}
+
+					catch (Exception e) {
+						tx.rollback();
+						result = false;
+					}
+				}
+			}
 		}
-			}}}
 		session.close();
 
-		
 		return result;
 	}
+
+	@Override
+	public boolean changePrivilegeOfInvitation() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean sendNotificationOfResponse() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
