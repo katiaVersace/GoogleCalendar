@@ -32,12 +32,18 @@ public class IndexController {
 		return "index";
 	}
 	
+	/*
+	 * deleteCalendarId
+	 */
 	@RequestMapping(value = "/delete/{calendarId}",method = RequestMethod.POST)
 	@ResponseBody
 	public String deleteCalendarId(@PathVariable("calendarId") String calendarId){
 		return dbService.deleteCalendarById(Integer.parseInt(calendarId)) ? "YES" : "NO";
 	}
    
+	/*
+	 * insertNewCalendar
+	 */
 	//se ritorna -1 significa che l'inserimento non � andato a buon fine
 	@RequestMapping(value = "/insertNewCalendar/{user_id}",method = RequestMethod.POST)
 	@ResponseBody
@@ -45,12 +51,18 @@ public class IndexController {
 		return "" + dbService.insertNewCalendar(Integer.parseInt(user_id), title, description);
 	}
  
+	/*
+	 * updateCalendar
+	 */
     @RequestMapping(value = "/update/{calendar_id}",method = RequestMethod.POST)
     @ResponseBody
     public String updateCalendar(@PathVariable("calendar_id")String calendar_id, @RequestParam String title,@RequestParam String description){
 	    return dbService.updateCalendarById(Integer.parseInt(calendar_id),title,description) ? "YES" : "NO";
     }
   
+    /*
+     * insertNewEvent
+     */
   //se ritorna -1 significa che l'inserimento non � andato a buon fine (manca la ripetizione negli eventi)
   @RequestMapping(value = "/insertNewEvent/{calendar_id}/{creator_id}",method = RequestMethod.POST)
   @ResponseBody
@@ -58,7 +70,10 @@ public class IndexController {
 
 	  return dbService.insertNewEvent(Integer.parseInt(calendar_id),Integer.parseInt(creator_id), title,data, description) ;
   }
-  
+  	
+  	/*
+  	 * insertNewMemo
+  	 */
   //se ritorna -1 significa che l'inserimento non � andato a buon fine
   @RequestMapping(value = "/insertNewMemo/{calendar_id}/{creator_id}",method = RequestMethod.POST)
   @ResponseBody
@@ -67,19 +82,27 @@ public class IndexController {
 	  return dbService.insertNewMemo(Integer.parseInt(calendar_id),Integer.parseInt(creator_id), title,data, description) ;
   }
 
-  
+  	/*
+  	 * deleteOccurenceId
+  	 */
     @RequestMapping(value = "/deleteOccurrence/{occurrenceId}",method = RequestMethod.POST)
     @ResponseBody
     public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId){
         return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId)) ? "YES" : "NO";
     }
   
+    /*
+     * updateEvent
+     */
     @RequestMapping(value = "/updateEvent/{occurrence_id}",method = RequestMethod.POST)
     @ResponseBody
     public String updateEvent(@PathVariable("occurrence_id")String occurrence_id, @RequestParam String title,@RequestParam Date data,@RequestParam String description){
     	    return dbService.updateEventById(Integer.parseInt(occurrence_id),title,data,description) ? "YES" : "NO";
 	}
     
+    /*
+     * updateMemo
+     */
   @RequestMapping(value = "/updateMemo/{occurrence_id}",method = RequestMethod.POST)
   @ResponseBody
   public String updateMemo(@PathVariable("occurrence_id")String occurrence_id, @RequestParam String title,@RequestParam Date data,@RequestParam String description){
@@ -87,6 +110,9 @@ public class IndexController {
 	  
   }
   
+  	/*
+  	 * updateUser
+  	 */
   @RequestMapping(value = "/updateUser/{user_id}",method = RequestMethod.POST)
   @ResponseBody
   public String updateUser(@PathVariable("user_id")String user_id, @RequestParam String username,@RequestParam String password){

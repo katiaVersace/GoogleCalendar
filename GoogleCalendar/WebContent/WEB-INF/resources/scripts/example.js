@@ -5,8 +5,12 @@ angular
   .module('mwl.calendar.docs')
   .controller('KitchenSinkCtrl', function(moment, calendarConfig) {     
       
-    // AngularJS Controller
+    // Controller
     var vm = this;
+    
+    // ---------- //
+    // -- DATA -- //
+    // ---------- //
     
     // Default view
     vm.calendarView = 'month';
@@ -14,7 +18,19 @@ angular
     // Current date
     vm.viewDate = new Date();
 
-    // List of glyphs shown after entries in a day's event list
+    // Events to be displayed
+    vm.events = [];
+    
+    // Calendars currently shown, by id
+    vm.shownCalendars = [];
+        
+    // Calendars currently checked on the sidebar, by id
+    // FIXME: only used in conjunction with shownCalendars, 
+    //        there may be a better way to do this
+    vm.checkedCalendars = [];
+    
+    // List of glyphs shown after entries in a day's event list,
+    // with behavior
     var actions = [{
         label: '<i class=\'glyphicon glyphicon-remove\'></i>',
         onClick: function(args) {
@@ -22,7 +38,11 @@ angular
       },
     }];
     
-    // Utility: looks for an element in vm.events by id,
+    // --------------- //
+    // -- UTILITIES -- //
+    // --------------- //
+    
+    // Looks for an element in vm.events by id,
     // returning the event or null if not found.
     vm.getEventViewByID = function (id) {
         var event = vm.events.filter(function (item) {
@@ -46,9 +66,10 @@ angular
         
         return event;
     }
-
-    // Events to be displayed
-    vm.events = [];
+    
+    // ------------------- //
+    // -- VIEW HANDLING -- //
+    // ------------------- //
     
     // Add an event to a calendar
     // TODO: rewrite entirely
@@ -64,119 +85,7 @@ angular
         });
     };
     
-    // Update event
-    vm.updateEvent = function (id, title, date, description) {
-        // DEBUG
-        date = new Date();
-        // END DEBUG
-        
-        $.ajax({
-            type: "POST",
-            url: "updateMemo/" + id,
-            data: {
-                title: title,
-                data: date,
-                description: description,
-            },
-            success: function (result) {
-                if (result == "YES") {
-                    var eventView = vm.getEventViewByID(id);
-                    var eventData = vm.getEventDataByID(id);
-                    var now = new Date();
-                    
-                    // FIXME: la storia delle date
-                    if (eventView != null) {
-                        eventView.title = title;
-                        eventView.startsAt = now;
-                        eventView.endsAt = now;
-                        eventView.description = description;
-                    }
-                    
-                    if (eventData != null) {
-                        eventData.title = title;
-                        eventData.startsAt = now;
-                        eventData.endsAt = now;
-                        eventData.description = description;
-                    }
-                } else {
-                    console.log(
-                        "[UNSUCCESSFUL] vm.updateEvent:\n"
-                      + "{\n"
-                      + "    eventId: " + id + "\n"
-                      + "    title: " + title + "\n"
-                      + "    date: " + date + "\n"
-                      + "    description: " + description + "\n"
-                      + "    result: " + JSON.stringify(result, null, 4) + "\n"
-                      + "}\n"
-                    );
-                }
-            },
-            error: function (result) {
-                console.log(
-                    "[ERROR] vm.updateEvent:\n"
-                  + "{\n"
-                  + "    eventId: " + id + "\n"
-                  + "    title: " + title + "\n"
-                  + "    date: " + date + "\n"
-                  + "    description: " + description + "\n"
-                  + "}\n"
-                );
-            },
-        })
-    };
-    
-    // Delete an event from a calendar
-    vm.deleteOccurrence = function (id) {
-        var event = vm.getEventViewByID(id);
-        if (event != null) {
-            $.ajax({
-                type: "POST",
-                url: "deleteOccurrence/" + id,
-                success: function (result) {
-                    if (result == "YES") {
-                        // view is updated
-                        vm.events = vm.events.filter(function (item) {
-                            return item.id != id;
-                        });
-                        
-                        // edb is updated
-                        edb[event.calendar].events = edb[event.calendar].events.filter(function (item) {
-                            return item.id != id;
-                        });
-                        
-                        // DEBUG
-                        console.log("[SUCCESS] vm.deleteOccurrence | result: " + result);
-                        // END DEBUG
-                    } else {
-                        console.log(
-                            "[UNSUCCESSFUL] vm.deleteOccurrence:\n"
-                          + "{\n"
-                          + "    eventId: " + id + "\n"
-                          + "}\n"
-                        );
-                    }
-                },
-                error: function (result) {
-                    console.log(
-                        "[ERROR] vm.deleteOccurrence:\n"
-                      + "{\n"
-                      + "    eventId: " + id + "\n"
-                      + "}\n"
-                    );
-                },
-            });
-        }
-    };
-    
-    // Calendars currently shown, by id
-    vm.shownCalendars = [];
-    
-    // Calendars currently checked on the sidebar, by id
-    // (only used in conjunction with shownCalendars, 
-    // there may be a better way to do this)
-    vm.checkedCalendars = [];
-    
-    // Makes a calendar's events visible
+ // Makes a calendar's events visible
     vm.showCalendar = function (id) {        
         if (edb.hasOwnProperty(id) && !vm.shownCalendars.includes(id)) {
             for (var i = 0; i < edb[id]["events"].length; i++) {
@@ -225,6 +134,35 @@ angular
         }
     };
     
+    // -------------------------- //
+    // -- DATABASE INTERACTION -- //
+    // -------------------------- //
+    
+    /*
+     * deleteCalendarId
+     */
+    vm.deleteCalendar = function (id) {
+        // Delete calendar in DB
+        $.ajax({
+            type: "POST",
+            url: "delete/" + id,
+            success: function (result) {
+                // Client-side deletion (vm.events is updated accordingly)
+                vm.hideCalendar(id);
+                delete edb[id];
+                
+                // Calendar's entry in sidebar is deleted
+                $("#cal_entry_" + id).remove();
+            },
+            error: function (result) {
+                console.log("ERROR ERROR ERROR ERROR ERROR");
+            },
+        });
+    };
+    
+    /*
+     * insertNewCalendar
+     */
     vm.createCalendar = function (userId, title, description) {
         $.ajax({
             type: "POST",
@@ -283,6 +221,9 @@ angular
         });
     };
     
+    /*
+     * updateCalendar
+     */
     // FIXME: what is date
     vm.updateCalendar = function (calendarId, title, date, description) {
         $.ajax({
@@ -329,24 +270,142 @@ angular
         });
     }
     
-    vm.deleteCalendar = function (id) {
-        // Delete calendar in DB
+    /*
+     * insertNewEvent
+     */
+    vm.insertNewEvent = function ( /* ... */ ) {
+        // TODO
+    }
+    
+    /*
+     * insertNewMemo
+     */
+    vm.insertNewMemo = function ( /* ... */ ) {
+        // TODO
+    }
+    
+    /*
+     * deleteOccurenceId
+     */
+    vm.deleteOccurrence = function (id) {
+        var event = vm.getEventViewByID(id);
+        if (event != null) {
+            $.ajax({
+                type: "POST",
+                url: "deleteOccurrence/" + id,
+                success: function (result) {
+                    if (result == "YES") {
+                        // view is updated
+                        vm.events = vm.events.filter(function (item) {
+                            return item.id != id;
+                        });
+                        
+                        // edb is updated
+                        edb[event.calendar].events = edb[event.calendar].events.filter(function (item) {
+                            return item.id != id;
+                        });
+                        
+                        // DEBUG
+                        console.log("[SUCCESS] vm.deleteOccurrence | result: " + result);
+                        // END DEBUG
+                    } else {
+                        console.log(
+                            "[UNSUCCESSFUL] vm.deleteOccurrence:\n"
+                          + "{\n"
+                          + "    eventId: " + id + "\n"
+                          + "}\n"
+                        );
+                    }
+                },
+                error: function (result) {
+                    console.log(
+                        "[ERROR] vm.deleteOccurrence:\n"
+                      + "{\n"
+                      + "    eventId: " + id + "\n"
+                      + "}\n"
+                    );
+                },
+            });
+        }
+    };
+    
+    /*
+     * updateEvent
+     */
+    vm.updateEvent = function (id, title, date, description) {
+        // DEBUG
+        date = new Date();
+        // END DEBUG
+        
         $.ajax({
             type: "POST",
-            url: "delete/" + id,
+            url: "updateMemo/" + id,
+            data: {
+                title: title,
+                data: date,
+                description: description,
+            },
             success: function (result) {
-                // Client-side deletion (vm.events is updated accordingly)
-                vm.hideCalendar(id);
-                delete edb[id];
-                
-                // Calendar's entry in sidebar is deleted
-                $("#cal_entry_" + id).remove();
+                if (result == "YES") {
+                    var eventView = vm.getEventViewByID(id);
+                    var eventData = vm.getEventDataByID(id);
+                    var now = new Date();
+                    
+                    // FIXME: la storia delle date
+                    // FIXME: fatta così sta cosa fa schifo al cazzo
+                    if (eventView != null) {
+                        eventView.title = title;
+                        eventView.startsAt = now;
+                        eventView.endsAt = now;
+                        eventView.description = description;
+                    }
+                    
+                    if (eventData != null) {
+                        eventData.title = title;
+                        eventData.startsAt = now;
+                        eventData.endsAt = now;
+                        eventData.description = description;
+                    }
+                } else {
+                    console.log(
+                        "[UNSUCCESSFUL] vm.updateEvent:\n"
+                      + "{\n"
+                      + "    eventId: " + id + "\n"
+                      + "    title: " + title + "\n"
+                      + "    date: " + date + "\n"
+                      + "    description: " + description + "\n"
+                      + "    result: " + JSON.stringify(result, null, 4) + "\n"
+                      + "}\n"
+                    );
+                }
             },
             error: function (result) {
-                console.log("ERROR ERROR ERROR ERROR ERROR");
+                console.log(
+                    "[ERROR] vm.updateEvent:\n"
+                  + "{\n"
+                  + "    eventId: " + id + "\n"
+                  + "    title: " + title + "\n"
+                  + "    date: " + date + "\n"
+                  + "    description: " + description + "\n"
+                  + "}\n"
+                );
             },
-        });
+        })
     };
+    
+    /*
+     * updateMemo
+     */
+    vm.updateMemo = function ( /* ... */ ) {
+        // TODO
+    }
+    
+    /*
+     * updateUser
+     */
+    vm.updateUser = function ( /* ... */ ) {
+        // TODO
+    }
 
     // ---------------------------- //
     // --       WASTELAND        -- //
