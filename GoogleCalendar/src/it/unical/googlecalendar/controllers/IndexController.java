@@ -107,9 +107,10 @@ public class IndexController {
 	  		  	  @RequestMapping(value = "/insertNewMemo",method = RequestMethod.POST)
 	  @ResponseBody
 	  public int insertNewMemo( HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam Color c1,@RequestParam Color c2){
-//		  return dbService.insertNewMemo((Integer) session.getAttribute("user_id"), title,data, description,c1,c2) ;
+		  return dbService.insertNewMemo((Integer) session.getAttribute("user_id"), title,data, description,c1,c2) ;
 	  		  		  
-	  		  		  return 0;}
+	  		  		 // return 0;
+		  }
 
 	/*
 	 * deleteOccurrenceId
@@ -174,5 +175,13 @@ public String updateMemo(@PathVariable("memo_id")String memo_id, HttpSession ses
 	public String JSON_getAllCalendars(HttpSession session) {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		return gson.toJson(dbService.getAllMyCalendars((String) session.getAttribute("email")));
+	}
+	
+	
+	@RequestMapping(value = "/deleteMemo/{memo_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteMemoById(@PathVariable("memo_id") String memo_id,
+			@PathVariable("memo_id") String calendar_id, HttpSession session) {
+		return dbService.deleteMemoById(Integer.parseInt(memo_id), (Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
 }

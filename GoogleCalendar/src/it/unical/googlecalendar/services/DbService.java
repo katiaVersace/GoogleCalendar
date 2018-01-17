@@ -124,6 +124,7 @@ public class DbService {
 				return mdao.insertNewMemo(u,title,data,description,c1,c2);
 	}
 
+	
 
 	public boolean deleteOccurrenceById(int occurrenceId, int user_id,int calendar_id) {
 		Occurrence c=odao.getOccurrenceById(occurrenceId);
@@ -164,6 +165,14 @@ public class DbService {
 		Memo m=mdao.getMemoById(memo_id);
 	return mdao. updateMemoById(m,user_id, title,data, description,c1,c2);
 
+	}
+
+
+	public boolean deleteMemoById(int memo_id, int user_id) {
+		Memo c=mdao.getMemoById(memo_id);
+		User u=udao.getUserById(user_id);
+	
+		return mdao.deleteMemoById(c,u);
 	}
 
 
