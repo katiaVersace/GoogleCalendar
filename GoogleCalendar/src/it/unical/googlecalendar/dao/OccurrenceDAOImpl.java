@@ -18,6 +18,7 @@ import it.unical.googlecalendar.model.Event;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
+import it.unical.googlecalendar.model.Users_Calendars;
 
 @Repository
 public class OccurrenceDAOImpl implements OccurrenceDAO {
@@ -29,6 +30,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 	}
 
+	@Override
 	public void save(Occurrence Occurrence) {
 
 		Session session = sessionFactory.openSession();
@@ -37,7 +39,27 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(Occurrence);
+			session.save(Occurrence);
+			tx.commit();
+
+		} catch (Exception e) {
+			tx.rollback();
+		}
+
+		session.close();
+
+	}
+	
+	@Override
+	public void update(Occurrence Occurrence) {
+
+		Session session = sessionFactory.openSession();
+
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			session.update(Occurrence);
 			tx.commit();
 
 		} catch (Exception e) {
@@ -61,7 +83,6 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 	public List<Occurrence> getOccurrencesByCalendar(Calendar calendar) {
 		Session session = sessionFactory.openSession();
-
 		// sql query
 		Query query = session.createQuery("SELECT o FROM Occurrence o JOIN o.calendar c WHERE c.id = :calendar_id");
 		query.setParameter("calendar_id", calendar.getId());
@@ -98,11 +119,11 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	public List<Occurrence> getOccurrencesByEmail(String email) {
 		Session session = sessionFactory.openSession();
 
-		//sql query
-      
+		// sql query
+
 		Query query = session.createQuery(
 				"SELECT o FROM Occurrence o, Users_Calendars uc JOIN uc.user u WHERE o.calendar=uc.calendar and u.email = :email");
-				query.setParameter("email", email);
+		query.setParameter("email", email);
 
 		// sql query
 		List<Occurrence> result = query.getResultList();
@@ -110,8 +131,8 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		return result;
 	}
 
-	
-	//quando l'utente seleziona solo alcuni calendari da vedere useremo questa funzione per filtrare gli eventi
+	// quando l'utente seleziona solo alcuni calendari da vedere useremo questa
+	// funzione per filtrare gli eventi
 	@Override
 	public List<Occurrence> filterOccurrencesOfUserByCalendars(List<Calendar> calendars, User user) {
 		Session session = sessionFactory.openSession();
@@ -120,86 +141,28 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 				"SELECT o FROM Occurrence o, Users_Calendars uc JOIN uc.user u WHERE o.calendar=uc.calendar  and u.id = :user_id and o.calendar in (:calendars)");
 		query.setParameter("calendars", calendars).setParameter("user_id", user.getId());
 
-
 		// sql query
 		List<Occurrence> result = query.getResultList();
 		session.close();
-		return result;	
-	
-	
-	
-	
-	
-	
+		return result;
+
 	}
 
 	@Override
-	public int insertNewEvent(int calendar_id, int creator_id, String title, Date data, String description) {
+	public int insertNewEvent(Calendar c, User u, String title, Date data, String description) {
 		Session session = sessionFactory.openSession();
-		User u = (User) session.get(User.class, creator_id);
-		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
-		Event ev=new Event(c,u,title,data,description);
-		int result = -1;
-				Transaction tx = null;
-
-				try {
-					tx = session.beginTransaction();
-					session.saveOrUpdate(ev);
-					tx.commit();
-					result = ev.getId();
-
-				} catch (Exception e) {
-					result=-1;
-					tx.rollback();
-				}
-
-				session.close();
-return result;
-	}
-
-	
-	@Override
-	public int insertNewMemo(int calendar_id, int creator_id, String title, Date data, String description) {
-		Session session = sessionFactory.openSession();
-		User u = (User) session.get(User.class, creator_id);
-		Calendar c = (Calendar) session.get(Calendar.class, calendar_id);
-		Memo m=new Memo(c,u,title,data,description);
-		int result = -1;
-				Transaction tx = null;
-
-				try {
-					tx = session.beginTransaction();
-					session.saveOrUpdate(m);
-					tx.commit();
-					result = m.getId();
-
-				} catch (Exception e) {
-					result=-1;
-					tx.rollback();
-				}
-
-				session.close();
-return result;
-	}
-
-	@Override
-	public boolean deleteById(int occurrenceId) {
-		Session session = sessionFactory.openSession();
-		Occurrence c = null;
+		Event ev = new Event(c, u, title, data, description);
+		int result =-1;
 		Transaction tx = null;
-		boolean result = false;
+
 		try {
-			c = (Occurrence) session.get(Occurrence.class, occurrenceId);
 			tx = session.beginTransaction();
-						result = true;
-			session.delete(c);
-			session.flush();
-			
+			session.save(ev);
+			result=ev.getId();
 			tx.commit();
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			result = false;
+			result = -1;
 			tx.rollback();
 		}
 
@@ -207,61 +170,152 @@ return result;
 		return result;
 	}
 
-	
 	@Override
-	public boolean updateEventById(int event_id, String title, Date data, String description) {
+	public int insertNewMemo(Calendar c, User u, String title, Date data, String description) {
 		Session session = sessionFactory.openSession();
-		Event v = (Event) session.get(Event.class, event_id);
-		
-		boolean result=false;
-				Transaction tx = null;
+		Memo m = new Memo(c, u, title, data, description);
+		int result =-1;
+		Transaction tx = null;
 
+		try {
+			tx = session.beginTransaction();
+			session.save(m);
+			result=m.getId();
+			tx.commit();
+
+		} catch (Exception e) {
+			result = -1;
+			tx.rollback();
+		}
+
+		session.close();
+		return result;
+	}
+
+	@Override
+	public boolean deleteById(Occurrence oc,User u, Calendar ca) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		boolean result = false;
+
+		// per controllare i privilegi devo prendermi l'associazione tra
+		// l'utente e il calendario dell'occurrence
+		Query query = session.createQuery(
+				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+		query.setParameter("calendar_id", oc.getCalendar().getId()).setParameter("user_id", u.getId());
+
+		List<Users_Calendars> resultsId = query.getResultList();
+		if (resultsId.size() != 0) {
+			Users_Calendars uc = resultsId.get(0);
+
+			// gestire se sei l'ultimo admin chi diventa admin?
+			if (uc.getPrivileges().equals("ADMIN")) {
 				try {
 					tx = session.beginTransaction();
-					v.setTitle(title);
-					v.setDate(data);
-					v.setDescription(description);
-					session.update(v);
+
+					session.delete(oc);
+					session.flush();
+
 					tx.commit();
-					result=true;
+					ca.getOccurrences().remove(oc);
+					result = true;
 				} catch (Exception e) {
-					result=false;
+					e.printStackTrace();
+					result = false;
 					tx.rollback();
 					e.printStackTrace();
 				}
+			}
+		}
+		session.close();
+		return result;
+	}
 
-				session.close();
-				return result;
+	@Override
+	public boolean updateEventById(Event v, String title, Date data, String description, int user_id) {
+		Session session = sessionFactory.openSession();
+		
+		boolean result = false;
+		
+		// l'utente e il calendario dell'occurrence
+		Query query = session.createQuery(
+				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+		query.setParameter("calendar_id", v.getCalendar().getId()).setParameter("user_id", user_id);
+
+		List<Users_Calendars> resultsId = query.getResultList();
+		if (resultsId.size() != 0) {
+			Users_Calendars uc = resultsId.get(0);
+
+			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
+		
+		Transaction tx = null;
+
+		try {
+
+			tx = session.beginTransaction();
+			v.setTitle(title);
+			v.setDate(data);
+			v.setDescription(description);
+			session.update(v);
+			tx.commit();
+			result = true;
+
+		} catch (Exception e) {
+			result = false;
+			tx.rollback();
+		}
+			}}
+		session.close();
+		return result;
+	}
+
+	@Override
+	public boolean updateMemoById(Memo m, String title, Date data, String description, int user_id) {
+		Session session = sessionFactory.openSession();
+		
+		boolean result = false;
+
+		// l'utente e il calendario dell'occurrence
+		Query query = session.createQuery(
+				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+		query.setParameter("calendar_id", m.getCalendar().getId()).setParameter("user_id", user_id);
+
+		List<Users_Calendars> resultsId = query.getResultList();
+		if (resultsId.size() != 0) {
+			Users_Calendars uc = resultsId.get(0);
+
+			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
+		
+
+		Transaction tx = null;
+
+		try {
+
+			tx = session.beginTransaction();
+			m.setTitle(title);
+			m.setDate(data);
+			m.setDescription(description);
+			session.update(m);
+			tx.commit();
+			result = true;
+
+		} catch (Exception e) {
+			result = false;
+			tx.rollback();
+		}}}
+
+		session.close();
+		return result;
 	}
 	
 	@Override
-	public boolean updateMemoById(int memo_id, String title, Date data, String description) {
+	public Occurrence getOccurrenceById(int o_id){
 		Session session = sessionFactory.openSession();
-		Memo m = (Memo) session.get(Memo.class,memo_id);
-		
-		System.err.println("memo null?" + (m == null));
-		
-		boolean result=false;
-				Transaction tx = null;
 
-				try {
-					
-					tx = session.beginTransaction();
-					m.setTitle(title);
-					m.setDate(data);
-					m.setDescription(description);
-					session.update(m);
-					tx.commit();
-					result=true;
-					
+		// sql query
+		Occurrence result = session.get(Occurrence.class,o_id);
 
-				} catch (Exception e) {
-					result=false;
-					tx.rollback();
-				}
-
-				session.close();
-return result;
+		session.close();
+		return result;
 	}
-
 }

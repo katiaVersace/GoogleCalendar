@@ -19,104 +19,159 @@ import it.unical.googlecalendar.services.DbService;
 public class IndexController {
 	@Autowired
 	private DbService dbService;
-	
+
 	@RequestMapping("/index")
 	public String homePage(Model model, HttpSession session) {
-		String email=(String) session.getAttribute("email");
-		
-		if(email==null)	return "redirect:/";
-				
+		String email = (String) session.getAttribute("email");
+
+		if (email == null)
+			return "redirect:/";
+
 		model.addAttribute("events", dbService.stampaEventiPerUtente(email));
 		model.addAttribute("calendars", dbService.getCalendarsForEmail(email));
 
 		return "index";
 	}
-	
+
 	/*
 	 * deleteCalendarId
 	 */
-	@RequestMapping(value = "/delete/{calendarId}",method = RequestMethod.POST)
+	@RequestMapping(value = "/delete/{calendarId}", method = RequestMethod.POST)
 	@ResponseBody
-	public String deleteCalendarId(@PathVariable("calendarId") String calendarId){
-		return dbService.deleteCalendarById(Integer.parseInt(calendarId)) ? "YES" : "NO";
+	public String deleteCalendarId(@PathVariable("calendarId") String calendarId, HttpSession session) {
+		return dbService.deleteCalendarById(Integer.parseInt(calendarId), (Integer) session.getAttribute("user_id"))
+				? "YES"
+				: "NO";
 	}
-   
+
+	/*
+	 * disconnectFromCalendar
+	 */
+	@RequestMapping(value = "/disconnect/{calendarId}", method = RequestMethod.POST)
+	@ResponseBody
+	public String disconnectFromCalendarId(@PathVariable("calendarId") String calendarId, HttpSession session) {
+		return dbService.disconnectMeByCalendar((Integer) session.getAttribute("user_id"), Integer.parseInt(calendarId))
+				? "YES"
+				: "NO";
+	}
+
 	/*
 	 * insertNewCalendar
 	 */
-	//se ritorna -1 significa che l'inserimento non � andato a buon fine
-	@RequestMapping(value = "/insertNewCalendar/{user_id}",method = RequestMethod.POST)
+	// se ritorna -1 significa che l'inserimento non � andato a buon fine
+	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// viene preso dalla sessione
+	@RequestMapping(value = "/insertNewCalendar", method = RequestMethod.POST)
 	@ResponseBody
-	public String insertNewCalendar(@PathVariable("user_id") String user_id, @RequestParam String title,@RequestParam String description){
-		return "" + dbService.insertNewCalendar(Integer.parseInt(user_id), title, description);
+	public int insertNewCalendar(@PathVariable("user_id") String user_id, @RequestParam String title,
+			@RequestParam String description, HttpSession session) {
+		return dbService.insertNewCalendar((Integer) session.getAttribute("user_id"), title, description);
 	}
- 
+
 	/*
 	 * updateCalendar
 	 */
-    @RequestMapping(value = "/update/{calendar_id}",method = RequestMethod.POST)
-    @ResponseBody
-    public String updateCalendar(@PathVariable("calendar_id")String calendar_id, @RequestParam String title,@RequestParam String description){
-	    return dbService.updateCalendarById(Integer.parseInt(calendar_id),title,description) ? "YES" : "NO";
-    }
-  
-    /*
-     * insertNewEvent
-     */
-  //se ritorna -1 significa che l'inserimento non � andato a buon fine (manca la ripetizione negli eventi)
-  @RequestMapping(value = "/insertNewEvent/{calendar_id}/{creator_id}",method = RequestMethod.POST)
-  @ResponseBody
-  public int insertNewEvent(@PathVariable("calendar_id")String calendar_id,@PathVariable("creator_id")String creator_id,@RequestParam String title,@RequestParam Date data,@RequestParam String description){
-
-	  return dbService.insertNewEvent(Integer.parseInt(calendar_id),Integer.parseInt(creator_id), title,data, description) ;
-  }
-  	
-  	/*
-  	 * insertNewMemo
-  	 */
-  //se ritorna -1 significa che l'inserimento non � andato a buon fine
-  @RequestMapping(value = "/insertNewMemo/{calendar_id}/{creator_id}",method = RequestMethod.POST)
-  @ResponseBody
-  public int insertNewMemo(@PathVariable("calendar_id")String calendar_id,@PathVariable("creator_id")String creator_id,@RequestParam String title,@RequestParam Date data,@RequestParam String description){
-
-	  return dbService.insertNewMemo(Integer.parseInt(calendar_id),Integer.parseInt(creator_id), title,data, description) ;
-  }
-
-  	/*
-  	 * deleteOccurenceId
-  	 */
-    @RequestMapping(value = "/deleteOccurrence/{occurrenceId}",method = RequestMethod.POST)
-    @ResponseBody
-    public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId){
-        return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId)) ? "YES" : "NO";
-    }
-  
-    /*
-     * updateEvent
-     */
-    @RequestMapping(value = "/updateEvent/{occurrence_id}",method = RequestMethod.POST)
-    @ResponseBody
-    public String updateEvent(@PathVariable("occurrence_id")String occurrence_id, @RequestParam String title,@RequestParam Date data,@RequestParam String description){
-    	    return dbService.updateEventById(Integer.parseInt(occurrence_id),title,data,description) ? "YES" : "NO";
+	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// viene preso dalla sessione
+	@RequestMapping(value = "/update/{calendar_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateCalendar(HttpSession session, @PathVariable("calendar_id") String calendar_id,
+			@RequestParam String title, @RequestParam String description) {
+		return dbService.updateCalendarById(Integer.parseInt(calendar_id), title, description,
+				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
-    
-    /*
-     * updateMemo
-     */
-  @RequestMapping(value = "/updateMemo/{occurrence_id}",method = RequestMethod.POST)
-  @ResponseBody
-  public String updateMemo(@PathVariable("occurrence_id")String occurrence_id, @RequestParam String title,@RequestParam Date data,@RequestParam String description){
-  return dbService.updateMemoById(Integer.parseInt(occurrence_id),title,data,description) ? "YES" : "NO";
-	  
-  }
-  
-  	/*
-  	 * updateUser
-  	 */
-  @RequestMapping(value = "/updateUser/{user_id}",method = RequestMethod.POST)
-  @ResponseBody
-  public String updateUser(@PathVariable("user_id")String user_id, @RequestParam String username,@RequestParam String password){
-  return dbService.updateUserById(Integer.parseInt(user_id),username,password) ? "YES" : "NO";
-	  
-  }
+
+	/*
+	 * insertNewEvent
+	 */
+	// se ritorna -1 significa che l'inserimento non � andato a buon fine (manca la
+	// ripetizione negli eventi)
+	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// viene preso dalla sessione
+	@RequestMapping(value = "/insertNewEvent/{calendar_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public int insertNewEvent(HttpSession session, @PathVariable("calendar_id") String calendar_id,
+			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
+		return dbService.insertNewEvent(Integer.parseInt(calendar_id), (Integer) session.getAttribute("user_id"), title,
+				data, description);
+	}
+
+	/*
+	 * insertMemo
+	 */
+	// se ritorna -1 significa che l'inserimento non � andato a buon fine
+	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// viene preso dalla sessione
+	@RequestMapping(value = "/insertNewMemo/{calendar_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public int insertNewMemo(HttpSession session, @PathVariable("calendar_id") String calendar_id,
+			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
+		return dbService.insertNewMemo(Integer.parseInt(calendar_id), (Integer) session.getAttribute("user_id"), title,
+				data, description);
+	}
+
+	/*
+	 * deleteOccurrenceId
+	 */
+	@RequestMapping(value = "/deleteOccurrence/{calendar_id}/{occurrenceId}", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId,
+			@PathVariable("calendar_id") String calendar_id, HttpSession session) {
+		return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId), (Integer) session.getAttribute("user_id"),
+				Integer.parseInt(occurrenceId)) ? "YES" : "NO";
+	}
+
+	/*
+	 * updateEvent
+	 */
+	@RequestMapping(value = "/updateEvent/{occurrence_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateEvent(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
+			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
+		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, data, description,
+				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+
+	}
+
+	/*
+	 * updateMemo
+	 */
+	@RequestMapping(value = "/updateMemo/{occurrence_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateMemo(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
+			@RequestParam String title, @RequestParam Date data, @RequestParam String description) {
+		return dbService.updateMemoById(Integer.parseInt(occurrence_id), title, data, description,
+				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+	}
+
+	/*
+	 * updateUser
+	 */
+	// FIXME: nel path che verr� chiamato lato client togliere user_id perch� adesso
+	// viene preso dalla sessione
+	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateUser(HttpSession session, @RequestParam String username, @RequestParam String password) {
+		return dbService.updateUserById((Integer) session.getAttribute("user_id"), username, password) ? "YES" : "NO";
+	}
+
+	/*
+	 * sendInvitation
+	 */
+	@RequestMapping(value = "/sendInvitation/{calendar_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String sendInvitation(HttpSession session, @RequestParam String receiver_email,
+			@PathVariable("calendar_id") String calendar_id, @RequestParam String privilege) {
+		return dbService.sendInvitation((Integer) session.getAttribute("user_id"), receiver_email,
+				Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
+	}
+
+	/*
+	 * JSON_getAllCalendars
+	 */
+	@RequestMapping(value = "/myCalendar", method = RequestMethod.POST)
+	@ResponseBody
+	public String JSON_getAllCalendars(HttpSession session) {
+		return dbService.getAllMyCalendars((String) session.getAttribute("email"));
+	}
 }

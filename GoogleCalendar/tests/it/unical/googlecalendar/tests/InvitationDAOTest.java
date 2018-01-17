@@ -25,33 +25,80 @@ import it.unical.googlecalendar.model.Users_Calendars;
 @ContextConfiguration(classes = AppConfiguration.class)
 @WebAppConfiguration
 public class InvitationDAOTest {
-	
+
 	@Autowired
 	private UserDAOImpl udao;
 	@Autowired
 	private InvitationDAOImpl idao;
-	
+
 	@Autowired
 	private CalendarDAOImpl cdao;
 	@Autowired
 	private Users_CalendarsDAOImpl ucdao;
-	
+
 	@Test
 	public void saveTest() {
-		
-		User mario = new User("mario@p.it","mario", "1234");
-		User peppe=new User("peppe@c.it","peppe", "5678");
+
+		User mario = new User("mario@p.it", "mario", "1234");
+		User peppe = new User("peppe@c.it", "peppe", "5678");
+		User fabio = new User("fabio@c.it", "fabio", "5678");
 		udao.save(peppe);
 		udao.save(mario);
-	
-		
-		Calendar c=new Calendar(peppe,"peppe calendar","jshdjs");
+		udao.save(fabio);
+
+		Calendar c = new Calendar(peppe, "peppe calendar", "jshdjs");
 		cdao.save(c);
-		Invitation i=new Invitation(peppe.getId(), mario, c, "ADMIN");
-		idao.save(i);
-		List<User> allUsers = udao.getAllUsers();
-		Assert.assertTrue(idao.getAllInvitations().size()==1);
+		//peppe invita mario a c
+		idao.sendInvitation(peppe.getId(), mario.getEmail(), c, "RW");
+		Invitation i = idao.getInvitationsByCalendarAndReceiver(mario.getId(), c.getId()).get(0);
+		//peppe invita fabio a c
+		idao.sendInvitation(peppe.getId(), fabio.getEmail(), c, "ADMIN");
+		Invitation in = idao.getInvitationsByCalendarAndReceiver(fabio.getId(), c.getId()).get(0);
 		
+		//System.out.println("inviti di mario prima che accetti: "+mario.receivedInvitations.size());
+//		 for(Invitation in:mario.receivedInvitations){
+//				 System.out.println("Invitok: "+in.getSenderId()+in.getReceiver().getUsername()+" + "+in.getPrivilege());
+//				 }
+
+		// Invitation i=new Invitation(peppe.getId(), mario, c, "ADMIN");
+		// idao.save(i);
+		// Assert.assertTrue(idao.getAllInvitations().size()==1);
+		Assert.assertTrue(idao.getAllInvitations().contains(i));
+		//idao.acceptInvitation(mario.getId(), i.getId());
+		//fabio accetta a c
+		idao.acceptInvitation(fabio, c);	
+		
+		//fabio invita mario a c
+		idao.sendInvitation(fabio.getId(), mario.getEmail(), c, "ADMIN");
+		//mario accetta a c
+		if(idao.acceptInvitation(mario, c))System.out.println("numero associazioni dell'oggetto java mario "+mario.getUsers_Calendars().size()+" numero assoc del calendario: "+c.getUsers_calendars().get(0).getUser().getUsername());
+		
+		if(	ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId()).isEmpty())System.out.println("Nessuna associazione creata");
+		else System.out.println("C'è un'associazione tra mario e il calendario nel db");
+		//	String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(), c.getId());
+		
+		String privilegiDiMario=mario.getPriviledgesForCalendar(c);
+
+		if(privilegiDiMario==null)System.out.println("Privilegi null");
+		
+	System.out.println("Privilegi di mario "+privilegiDiMario);
+	Assert.assertTrue(privilegiDiMario!=null);
+	//		System.out.println("inviti di mario dopo che accetti: "+mario.receivedInvitations.size());
+//		 for(Invitation in:mario.receivedInvitations){
+//				 System.out.println("Invitok: "+in.getSenderId()+in.getReceiver().getUsername()+" + "+in.getPrivilege());
+//				 }
+		// System.out.println("All invitations after accepting: ");
+		// for(Invitation in:idao.getAllInvitations()){
+		// System.out.println(in.getSenderId()+" +
+		// "+in.getReceiver().getUsername()+" + "+in.getPrivilege());
+		// }
+
+		// mario non può invitare nessuno perchè non è admin
+		//Assert.assertTrue(!idao.sendInvitation(mario.getId(), peppe.getEmail(), c.getId(), "R"));
+		// now that mario accepted invitation there is no invitation
+	//	Assert.assertTrue(!idao.getAllInvitations().contains(i));
+		List<User> allUsers = udao.getAllUsers();
+
 		Assert.assertTrue(allUsers.contains(mario));
 	}
 

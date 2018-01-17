@@ -27,6 +27,7 @@ public class UserDAOImpl implements UserDAO {
 
 	}
 
+	@Override
 	public boolean save(User user) {
 
 		Session session = sessionFactory.openSession();
@@ -36,11 +37,12 @@ public class UserDAOImpl implements UserDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(user);
+			session.save(user);
 			tx.commit();
 			result=true;
 
 		} catch (Exception e) {
+			//e.printStackTrace();
 			tx.rollback();
 			result=false;
 		}
@@ -103,9 +105,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public boolean updateUserById(int user_id, String username, String password) {
+	public boolean updateUserById(User u, String username, String password) {
 		Session session = sessionFactory.openSession();
-		User u = (User) session.get(User.class, user_id);
 		
 		
 		boolean result=false;
@@ -128,6 +129,42 @@ public class UserDAOImpl implements UserDAO {
 
 				session.close();
 return result;
+	}
+
+	@Override
+	public boolean update(User user) {
+		Session session = sessionFactory.openSession();
+		boolean result=false;
+
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			session.update(user);
+			tx.commit();
+			result=true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			tx.rollback();
+			result=false;
+		}
+
+		session.close();
+		return result;
+		
+	}
+	
+	@Override
+	public User getUserById(int u_id){
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		User result = session.get(User.class,u_id);
+
+		session.close();
+		return result;
+		
 	}
 	
 	

@@ -18,16 +18,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"occurrence_id"})})
 @DiscriminatorColumn(name = "type")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Occurrence {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="occurrence_id")
+	@Column(name="occurrence_id",unique = true)
 	protected int id;
 
 	@Column(nullable = false)
@@ -36,11 +37,11 @@ public abstract class Occurrence {
 	@Column(nullable = false)
 	private Date date;
 
-	@ManyToOne (cascade=CascadeType.MERGE)
+	@ManyToOne (cascade=CascadeType.REFRESH)
 	@JoinColumn(name="calendar_id", nullable=false)
 	private Calendar calendar;
 	
-	@ManyToOne  (cascade=CascadeType.MERGE)
+	@ManyToOne  (cascade=CascadeType.REFRESH)
 	@JoinColumn(name="user_id", nullable=false)
 	private User creator;
 

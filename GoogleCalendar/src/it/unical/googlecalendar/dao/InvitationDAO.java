@@ -2,6 +2,7 @@ package it.unical.googlecalendar.dao;
 
 import java.util.List;
 
+import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Invitation;
 import it.unical.googlecalendar.model.User;
 
@@ -12,8 +13,21 @@ public interface InvitationDAO {
 	List<Invitation> getAllInvitations();
 
 	
-	boolean acceptInvitation(int receiver_id, int invitation_id);
+	
+	
+	
+	void update(Invitation invitation);
+	boolean changePrivilegeOfInvitation();
+	boolean sendNotificationOfResponse();
 
-	boolean declineInvitation(int receiver_id, int invitation_id);
+	boolean acceptInvitation(User u, Calendar c);
+
+	boolean declineInvitation(User u, Calendar c);
+
+	
+	
+	boolean sendInvitation(int sender_id, String receiver_email, Calendar calendar, String privilege);
+
+	
 	
 }

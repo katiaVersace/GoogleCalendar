@@ -1,8 +1,6 @@
 package it.unical.googlecalendar.model;
 
 
-import java.awt.Color;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,16 +10,25 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-
+//FIXME: mettere come chiave primaria ricevente e calendario, cosi che la stessa persona non possa essere invitata due volte 
+//allo stesso calendario da due persone diverse.
 
 @Entity
-@Table
+
+//chiave receiver_calendar, in questo modo un utente non può essere invitato due volte allo stesso calendario da due persone diverse
+@Table(     
+        uniqueConstraints = {
+        		 @UniqueConstraint(columnNames = {"invitation_id"}),
+                @UniqueConstraint(columnNames = {"senderId","user_id", "calendar_id"})
+        }
+)
 public class Invitation {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="invitation_id")
+	@Column(name="invitation_id",unique = true)
 	private int id;
 	
 
@@ -30,11 +37,11 @@ public class Invitation {
 
 	
 
-	@ManyToOne(cascade=CascadeType.MERGE)
+	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User receiver;
 	
-	@ManyToOne(cascade=CascadeType.MERGE)
+	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "calendar_id", nullable = false)	
 	private Calendar calendar;
 
@@ -55,7 +62,7 @@ public class Invitation {
 		this.calendar=calendar;
 		this.privilege=privilege;
 		
-		receiver.receivedInvitations.add(this);
+	//	receiver.receivedInvitations.add(this);
 		calendar.Invitations.add(this);
 	}
 	

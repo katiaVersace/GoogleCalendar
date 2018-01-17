@@ -148,7 +148,7 @@ angular
         $.ajax({
             type: "POST",
             url: "delete/" + id,
-            success: function (result) {
+            success: function (response) {
                 // Client-side deletion (vm.events is updated accordingly)
                 vm.hideCalendar(id);
                 delete edb[id];
@@ -156,27 +156,34 @@ angular
                 // Calendar's entry in sidebar is deleted
                 $("#cal_entry_" + id).remove();
             },
-            error: function (result) {
+            error: function (response) {
                 console.log("ERROR ERROR ERROR ERROR ERROR");
             },
         });
     };
     
     /*
+     * disconnectFromCalendar
+     */
+    vm.disconnectFromCalendar = function (id) {
+        // TODO
+    }
+    
+    /*
      * insertNewCalendar
      */
-    vm.createCalendar = function (userId, title, description) {
+    vm.createCalendar = function (title, description) {
         $.ajax({
             type: "POST",
-            url: "insertNewCalendar/" + userId,
+            url: "insertNewCalendar",
             data: {
                 title: title,
                 description: description,
             },
-            success: function (result) {
-                if (result != -1) {
+            success: function (response) {
+                if (response != -1) {
                     // add new calendar to edb
-                    edb[result] = {
+                    edb[response] = {
                         title: title,
                         description: description,
                         events: [],
@@ -185,14 +192,14 @@ angular
                     // create new entry and add it to the sidebar menu
                     var entry = 
                         "<li>\n"
-                      + "  <label id=\"cal_entry_" + result + "\">\n"
+                      + "  <label id=\"cal_entry_" + response + "\">\n"
                       + "    <input\n"
                       + "      type=\"checkbox\"\n"
-                      + "      name=\"" + result + "\"\n"
-                      + "      value=\"" + edb[result].title + "\"\n"
-                      + "      ng-model=\"vm.checkedCalendars['" + result + "']\"\n"
-                      + "      ng-change=\"vm.toggleCalendar('" + result + "')\"\n/>"
-                      + "     " + edb[result].title + "\n"
+                      + "      name=\"" + response + "\"\n"
+                      + "      value=\"" + edb[response].title + "\"\n"
+                      + "      ng-model=\"vm.checkedCalendars['" + response + "']\"\n"
+                      + "      ng-change=\"vm.toggleCalendar('" + response + "')\"\n/>"
+                      + "     " + edb[response].title + "\n"
                       + "  </label>\n"
                       + "</li>\n";
                     
@@ -203,18 +210,16 @@ angular
                     console.log(
                         "[UNSUCCESSFUL] vm.createCalendar:\n"
                       + "{\n"
-                      + "    userId: " + userId + "\n"
                       + "    title: " + title + "\n"
                       + "    description: " + description + "\n"
                       + "}\n"
                     );
                 }
             },
-            error: function (result) {
+            error: function (response) {
                 console.log(
                     "[ERROR] vm.createCalendar:\n"
                   + "{\n"
-                  + "    userId: " + userId + "\n"
                   + "    title: " + title + "\n"
                   + "    description: " + description + "\n"
                   + "}\n"
@@ -226,18 +231,16 @@ angular
     /*
      * updateCalendar
      */
-    // FIXME: what is date
-    vm.updateCalendar = function (calendarId, title, date, description) {
+    vm.updateCalendar = function (calendarId, title, description) {
         $.ajax({
             type: "POST",
             url: "update/" + calendarId,
             data: {
                 title: title,
-                data: date,
                 description: description,
             },
-            success: function (result) {
-                if (result == "YES") {
+            success: function (response) {
+                if (response == "YES") {
                     // update edb
                     edb[calendarId].title = title;
                     edb[calendarId].description = description;
@@ -252,19 +255,17 @@ angular
                       + "{\n"
                       + "    calendarId: " + calendarId + "\n"
                       + "    title: " + title + "\n"
-                      + "    date: " + date + "\n"
                       + "    description: " + description + "\n"
                       + "}\n"
                     );
                 }
             },
-            error: function (result) {
+            error: function (response) {
                 console.log(
                     "[ERROR] vm.updateCalendar:\n"
                   + "{\n"
                   + "    calendarId: " + calendarId + "\n"
                   + "    title: " + title + "\n"
-                  + "    date: " + date + "\n"
                   + "    description: " + description + "\n"
                   + "}\n"
                 );
@@ -295,8 +296,8 @@ angular
             $.ajax({
                 type: "POST",
                 url: "deleteOccurrence/" + id,
-                success: function (result) {
-                    if (result == "YES") {
+                success: function (response) {
+                    if (response == "YES") {
                         // view is updated
                         vm.events = vm.events.filter(function (item) {
                             return item.id != id;
@@ -308,7 +309,7 @@ angular
                         });
                         
                         // DEBUG
-                        console.log("[SUCCESS] vm.deleteOccurrence | result: " + result);
+                        console.log("[SUCCESS] vm.deleteOccurrence | response: " + response);
                         // END DEBUG
                     } else {
                         console.log(
@@ -319,7 +320,7 @@ angular
                         );
                     }
                 },
-                error: function (result) {
+                error: function (response) {
                     console.log(
                         "[ERROR] vm.deleteOccurrence:\n"
                       + "{\n"
@@ -335,10 +336,6 @@ angular
      * updateEvent
      */
     vm.updateEvent = function (id, title, date, description) {
-        // DEBUG
-        date = new Date();
-        // END DEBUG
-        
         $.ajax({
             type: "POST",
             url: "updateMemo/" + id,
@@ -347,8 +344,8 @@ angular
                 data: date,
                 description: description,
             },
-            success: function (result) {
-                if (result == "YES") {
+            success: function (response) {
+                if (response == "YES") {
                     var eventView = vm.getEventViewByID(id);
                     var eventData = vm.getEventDataByID(id);
                     var now = new Date();
@@ -376,12 +373,12 @@ angular
                       + "    title: " + title + "\n"
                       + "    date: " + date + "\n"
                       + "    description: " + description + "\n"
-                      + "    result: " + JSON.stringify(result, null, 4) + "\n"
+                      + "    response: " + JSON.stringify(response, null, 4) + "\n"
                       + "}\n"
                     );
                 }
             },
-            error: function (result) {
+            error: function (response) {
                 console.log(
                     "[ERROR] vm.updateEvent:\n"
                   + "{\n"
@@ -407,6 +404,37 @@ angular
      */
     vm.updateUser = function ( /* ... */ ) {
         // TODO
+    }
+    
+    /*
+     * sendInvitation
+     */
+    vm.sendInvitation = function (/* ... */) {
+        // TODO
+    }
+    
+    /*
+     * JSON_getAllCalendars
+     */
+    vm.JSON_getAllCalendars = function () {
+        $.ajax({
+            type: "POST",
+            url: "myCalendars",
+            success: function (response) {
+                // TODO
+                
+                // DEBUG
+                console.log("[SUCCESS] JSON_getAllCalendars | response: " + response);
+                // END DEBUG
+            },
+            error: function (response) {
+                // TODO
+                
+                // DEBUG
+                console.log("[ERROR] JSON_getAllCalendars | response: " + response);
+                // END DEBUG
+            },
+        });
     }
 
     // ---------------------------- //

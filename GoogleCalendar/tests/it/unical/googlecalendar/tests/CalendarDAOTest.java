@@ -50,6 +50,9 @@ public class CalendarDAOTest {
 		cdao.save(ciccinoCalendar);
 		cdao.save(ciccinoCalendar2);
 		
+		System.out.println("Associazion con calendari, di ciccino "+ciccino.getUsers_Calendars().size());
+		System.out.println("Associazion per calendario, di ciccinoCalendar "+ciccinoCalendar.getUsers_calendars().size());
+		
 		//ora creo un evento e lo associo al mio calendario
 				SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
 				String dateInString = "21-01-2018 10:20:56";
@@ -80,9 +83,8 @@ public class CalendarDAOTest {
 		
 		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccinoCalendar).size()==2);
 		
-		if(cdao.deleteById(ciccinoCalendar.getId())){
-			System.out.println("Eliminato ciccino's Calendar ");
-		}
+		Assert.assertTrue(cdao.deleteById(ciccinoCalendar,ciccino));
+			
 		
 		
 		
