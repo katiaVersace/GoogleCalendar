@@ -3,15 +3,13 @@ package it.unical.googlecalendar.services;
 import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +20,10 @@ import it.unical.googlecalendar.dao.InvitationDAOImpl;
 import it.unical.googlecalendar.dao.MemoDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
-import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
-import it.unical.googlecalendar.model.Users_Calendars;
 
 @Service
 public class DbService {
@@ -44,14 +40,14 @@ public class DbService {
 	@Autowired
 	private MemoDAO mdao;
 	
-@PostConstruct
+	@PostConstruct
 	public void initialize() {
 		User katia=new User("k@h.it","Katia2","1234");	
-//udao.save(katia);
+		udao.save(katia);
 		Calendar katiaCalendar = new Calendar(katia,"katias's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia,"Calendar n2", "second list of katia's events");
-cdao.save(katiaCalendar2);
-cdao.save(katiaCalendar);
+		cdao.save(katiaCalendar2);
+		cdao.save(katiaCalendar);
 		
 		//ora creo un evento e lo associo al mio calendario
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
@@ -136,7 +132,6 @@ cdao.save(katiaCalendar);
 		return odao.deleteById(c,u,ca);
 	}
 
-
 	public boolean updateEventById(int event_id, String title, Date data, String description, int user_id) {
 		Occurrence e=(Occurrence) odao.getOccurrenceById(event_id);		
 		return odao.updateEventById(e, title,data, description, user_id);
@@ -151,18 +146,16 @@ cdao.save(katiaCalendar);
 		User u=udao.getUserById(user_id);
 		Calendar ca=cdao.getCalendarById(calendarId);
 		return cdao.disconnectUserFromCalendarById(ca, u);
-}
-
+	}
 
 	public boolean sendInvitation(int user_id, String receiver_email, int calendar_id,String privilege) {
 		Calendar ca=cdao.getCalendarById(calendar_id);
 		return idao.sendInvitation(user_id, receiver_email ,ca,privilege);
 	}
 
-
-	public  String getAllMyCalendars(String email) {
-Gson gson=new Gson();
-return gson.toJson(cdao.getCalendarsByEmail(email));
+	public List<Calendar> getAllMyCalendars(String email) {
+//		return (new Gson()).toJson(cdao.getCalendarsByEmail(email));
+		return cdao.getCalendarsByEmail(email);
 	}
 
 
@@ -177,6 +170,6 @@ return gson.toJson(cdao.getCalendarsByEmail(email));
 	
 	
 	
+
+
 }
-
-

@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"calendar_id"})})
 public class Calendar {
@@ -22,15 +24,19 @@ public class Calendar {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "calendar_id",unique = true)
+	@Expose
 	private int id;
 
 	@Column(nullable = false)
+	@Expose
 	private String title;
 
 	@Column(nullable = false)
+	@Expose
 	private String description;
 
-	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE)
+	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE, fetch = FetchType.EAGER)
+	@Expose
 	private List<Occurrence> occurrences = new ArrayList<Occurrence>();
 
 	// User che condividono questo calendario
@@ -135,5 +141,4 @@ public class Calendar {
 			return false;
 		return true;
 	}
-
 }

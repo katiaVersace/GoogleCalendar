@@ -3,17 +3,20 @@ package it.unical.googlecalendar.dao;
 import java.util.List;
 
 import javax.persistence.Query;
+import javax.sound.midi.SysexMessage;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.google.gson.Gson;
+
 import it.unical.googlecalendar.dao.CalendarDAO;
 
 import it.unical.googlecalendar.model.Calendar;
-import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 import it.unical.googlecalendar.model.Users_Calendars;
 
@@ -85,7 +88,8 @@ private Users_CalendarsDAOImpl ucdao;
 
 		// sql query
 		Query query = session
-				.createQuery("SELECT uc.calendar FROM Users_Calendars uc JOIN uc.user u WHERE u.email = :email");
+//				.createQuery("SELECT uc.calendar FROM Users_Calendars uc JOIN uc.user u WHERE u.email = :email");
+				.createQuery("SELECT c FROM Calendar c JOIN FETCH c.users_calendars uc WHERE uc.user.email = :email");
 		query.setParameter("email", email);
 		List<Calendar> result = query.getResultList();
 		session.close();
@@ -193,7 +197,8 @@ private Users_CalendarsDAOImpl ucdao;
 	public int insertNewCalendar(User u, String title, String description) {
 		Session session = sessionFactory.openSession();
 		Calendar c=new Calendar(u,title,description);
-		int result=-1;
+		int result = -1;
+		
 				Transaction tx = null;
 
 				try {
@@ -202,15 +207,14 @@ private Users_CalendarsDAOImpl ucdao;
 					result=c.getId();
 					session.update(u);
 					tx.commit();
-					
-
+					result = c.getId();
 				} catch (Exception e) {
 					result=-1;
 					tx.rollback();
 				}
 
 				session.close();
-return result;
+				return result;
 	}
 
 	@Override

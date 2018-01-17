@@ -20,6 +20,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"occurrence_id"})})
 
@@ -28,12 +30,15 @@ public class Occurrence {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="occurrence_id",unique = true)
+	@Expose
 	protected int id;
 
 	@Column(nullable = false)
+	@Expose
 	private String title;
 
 	@Column(nullable = false)
+	@Expose
 	private Date date;
 	@Column	
 	private String description;
@@ -53,8 +58,6 @@ public class Occurrence {
 	@ManyToOne  (cascade=CascadeType.REFRESH)
 	@JoinColumn(name="user_id", nullable=false)
 	private User creator;
-
-	
 	
 	public Occurrence(){
 		super();

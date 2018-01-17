@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
+import javax.sound.midi.SysexMessage;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -216,15 +217,14 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 					tx.commit();
 					ca.getOccurrences().remove(oc);
 					result = true;
-
 				} catch (Exception e) {
 					e.printStackTrace();
 					result = false;
 					tx.rollback();
+					e.printStackTrace();
 				}
 			}
 		}
-
 		session.close();
 		return result;
 	}
@@ -315,10 +315,5 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 
 		session.close();
 		return result;
-		
 	}
-
-
-	
-
 }
