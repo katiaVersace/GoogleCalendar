@@ -190,14 +190,12 @@ console.log(JSON.stringify(edb, null, 4));
 			</nav>
 
 
-			<div class="line"></div>
-
 		<!-- CALENDAR -->
 		<div class="container col-sm-12">
 				<div class="row">
 					<div>
 						<div>
-							<h2 class="text-center">{{ vm.calendarTitle }}</h2>
+							<h3 class="text-center">{{ vm.calendarTitle }}</h3>
 
 							<div class="row">
 								<div class="col-md-6 text-center">
@@ -231,7 +229,13 @@ console.log(JSON.stringify(edb, null, 4));
 											uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
 										
 										<!-- TASTO CHE STA IN ALTO A DESTRA -->	
-									<button class="btn btn-primary pull-right" ng-click="vm.openEventModal()" style="margin-left: 30px;" onclick='modal("5")' >Add event</button>
+									<button class="btn btn-primary pull-right" ng-click="vm.openEventModal()" style="margin-left: 10px;">
+					
+									<i style="font-size: 16px; color: white;" class="glyphicon glyphicon-save-file"></i>
+									 Add event</button>
+									<button class="btn btn-primary pull-right" style="margin-left: 30px;" ng-click="vm.openMemoModal()">
+									<i style="font-size: 16px; color: white;" class="glyphicon glyphicon-pushpin"></i>
+									 Add Memo</button>
 		
 									</div>
 								</div>
@@ -240,10 +244,10 @@ console.log(JSON.stringify(edb, null, 4));
 
 							<br>
 							
-						  <div class="alert alert-info">
-    Select range on a day on the view.
-    <strong ng-show="vm.lastDateClicked" >You selected on this day: from {{ vm.firstDateClicked | date:'medium' }} to {{ vm.lastDateClicked | date:'medium' }}</strong>
-  </div>
+<!-- <div class="alert alert-info">
+     Select range on a day on the view.
+     <strong ng-show="vm.lastDateClicked" >You selected on this day: from {{ vm.firstDateClicked | date:'medium' }} to {{ vm.lastDateClicked | date:'medium' }}</strong>
+ </div> -->
 							 <mwl-calendar 
 								events="vm.events" 
 								view="vm.calendarView"
@@ -267,11 +271,11 @@ console.log(JSON.stringify(edb, null, 4));
 			</div>
 			
 					
-		   <button
+		  <!--  <button
             class="btn btn-danger"
             ng-click="vm.events.splice($index, 1)">
             Delete
-          </button>
+          </button -->
 					
 				</div>
 			</div> 
@@ -320,10 +324,10 @@ console.log(JSON.stringify(edb, null, 4));
       				 <input type="text" placeholder="Name" name="uname" id="naM">
     				 <input type="password" placeholder="Old Password" id="oldP" >
     				 <input type="password" placeholder="New Password" id="newP" >
-    				 <div style="text-align:center;">
+    				 <div style="text-align:center; ">
     				 	  <button type="button" id="newCalendar1" class="btn btn-info navbar-btn"
     				 	  onclick="updateInfo()"
-    				 	   style="background: #42A5F5; ">
+    				 	   style="background: #42A5F5;   ">
 						 <span><strong>Update Your Profile</strong></span>
 						</button>
     				</div>
@@ -480,9 +484,97 @@ console.log(JSON.stringify(edb, null, 4));
 						  </div> 
       			         <div style=" text-align: center;">
       			         
-      			         <!-- TASTO CHE STA NEL MODAL -->
-    				 	  <button type="button" id="addEvnt" ng-click="vm.addEvent()" class="btn btn-info navbar-btn" style="background: #42A5F5">
-						 <span><strong>Add Event Modal</strong></span>
+      					<textarea rows="2" placeholder="Description" id="descEvent" ng-model="vm.temp.descr"></textarea>
+   				
+      			          <button type="button" id="addEvnt" ng-click="vm.addEvent()" class="btn btn-info navbar-btn" style="background: #42A5F5">
+						 <span><strong>Add </strong></span>
+						 </button>
+						
+						</div>
+    				</div>
+    			    				
+      			<!-- DELETEEEEE GRAPHIC EVENT
+      				<button class="btn btn-danger" ng-click="vm.events.splice($index, 1)">Delete</button>
+					 <td>
+					</td> -->
+      			 </div>
+		</form>
+		</div>
+	</div>
+	
+	<!-- UPDATE EVENT-->
+	<div id="modal-wrapper6" class="modal" style="width: 100%; left: 0%;">
+		<div>
+		<form class="modal-content animate" action="/action_page.php">
+			<div class="imgcontainer">
+				<span
+					onclick="document.getElementById('modal-wrapper6').style.display='none'"
+					class="close" title="Close PopUp">&times;</span> 
+					</div>
+					
+					 <div class="modal-content" style="width: 90%;" >
+      			         <div >
+      			         	 	         
+      			          <h3  style="text-align: center; color: white; padding-top: 10px;" >Update Event</h3>
+					 
+      		 	         <div id="event_tmp" >
+      			          <table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Title</th>
+										<th>Primary color</th>
+										<th>Secondary color</th>
+										<th>Starts at</th>
+										<th>Ends at</th>
+										</tr>
+								</thead>
+
+								<tbody>
+										<td><input type="text" class="form-control"
+											ng-model="vm.temp.title"></td>
+										<td><input class="form-control" colorpicker type="text"
+											ng-model="vm.temp.color.primary"></td>
+										<td><input class="form-control" colorpicker type="text"
+											ng-model="vm.temp.color.secondary"></td>
+										<td>
+											<p class="input-group" >
+												<input type="text" class="form-control" readonly
+													uib-datepicker-popup="dd MMMM yyyy"
+													ng-model="vm.temp.startsAt" is-open="vm.temp.startOpen"
+													close-text="Close"> <span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+														ng-click="vm.toggle($event, 'startOpen', vm.temp)">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</p>
+											<div uib-timepicker ng-model="vm.temp.startsAt" hour-step="1"
+												minute-step="15" show-meridian="false"></div>
+										</td>
+										<td>
+											<p class="input-group" >
+												<input type="text" class="form-control" readonly
+													uib-datepicker-popup="dd MMMM yyyy" ng-model="vm.temp.endsAt"
+													is-open="vm.temp.endOpen" close-text="Close"> <span
+													class="input-group-btn">
+													<button type="button" class="btn btn-default"
+														ng-click="vm.toggle($event, 'endOpen', vm.temp)">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</p>
+											<div uib-timepicker ng-model="vm.temp.endsAt" hour-step="1"
+												minute-step="15" show-meridian="false">
+											</div>
+										</td>
+								</tbody>
+							</table> 
+						  </div> 
+      			         <div style=" text-align: center;">
+      			          <textarea rows="2" placeholder="Description" id="descEvent" ng-model="vm.temp.descr" ></textarea>
+   				      	  <!-- TASTO CHE STA NEL MODAL -->
+    				 	  <button type="button" id="upEvent" ng-click="vm.updateEvents()" class="btn btn-info navbar-btn" style="background: #42A5F5">
+						 <span><strong>Update Event</strong></span>
 						
 						</button -->
 						</div>
@@ -497,7 +589,100 @@ console.log(JSON.stringify(edb, null, 4));
 		</form>
 		</div>
 	</div>
+	
+	
+	 <!-- MEMO -->
+	<div id="modal-wrapper7" class="modal" >
+		<div>
+		<form class="modal-content animate" action="/action_page.php">
+			<div class="imgcontainer">
+				<span
+					onclick="document.getElementById('modal-wrapper7').style.display='none'"
+					class="close" title="Close PopUp">&times;</span> 
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Add Meno</h1>
+					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-save-file"></i></a>
+					</div>
+					
+				<div class="modal-content">
+      			   <div style="text-align:center;">
+      			   
+      			   
+    				 <div id="event_tmp" >
+      			          <table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Title</th>
+										<th>Primary color</th>
+									 	</tr>
+								</thead>
 
+								<tbody>
+										<div class="row">
+										<td><input type="text" class="form-control"
+											ng-model="vm.memo.title"></td>
+										<td><input class="form-control" colorpicker type="text"
+											ng-model="vm.memo.color.primary"></td>
+										</div>						
+								</tbody>
+							</table> 
+     	 					<textarea rows="2" placeholder="Description" id="descMemo" ng-model="vm.memo.descr"></textarea>
+   						    </div>
+      	      			        			   
+    				 	 <button type="button" id="newCalendar" class="btn btn-info navbar-btn" ng-click="vm.addMemo()" style="background: #42A5F5">
+						 <span><strong>Add</strong></span>
+						</button>
+    				</div>
+    			</div>
+    	</form>
+		</div>
+	</div>
+   
+   	<!-- UPDATE MEMO -->
+   	<div id="modal-wrapper8" class="modal" >
+		<div>
+		<form class="modal-content animate" action="/action_page.php">
+			<div class="imgcontainer">
+				<span
+					onclick="document.getElementById('modal-wrapper8').style.display='none'"
+					class="close" title="Close PopUp">&times;</span> 
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Update Meno</h1>
+					<a href="#" class="avatar"><i style="font-size: 45px; color: white;" class="glyphicon glyphicon-save-file"></i></a>
+					</div>
+					
+				<div class="modal-content">
+      			   <div style="text-align:center;">
+      			   
+      			   
+    				 <div id="event_tmp" >
+      			          <table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Title</th>
+										<th>Primary color</th>
+									 	</tr>
+								</thead>
+
+								<tbody>
+										<div class="row">
+										<td><input type="text" class="form-control"
+											ng-model="vm.memo.title"></td>
+										<td><input class="form-control" colorpicker type="text"
+											ng-model="vm.memo.color.primary"></td>
+										</div>						
+								</tbody>
+							</table> 
+     	 					<textarea rows="2" placeholder="Description" id="descMemo" ng-model="vm.memo.descr"></textarea>
+   						    </div>
+      	      			        			   
+    				 	 <button type="button" id="newCalendar" class="btn btn-info navbar-btn" ng-click="vm.updateMemo()" style="background: #42A5F5">
+						 <span><strong>Add</strong></span>
+						</button>
+    				</div>
+    			</div>
+    	</form>
+		</div>
+	</div>
+   	
 <!-- ADD CALENDAR Madal(1)-->
 <script type="text/javascript">
 var addCalendar = function() {
@@ -506,7 +691,7 @@ var addCalendar = function() {
 	var oP = document.getElementById("colCal").value;
 	var nP = document.getElementById("desc").value;
 	
-		document.getElementById('modal-wrapper1').style.display='none';
+	document.getElementById('modal-wrapper1').style.display='none';
 }
 </script>
     
@@ -574,6 +759,7 @@ function addEventInCalendar(){
 </script> -->
 
 
+
 <!-- jQuery CDN -->
 	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 	<!-- Bootstrap Js CDN -->
@@ -588,4 +774,4 @@ function addEventInCalendar(){
     </script>
 
 </body>
-</html>
+</html>1
