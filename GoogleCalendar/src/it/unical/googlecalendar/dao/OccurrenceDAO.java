@@ -1,11 +1,10 @@
 package it.unical.googlecalendar.dao;
 
+import java.awt.Color;
 import java.util.Date;
 import java.util.List;
 
 import it.unical.googlecalendar.model.Calendar;
-import it.unical.googlecalendar.model.Event;
-import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 
@@ -15,35 +14,39 @@ public interface OccurrenceDAO {
 	public void save(Occurrence Occurrence);
 
 	public List<Occurrence> getAllOccurrences();
+	
+	public List<Occurrence> getOccurrencesByEmail(String email);
+	
+	public List<Occurrence> getOccurrencesByCalendar(Calendar calendar);
+
+	public List<User> getGuestsByOccurrence(Occurrence occurrence);
+
+	public List<Occurrence> getOccurrencesByGuest(User guest);
+	public List<Occurrence> filterOccurrencesOfUserByCalendars(List<Calendar> calendars, User user); 
+	
+
+	
+	
 	void update(Occurrence Occurrence);
+
+	
+
+	boolean deleteById(Occurrence o, User u, Calendar c);
+
+	
+	//boolean updateEventById(Event v, String title, Date data, String description, int user_id);
+
+//	boolean updateMemoById(Memo m, String title, Date data, String description, int user_id);
+
 	Occurrence getOccurrenceById(int o_id);
-	List<Occurrence> getOccurrencesByEmail(String email);
 
 	
-	//events
-	List<Occurrence> filterEventsOfUserByCalendars(List<Calendar> calendars, User user);
-	List<Occurrence> getEventsByCalendar(Calendar calendar);
-	int insertNewEvent(User creator, Calendar c, String title, String description, Date startTime, Date endTime,
-			String c1, String c2);
-	boolean deleteEventById(Event oc, User u, Calendar ca);
-	boolean updateEventById(Event v,  String title, String description, Date startTime, Date endTime,
-			String c1, String c2, int user_id);
-
-	Event getEventByUserId(int user_id);
-
 	
-	//memo
-	Memo getMemoByUserId(int user_id);
-
-	boolean deleteMemoById(Memo m, User u);
-
-	int insertNewMemo(User creator, String title, Date date, String description, String c1);
-
-	boolean updateMemoById(Memo m, int creator, String title, Date date, String description, String c1);
-
-
 	
+	int insertNewEvent(Calendar c, User u, String title, String description, Date startTime, Date endTime, String c1,
+			String c2, int a);
 
-	
+	boolean updateEventById(Occurrence v, String title, String description, Date startTime, Date endTime, String c1,
+			String c2, int user_id, int alarm);
 	
 }

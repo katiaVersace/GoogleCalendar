@@ -56,7 +56,7 @@ public class OccurrenceDAOTest {
 		Calendar ciccioCalendar = new Calendar(ciccio,"ciccio's Calendar", "list of ciccio's events");
 		cdao.save(ciccioCalendar);
     	cdao.save(katiaCalendar);
-		System.out.println("1");
+		
 		
 		
 		//ora creo un evento e lo associo al mio calendario
@@ -64,31 +64,28 @@ public class OccurrenceDAOTest {
 		String dateInString = "21-01-2018 10:20:56";
 		String dateInString2 = "24-01-2018 16:20:00";
 	//	int minutes=5;
-		int e1=-1;
-		int e2=-1;
-		int e3=-1;
-		
-			//System.out.println("Ciccio calendar id "+ciccioCalendar.getId());
+		Occurrence memo1=null;
+		Occurrence memo2=null;
+		Occurrence memo3=null;
 		try {
-			e1=	odao.insertNewEvent(katia,katiaCalendar,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
-			e2= odao.insertNewEvent(katia, katiaCalendar, "Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());	
-			e3=	odao.insertNewEvent(ciccio, ciccioCalendar,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
-			System.out.println("2");
+			//System.out.println("Ciccio calendar id "+ciccioCalendar.getId());
+			memo1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString(),30);
+			memo2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString(),10);
+			memo3=new Occurrence(ciccioCalendar,ciccio,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString(),0);
+			
 			
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		    
 		
-	cdao.update(katiaCalendar);
-	cdao.update(ciccioCalendar);
-	System.out.println("3");
 	
+	
+		odao.save(memo1);
+		odao.save(memo2);
+		odao.save(memo3);
+    	
 		//System.out.println("Ciccio calendar id prima di send invitation "+ciccioCalendar.getId());
 		idao.sendInvitation(ciccio.getId(),katia.getEmail(), ciccioCalendar,"ADMIN");
-		System.out.println("4");
-		
 		Invitation i=idao.getInvitationsByCalendarAndReceiver(katia.getId(), ciccioCalendar.getId()).get(0);
 		//System.out.println("Ciccio calendar id dopo send invitation "+ciccioCalendar.getId());
 		idao.acceptInvitation(katia,ciccioCalendar);
@@ -96,9 +93,8 @@ public class OccurrenceDAOTest {
 			udao.update(katia);
 			
 		//	System.out.println("Sto cercando gli eventi del calendario con id: "+ciccioCalendar.getId());
-			System.out.println("5");
-			
-			List<Occurrence> occList=odao.getEventsByCalendar(ciccioCalendar);
+
+			List<Occurrence> occList=odao.getOccurrencesByCalendar(ciccioCalendar);
 //			System.out.println("Eventi del calendario di ciccio: "+occList.size());
 //			for(Occurrence o:occList){
 //				System.out.println(o.getTitle());
@@ -110,9 +106,8 @@ public class OccurrenceDAOTest {
 //			}
 			
 	
-			System.out.println("6");
-			
-		Assert.assertTrue(occList.contains(odao.getOccurrenceById(e3)));
+				
+		Assert.assertTrue(occList.contains(memo3));
 		
 		Assert.assertTrue(odao.getOccurrencesByEmail(katia.getEmail()).size()==3);
 			

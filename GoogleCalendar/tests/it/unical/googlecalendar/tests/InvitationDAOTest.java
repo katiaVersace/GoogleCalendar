@@ -112,6 +112,7 @@ public class InvitationDAOTest {
 		//Assert.assertTrue(!idao.sendInvitation(mario.getId(), peppe.getEmail(), c.getId(), "R"));
 		// now that mario accepted invitation there is no invitation
 	//	Assert.assertTrue(!idao.getAllInvitations().contains(i));
+	Assert.assertTrue(cdao.numOfUsersWithPriviledgeForCalendar(c,"ADMIN")==3);
 		List<User> allUsers = udao.getAllUsers();
 
 		Assert.assertTrue(allUsers.contains(mario));

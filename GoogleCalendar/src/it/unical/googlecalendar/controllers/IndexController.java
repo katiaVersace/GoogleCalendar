@@ -96,20 +96,20 @@ public class IndexController {
 	@RequestMapping(value = "/insertNewEvent/{calendar_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public int insertNewEvent(HttpSession session, @PathVariable("calendar_id") String calendar_id,
-			@RequestParam String title, @RequestParam String description, @RequestParam Date startTime,@RequestParam Date endTime,@RequestParam String c1,@RequestParam String c2) {
+			@RequestParam String title, @RequestParam String description, @RequestParam Date startTime,@RequestParam Date endTime,@RequestParam String c1,@RequestParam String c2,@RequestParam int a) {
 		return dbService.insertNewEvent(Integer.parseInt(calendar_id), (Integer) session.getAttribute("user_id"), title,
-				 description,startTime,endTime, c1,  c2);
-		
-			}
+				 description,startTime,endTime, c1,  c2,a);
+	}
 
 	  
 	  //se ritorna -1 significa che l'inserimento non è andato a buon fine
 	  	//FIXME: nel path che verrà chiamato lato client togliere user_id perchè adesso viene preso dalla sessione
 	  		  	  @RequestMapping(value = "/insertNewMemo",method = RequestMethod.POST)
 	  @ResponseBody
-	  public int insertNewMemo( HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam String  c1){
+	  public int insertNewMemo( HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam String c1,@RequestParam String c2){
 		  return dbService.insertNewMemo((Integer) session.getAttribute("user_id"), title,data, description,c1) ;
-		  	  
+	  		  		  
+	  		  		 // return 0;
 		  }
 
 	/*
@@ -117,9 +117,9 @@ public class IndexController {
 	 */
 	@RequestMapping(value = "/deleteOccurrence/{calendar_id}/{occurrenceId}", method = RequestMethod.POST)
 	@ResponseBody
-	public String deleteEventId(@PathVariable("occurrenceId") String occurrenceId,
+	public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId,
 			@PathVariable("calendar_id") String calendar_id, HttpSession session) {
-		return dbService.deleteEventById(Integer.parseInt(occurrenceId), (Integer) session.getAttribute("user_id"),
+		return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId), (Integer) session.getAttribute("user_id"),
 				Integer.parseInt(occurrenceId)) ? "YES" : "NO";
 	}
 
@@ -129,11 +129,9 @@ public class IndexController {
 	@RequestMapping(value = "/updateEvent/{occurrence_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public String updateEvent(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
-			@RequestParam String title,  @RequestParam String description,@RequestParam Date startTime,@RequestParam Date endTime,@RequestParam String c1,@RequestParam  String c2) {
+			@RequestParam String title,  @RequestParam String description,@RequestParam Date startTime,@RequestParam Date endTime,@RequestParam String c1,@RequestParam  String c2,@RequestParam int alarm) {
 		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, description,startTime,endTime, c1,  c2,
-				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
-		
-		
+				(Integer) session.getAttribute("user_id"),alarm) ? "YES" : "NO";
 	}
 
 	/*
@@ -142,7 +140,7 @@ public class IndexController {
 
 @RequestMapping(value = "/updateMemo/{memo_id}",method = RequestMethod.POST)
 @ResponseBody
-public String updateMemo(@PathVariable("memo_id")String memo_id, HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam String c1){
+public String updateMemo(@PathVariable("memo_id")String memo_id, HttpSession session, @RequestParam String title,@RequestParam Date data,@RequestParam String description ,@RequestParam String c1,@RequestParam String c2){
 	  return dbService.updateMemoById(Integer.parseInt(memo_id),(Integer)session.getAttribute("user_id"),title,data,description,c1) ? "YES" : "NO";
 	  
 }

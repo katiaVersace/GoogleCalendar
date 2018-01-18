@@ -1,11 +1,9 @@
 package it.unical.googlecalendar.model;
 
-import java.awt.Color;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,14 +14,30 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table
-@DiscriminatorValue(value = "Memo")
-public class Memo extends Occurrence {
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"memo_id"})})
+public class Memo  {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="memo_id",unique = true)
+	protected int id;
+
+	@Column(nullable = false)
+	private String title;
 
 	@Column(nullable = false)
 	private Date creationDate;
 
+	@Column
+	private String description;
+	
+	@Column
+	private String primaryColor;
+
+	
+	@Column
+	private String secondaryColor;
+	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "user_id",nullable = false)
 	private User user;
@@ -34,15 +48,32 @@ public class Memo extends Occurrence {
 		super();
 	}
 	
-	public Memo (User creator,String title, Date date, String description,String c1){
-		super(title,description,c1);
-		
+	public Memo (User creator,String title, Date date, String description,String color1){
+		this.title=title;
 		this.creationDate=date;
+		this.description=description;		
+		this.primaryColor=color1;
 		this.user=creator;
 		user.getMemos().add(this);
 	
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -50,6 +81,31 @@ public class Memo extends Occurrence {
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getPrimaryColor() {
+		return primaryColor;
+	}
+
+	public void setPrimaryColor(String primaryColor) {
+		this.primaryColor = primaryColor;
+	}
+
+	public String getSecondaryColor() {
+		return secondaryColor;
+	}
+
+	public void setSecondaryColor(String secondaryColor) {
+		this.secondaryColor = secondaryColor;
+	}
+
 	public User getUser() {
 		return user;
 	}

@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import it.unical.googlecalendar.configuration.AppConfiguration;
-import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
+import it.unical.googlecalendar.dao.MemoDAO;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.User;
@@ -21,22 +21,20 @@ import it.unical.googlecalendar.model.User;
 @ContextConfiguration(classes = AppConfiguration.class)
 @WebAppConfiguration
 public class MemoTest {
-	
+	@Autowired
+	private MemoDAO mdao;
 	@Autowired
 	private UserDAOImpl udao;
-	@Autowired
-	private OccurrenceDAOImpl odao;
 
 	@Test
 	public void saveTest() {
 
 		User pippo = new User("pippo88@p.it", "pippo", "1234");
 		udao.save(pippo);
-		odao.insertNewMemo(pippo, "Memo1", new Date(), "prova", Color.BLACK.toString());
-		odao.insertNewMemo(pippo, "Memo2", new Date(), "prova2", Color.BLACK.toString());
-		//x salvare i memo salvo l'utente
-		udao.update(pippo);
-		
+		Memo m = new Memo(pippo, "Memo1", new Date(), "prova", Color.BLACK.toString());
+		Memo m1 = new Memo(pippo, "Memo2", new Date(), "prova2", Color.BLACK.toString());
+		mdao.save(m1);
+		mdao.save(m);
 
 		List<Memo> list = pippo.getMemos();
 		//System.out.println("Size memos di pippo" + list.size());

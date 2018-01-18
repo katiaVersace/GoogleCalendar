@@ -1,6 +1,8 @@
 package it.unical.googlecalendar.model;
 
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +33,8 @@ public class Invitation {
 	@Column(name="invitation_id",unique = true)
 	private int id;
 	
+@Column
+	private Date timestamp;
 
 	@Column
 	public int senderId;
@@ -61,6 +65,7 @@ public class Invitation {
 		this.receiver=receiver;
 		this.calendar=calendar;
 		this.privilege=privilege;
+		timestamp=new Date();
 		
 	//	receiver.receivedInvitations.add(this);
 		calendar.Invitations.add(this);

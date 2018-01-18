@@ -1,5 +1,7 @@
 package it.unical.googlecalendar.model;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +26,9 @@ public class Notification  {
 	@Column
 	private String description;
 	
+	@Column
+	private Date timestamp;
+	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "user_id",nullable = false)
 	private User user;
@@ -38,10 +43,19 @@ public class Notification  {
 		this.description=description;		
 		
 		this.user=user;
+		timestamp=new Date();
 		user.getNotifications().add(this);
 		
 	}
 	
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
 	public int getId() {
 		return id;
 	}

@@ -25,9 +25,8 @@ import com.google.gson.annotations.Expose;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"occurrence_id"})})
-@DiscriminatorColumn(name = "type")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Occurrence {
+
+public class Occurrence {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -37,32 +36,80 @@ public abstract class Occurrence {
 
 	@Column(nullable = false)
 	@Expose
-	private String title;	
+	private String title;
+
+	@Column
+	private Date startTime;
+
+	@Column
+	private Date endTime;
 	
 	@Column	
 	private String description;
 	
 	@Column
 	String primaryColor;
-		
+	
+	@Column
+	String secondaryColor;
+	
+@Column 
+int alarm=0;
+	
+@ManyToOne (cascade=CascadeType.REFRESH)
+	@JoinColumn(name="calendar_id", nullable=false)
+	private Calendar calendar;
+	
+	@ManyToOne  (cascade=CascadeType.REFRESH)
+	@JoinColumn(name="user_id", nullable=false)
+	private User creator;
 	
 	public Occurrence(){
 		super();
 	}
 	
-	public Occurrence(String title, String description,String c1){
+	public Occurrence(Calendar calendar,User creator,String title, String description,Date startTime,Date endTime,String c1, String c2, int alarm){
 		super();
 		this.title=title;
-		this.primaryColor=c1;
-		//many to one association
 		
+		this.startTime=startTime;
+		this.endTime=endTime;
+		this.primaryColor=c1;
+		this.secondaryColor=c2;
+		//many to one association
+		setCalendar(calendar);
+		setCreator(creator);
 		//One to many association 
+		calendar.getOccurrences().add(this);
 		this.description=description;
+		this.alarm=alarm;
 		
 	}
 	
 	
-	
+	public int getAlarm() {
+		return alarm;
+	}
+
+	public void setAlarm(int alarm) {
+		this.alarm = alarm;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
 
 	public String getPrimaryColor() {
 		return primaryColor;
@@ -70,6 +117,14 @@ public abstract class Occurrence {
 
 	public void setPrimaryColor(String primaryColor) {
 		this.primaryColor = primaryColor;
+	}
+
+	public String getSecondaryColor() {
+		return secondaryColor;
+	}
+
+	public void setSecondaryColor(String secondaryColor) {
+		this.secondaryColor = secondaryColor;
 	}
 
 	public String getDescription() {
@@ -86,6 +141,28 @@ public abstract class Occurrence {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	
+
+	public Calendar getCalendar() {
+		return calendar;
+	}
+
+	public void setCalendar(Calendar calendar) {
+		this.calendar = calendar;
+	}
+
+	
+
+	public void setCreator(User creator) {
+		this.creator=creator;
+		
+	}
+	
+	public User getCreator() {
+		return creator;
+		
 	}
 	
 

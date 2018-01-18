@@ -37,7 +37,7 @@ public class Calendar {
 
 	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE, fetch = FetchType.EAGER)
 	@Expose
-	private List<Event> occurrences = new ArrayList<Event>();
+	private List<Occurrence> occurrences = new ArrayList<Occurrence>();
 
 	// User che condividono questo calendario
 	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.ALL)
@@ -90,7 +90,7 @@ public class Calendar {
 		this.title = title;
 	}
 
-	public List<Event> getOccurrences() {
+	public List<Occurrence> getOccurrences() {
 		return occurrences;
 	}
 
