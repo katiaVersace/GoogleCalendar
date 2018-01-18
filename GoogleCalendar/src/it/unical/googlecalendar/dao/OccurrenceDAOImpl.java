@@ -133,11 +133,8 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	
 	@Override
 	public List<Occurrence> getOccurrenceByEmailInPeriod(String email,
-			String start, String end) {
+			int calendar_id, String start, String end) {
 		Session session = sessionFactory.openSession();
-		
-		System.err.println("start: " + start);
-		System.err.println("end: " + end);
 		
 		try
 		{
@@ -150,12 +147,14 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			      + "FROM Occurrence o, Users_Calendars uc "
 				  + "JOIN uc.user u "
 			      + "WHERE o.calendar = uc.calendar "
+				  + "  and o.calendar.id = :calendar_id "
 				  + "  and u.email = :email "
 				  + "  and startTime >= :startPeriod "
 				  + "  and startTime <= :endPeriod "
 			);
 			
 			query.setParameter("email", email);
+			query.setParameter("calendar_id", calendar_id);
 			query.setParameter("startPeriod", format.format(startPeriod));
 			query.setParameter("endPeriod", format.format(endPeriod));
 			

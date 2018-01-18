@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import it.unical.googlecalendar.services.DbService;
 
@@ -189,11 +191,17 @@ public class IndexController {
 		return gson.toJson(dbService.getAllMyCalendars((String) session.getAttribute("email")));
 	}
 	
-	@RequestMapping(value = "/JSON_getMyEventsInPeriod", method = RequestMethod.POST)
+	/*
+	 * JSON_getMyEventsInPeriod
+	 */
+	// FIXME: Color -> String in models
+	// FIXME: Better modifying the result here and feeding client with an already refined json (maybe)
+	@RequestMapping(value = "/JSON_getMyEventsInPeriod/{calendar_id}", method = RequestMethod.POST)
 	@ResponseBody
-	public String JSON_getMyEventsInPeriod(HttpSession session, @RequestParam String start,
-			@RequestParam String end) {
-		Gson gson = new GsonBuilder().excludeFieldsWithModifiers().create();
-		return gson.toJson(dbService.getMyEventsInPeriod((String) session.getAttribute("email"), start, end));
+	public String JSON_getMyEventsInPeriod(HttpSession session, @PathVariable("calendar_id") String calendar_id,
+			@RequestParam String start, @RequestParam String end) {
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+		return gson.toJson(dbService.getMyEventsInPeriod((String) session.getAttribute("email"),
+				Integer.parseInt(calendar_id), start, end));
 	}
 }

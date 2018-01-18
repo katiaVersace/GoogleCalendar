@@ -38,6 +38,24 @@ angular
       },
     }];
     
+    // Event Constructor
+    vm.Event = function (id, calendar, title, description, 
+    		startsAt, endsAt, primaryColor, secondaryColor) {
+    	this.id = id;
+    	this.calendar = calendar;
+    	this.title = title;
+    	this.description = description;
+    	this.startsAt = startsAt;
+    	this.endsAt = endsAt;
+    	this.color = {
+    		primary: primaryColor,
+    		secondary: secondaryColor,
+    	};
+    	this.draggable = false;
+    	this.resizable = false;
+    	this.actions = actions;
+    }
+    
     // --------------- //
     // -- UTILITIES -- //
     // --------------- //
@@ -68,15 +86,47 @@ angular
     };
     
     vm.getViewDateBoundaries = function () {
-        return {
-            start: moment(vm.viewDate).startOf(vm.calendarView).subtract(10, "days").toDate(),
-            end: moment(vm.viewDate).endOf(vm.calendarView).add(10, "days").toDate(),
+    	var leftBoundary = moment(vm.viewDate).startOf(vm.calendarView);
+    	var rightBoundary = moment(vm.viewDate).endOf(vm.calendarView);
+    	
+    	if (vm.calendarView == "month") {
+    		leftBoundary.subtract(1, "week");
+    		rightBoundary.add(1, "week");
+    	}
+    	
+    	return {
+            start: leftBoundary.toDate(),
+            end: rightBoundary.toDate(),
         };
     };
     
     // ------------------- //
     // -- VIEW HANDLING -- //
     // ------------------- //
+    
+    vm.updateEventList = function () {
+    	vm.events = [];
+    	
+    	var boundaries = vm.getViewDateBoundaries();
+    	
+    	vm.shownCalendars.forEach(function (calendar_id) {
+    		vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
+       			JSON.parse(events).forEach(function (blueprint) {
+    				vm.events.push(new vm.Event(
+    					blueprint.id,
+    					blueprint.calendar.id,
+    					blueprint.title,
+    					blueprint.description,
+    					new Date(blueprint.startTime),
+    					new Date(blueprint.endTime),
+    					"#555555", // FIXME: substitute with blueprint.primaryColor,
+    					"#aaaaaa" // FIXME: substitute with blueprint.secondaryColor,
+    				));
+    			});
+    		});
+    	});
+    	
+    };
     
     // Add an event to a calendar
     // TODO: rewrite entirely
@@ -94,57 +144,29 @@ angular
     
     // Makes a calendar's events visible
     vm.showCalendar = function (id) {        
-        if (edb.hasOwnProperty(id) && !vm.shownCalendars.includes(id)) {
-            for (var i = 0; i < edb[id]["events"].length; i++) {
-                var blueprint = edb[id]["events"][i];
-                vm.events.push({
-                    id: blueprint.id,
-                    calendar: blueprint.calendar,
-                    title: blueprint.title,
-                    description: blueprint.description,
-                    startsAt: new Date(blueprint.startsAt),
-                    endsAt: new Date(blueprint.endsAt),
-                    color: {
-                        primary: blueprint.color.primary,
-                        secondary: blueprint.color.secondary,
-                    },
-                    actions: actions,
-                    draggable: false,
-                    resizable: false,
-                });
-            }
-            vm.shownCalendars.push(id);
-        }
+        // TODO
     };
     
     vm.hideCalendar = function (id) {
-        if (vm.shownCalendars.includes(id)) {
-            var i = vm.events.length;
-            while (i--) {
-                if (vm.events[i].calendar == id) {
-                    vm.events.splice(i, 1);
-                }
-            }
-            
-            var index = vm.shownCalendars.indexOf(id);
-            if (index !== -1) {
-                vm.shownCalendars.splice(index, 1);
-            }
-        }
+        // TODO
     };
     
     vm.toggleCalendar = function (id) {
-        if (vm.checkedCalendars[id]) {
-            vm.showCalendar(id);
-        } else {
-            vm.hideCalendar(id);
-        }
+    	if (vm.checkedCalendars[id]) {
+    		vm.shownCalendars.push(id);
+    	} else {
+    		vm.shownCalendars = vm.shownCalendars.filter(function (element) {
+    			return element != id;
+    		});
+    	}
+    	
+    	vm.updateEventList();
     };
     
     // -------------------------- //
     // -- DATABASE INTERACTION -- //
     // -------------------------- //
-
+    
     /*
      * deleteCalendarId
      */
@@ -437,24 +459,17 @@ angular
     /*
      * JSON_getMyEventsInPeriod
      */
-    vm.JSON_getMyEventsInPeriod = function (start, end) {
+    vm.JSON_getMyEventsInPeriod = function (calendar_id, start, end, callback) {
         $.ajax({
             type: "POST",
-            url: "JSON_getMyEventsInPeriod",
+            url: "JSON_getMyEventsInPeriod/" + calendar_id,
             data: {
-                start: start,
-                end: end,
+                start: moment(start).format("YYYY-MM-DD HH:mm:ss"),
+                end: moment(end).format("YYYY-MM-DD HH:mm:ss"),
             },
             success: function (response) {
-                // TODO
-                
-                var result = {
-                        start: start,
-                        end: end,
-                        events: response,
-                };
-                
-                console.log(JSON.stringify(result, null, 4));
+                callback(response);
+                console.log(JSON.stringify(vm.events, null, 4));
             },
             error: function (response) {
                 // TODO
@@ -510,21 +525,5 @@ angular
     // ----------- //
     // -- DEBUG -- //
     // ----------- //
-    
-    vm.debugfn = function () {
-        var boundaries = vm.getViewDateBoundaries();
-        
-        // debug print
-        var testStart = moment(boundaries.start).format("YYYY-MM-DD HH:mm:ss");
-        var testEnd = moment(boundaries.end).format("YYYY-MM-DD HH:mm:ss");
 
-        console.log("testStart: " + testStart);
-        console.log("testEnd: " + testEnd);
-        //
-        
-        vm.cellIsOpen = false;
-        vm.JSON_getMyEventsInPeriod(
-                moment(boundaries.start).format("YYYY-MM-DD HH:mm:ss"),
-                moment(boundaries.end).format("YYYY-MM-DD HH:mm:ss"));
-    }
 });

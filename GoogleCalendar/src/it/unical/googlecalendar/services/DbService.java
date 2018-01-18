@@ -54,21 +54,25 @@ public class DbService {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
 		String dateInString = "21-01-2018 10:20:56";
 		String dateInString2 = "24-01-2018 16:20:00";
+		String leftBoundary = "01-02-2018 12:00:00";
+		String rightBoundary = "05-02-2018 12:00:00";
 		//int minutes=5;
 		Occurrence ev1=null;
 		Occurrence ev2=null;
+		Occurrence ev3=null;
+		Occurrence ev4=null;
 		try {
 			ev1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
 			ev2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
-			
-			
+			ev3=new Occurrence(katiaCalendar2,katia,"Ricordati che devi morire","Sii retto, ma non in faccia",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
+			ev4=new Occurrence(katiaCalendar2,katia,"Una mano è solo un piede che non ha mai smesso di sognare","Saggezza",sdf.parse(leftBoundary),sdf.parse(rightBoundary),Color.black,Color.BLUE);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		odao.save(ev1);
 		odao.save(ev2);
-		
-		
+		odao.save(ev3);
+		odao.save(ev4);
 		
 	}
 	
@@ -172,9 +176,7 @@ public class DbService {
 		return cdao.getCalendarsByEmail(email);
 	}
 	
-	public List<Occurrence> getMyEventsInPeriod(String email, String start, String end) {
-		List<Occurrence> result = odao.getOccurrenceByEmailInPeriod(email, start, end);
-		System.err.println("RESULT: " + (result == null ? "NULL" : result.size()));
-		return result;
+	public List<Occurrence> getMyEventsInPeriod(String email, int calendar_id, String start, String end) {
+		return odao.getOccurrenceByEmailInPeriod(email, calendar_id, start, end);
 	}
 }
