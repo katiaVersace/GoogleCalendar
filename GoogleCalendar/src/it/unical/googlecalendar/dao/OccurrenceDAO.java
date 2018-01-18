@@ -17,6 +17,8 @@ public interface OccurrenceDAO {
 	
 	public List<Occurrence> getOccurrencesByEmail(String email);
 	
+	public List<Occurrence> getOccurrenceByEmailInPeriod(String email, String startPeriod, String endPeriod);
+	
 	public List<Occurrence> getOccurrencesByCalendar(Calendar calendar);
 
 	public List<User> getGuestsByOccurrence(Occurrence occurrence);

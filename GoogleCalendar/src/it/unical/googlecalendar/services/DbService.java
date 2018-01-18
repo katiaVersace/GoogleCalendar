@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.sound.midi.SysexMessage;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,18 +154,12 @@ public class DbService {
 		return idao.sendInvitation(user_id, receiver_email ,ca,privilege);
 	}
 
-	public List<Calendar> getAllMyCalendars(String email) {
-		return cdao.getCalendarsByEmail(email);
-	}
-
-
 	public boolean updateMemoById(int memo_id, int user_id, String title, Date data, String description,
 			Color c1, Color c2) {
 		Memo m=mdao.getMemoById(memo_id);
 	return mdao. updateMemoById(m,user_id, title,data, description,c1,c2);
 
 	}
-
 
 	public boolean deleteMemoById(int memo_id, int user_id) {
 		Memo c=mdao.getMemoById(memo_id);
@@ -173,10 +168,13 @@ public class DbService {
 		return mdao.deleteMemoById(c,u);
 	}
 
-
+	public List<Calendar> getAllMyCalendars(String email) {
+		return cdao.getCalendarsByEmail(email);
+	}
 	
-	
-	
-
-
+	public List<Occurrence> getMyEventsInPeriod(String email, String start, String end) {
+		List<Occurrence> result = odao.getOccurrenceByEmailInPeriod(email, start, end);
+		System.err.println("RESULT: " + (result == null ? "NULL" : result.size()));
+		return result;
+	}
 }

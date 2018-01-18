@@ -39,24 +39,30 @@ public class Occurrence {
 	private String title;
 
 	@Column
+	@Expose
 	private Date startTime;
 
 	@Column
+	@Expose
 	private Date endTime;
 	
-	@Column	
+	@Column
+	@Expose
 	private String description;
 	
 	@Column
+	@Expose
 	Color primaryColor;
 	
 	@Column
+	@Expose
 	Color secondaryColor;
 	
 
 	
-@ManyToOne (cascade=CascadeType.REFRESH)
+	@ManyToOne (cascade=CascadeType.REFRESH)
 	@JoinColumn(name="calendar_id", nullable=false)
+	@Expose
 	private Calendar calendar;
 	
 	@ManyToOne  (cascade=CascadeType.REFRESH)

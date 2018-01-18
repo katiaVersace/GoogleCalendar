@@ -188,4 +188,12 @@ public class IndexController {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		return gson.toJson(dbService.getAllMyCalendars((String) session.getAttribute("email")));
 	}
+	
+	@RequestMapping(value = "/JSON_getMyEventsInPeriod", method = RequestMethod.POST)
+	@ResponseBody
+	public String JSON_getMyEventsInPeriod(HttpSession session, @RequestParam String start,
+			@RequestParam String end) {
+		Gson gson = new GsonBuilder().excludeFieldsWithModifiers().create();
+		return gson.toJson(dbService.getMyEventsInPeriod((String) session.getAttribute("email"), start, end));
+	}
 }

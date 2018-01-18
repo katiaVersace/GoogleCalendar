@@ -31,32 +31,6 @@
 
 <script src="resources/scripts/example.js"></script>
 
-<script type="text/javascript">
-    // TODO: use JSON instead of jstl
-    <c:forEach items="${calendars}" var="c">
-    edb["${c.id}"] = {
-        title: "${c.title}",
-        description: "${c.description}",
-        events : [],
-    };
-    </c:forEach>
-
-    <c:forEach items="${events}" var="e">
-    edb["${e.calendar.id}"]["events"].push({
-        id : "${e.id}",
-        calendar: "${e.calendar.id}",
-        title : "${e.title}",
-        description: "${e.description}",
-        startsAt : new Date("${e.date}"),
-        endsAt : new Date("${e.date}"),
-        color : {
-            primary : "#555555",
-            secondary : "#aaaaaa",
-        },
-    });
-    </c:forEach>
-</script>
-
 <!-- Bootstrap CSS CDN -->
 
 <link rel="stylesheet" type="text/css"
@@ -208,14 +182,23 @@
 
                 <div class="col-md-6 text-center">
                   <div class="btn-group">
-                    <label class="btn btn-primary" ng-model="vm.calendarView"
+                    <!-- <label class="btn btn-primary" ng-model="vm.calendarView"
                       uib-btn-radio="'year'" ng-click="vm.cellIsOpen = false">Year</label>
                     <label class="btn btn-primary" ng-model="vm.calendarView"
                       uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Month</label>
                     <label class="btn btn-primary" ng-model="vm.calendarView"
                       uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Week</label>
                     <label class="btn btn-primary" ng-model="vm.calendarView"
-                      uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
+                      uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label> -->
+                      
+                    <label class="btn btn-primary" ng-model="vm.calendarView"
+                      uib-btn-radio="'year'" ng-click="vm.debugfn()">Year</label>
+                    <label class="btn btn-primary" ng-model="vm.calendarView"
+                      uib-btn-radio="'month'" ng-click="vm.debugfn()">Month</label>
+                    <label class="btn btn-primary" ng-model="vm.calendarView"
+                      uib-btn-radio="'week'" ng-click="vm.debugfn()">Week</label>
+                    <label class="btn btn-primary" ng-model="vm.calendarView"
+                      uib-btn-radio="'day'" ng-click="vm.debugfn()">Day</label>
                   </div>
                 </div>
 

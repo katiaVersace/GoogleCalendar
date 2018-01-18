@@ -1,5 +1,3 @@
-var edb = {};
-
 angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
 angular
   .module('mwl.calendar.docs')
@@ -94,7 +92,7 @@ angular
         });
     };
     
- // Makes a calendar's events visible
+    // Makes a calendar's events visible
     vm.showCalendar = function (id) {        
         if (edb.hasOwnProperty(id) && !vm.shownCalendars.includes(id)) {
             for (var i = 0; i < edb[id]["events"].length; i++) {
@@ -146,7 +144,7 @@ angular
     // -------------------------- //
     // -- DATABASE INTERACTION -- //
     // -------------------------- //
-    
+
     /*
      * deleteCalendarId
      */
@@ -421,7 +419,7 @@ angular
     }
     
     /*
-     * JSON_getAllCalendars
+     * JSON_getAllMyCalendars
      */
     vm.JSON_getAllMyCalendars = function () {
         $.ajax({
@@ -435,6 +433,34 @@ angular
             },
         });
     };
+    
+    /*
+     * JSON_getMyEventsInPeriod
+     */
+    vm.JSON_getMyEventsInPeriod = function (start, end) {
+        $.ajax({
+            type: "POST",
+            url: "JSON_getMyEventsInPeriod",
+            data: {
+                start: start,
+                end: end,
+            },
+            success: function (response) {
+                // TODO
+                
+                var result = {
+                        start: start,
+                        end: end,
+                        events: response,
+                };
+                
+                console.log(JSON.stringify(result, null, 4));
+            },
+            error: function (response) {
+                // TODO
+            },
+        });
+    }
 
     // ---------------------------- //
     // --       WASTELAND        -- //
@@ -486,6 +512,19 @@ angular
     // ----------- //
     
     vm.debugfn = function () {
+        var boundaries = vm.getViewDateBoundaries();
         
+        // debug print
+        var testStart = moment(boundaries.start).format("YYYY-MM-DD HH:mm:ss");
+        var testEnd = moment(boundaries.end).format("YYYY-MM-DD HH:mm:ss");
+
+        console.log("testStart: " + testStart);
+        console.log("testEnd: " + testEnd);
+        //
+        
+        vm.cellIsOpen = false;
+        vm.JSON_getMyEventsInPeriod(
+                moment(boundaries.start).format("YYYY-MM-DD HH:mm:ss"),
+                moment(boundaries.end).format("YYYY-MM-DD HH:mm:ss"));
     }
 });

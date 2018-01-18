@@ -1,6 +1,7 @@
 package it.unical.googlecalendar.dao;
 
 import java.awt.Color;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -129,7 +130,45 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		session.close();
 		return result;
 	}
-
+	
+	@Override
+	public List<Occurrence> getOccurrenceByEmailInPeriod(String email,
+			String start, String end) {
+		Session session = sessionFactory.openSession();
+		
+		System.err.println("start: " + start);
+		System.err.println("end: " + end);
+		
+		try
+		{
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date startPeriod = format.parse(start);
+			Date endPeriod = format.parse(end);
+			
+			Query query = session.createQuery(
+					"SELECT o "
+			      + "FROM Occurrence o, Users_Calendars uc "
+				  + "JOIN uc.user u "
+			      + "WHERE o.calendar = uc.calendar "
+				  + "  and u.email = :email "
+				  + "  and startTime >= :startPeriod "
+				  + "  and startTime <= :endPeriod "
+			);
+			
+			query.setParameter("email", email);
+			query.setParameter("startPeriod", format.format(startPeriod));
+			query.setParameter("endPeriod", format.format(endPeriod));
+			
+			return query.getResultList();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return null;
+	}
+	
 	// quando l'utente seleziona solo alcuni calendari da vedere useremo questa
 	// funzione per filtrare gli eventi
 	@Override
