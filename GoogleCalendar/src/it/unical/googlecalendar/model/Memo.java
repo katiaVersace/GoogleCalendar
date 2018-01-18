@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,30 +16,14 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"memo_id"})})
-public class Memo  {
+@Table
+@DiscriminatorValue(value = "Memo")
+public class Memo extends Occurrence {
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="memo_id",unique = true)
-	protected int id;
-
-	@Column(nullable = false)
-	private String title;
 
 	@Column(nullable = false)
 	private Date creationDate;
 
-	@Column
-	private String description;
-	
-	@Column
-	private Color primaryColor;
-
-	
-	@Column
-	private Color secondaryColor;
-	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "user_id",nullable = false)
 	private User user;
@@ -49,33 +34,15 @@ public class Memo  {
 		super();
 	}
 	
-	public Memo (User creator,String title, Date date, String description,Color color1,Color color2){
-		this.title=title;
+	public Memo (User creator,String title, Date date, String description,String c1){
+		super(title,description,c1);
+		
 		this.creationDate=date;
-		this.description=description;		
-		this.primaryColor=color1;
-		this.secondaryColor=color2;
 		this.user=creator;
 		user.getMemos().add(this);
 	
 	}
 	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -83,31 +50,6 @@ public class Memo  {
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Color getPrimaryColor() {
-		return primaryColor;
-	}
-
-	public void setPrimaryColor(Color primaryColor) {
-		this.primaryColor = primaryColor;
-	}
-
-	public Color getSecondaryColor() {
-		return secondaryColor;
-	}
-
-	public void setSecondaryColor(Color secondaryColor) {
-		this.secondaryColor = secondaryColor;
-	}
-
 	public User getUser() {
 		return user;
 	}

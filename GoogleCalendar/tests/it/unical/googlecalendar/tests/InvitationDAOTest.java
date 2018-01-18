@@ -77,19 +77,19 @@ public class InvitationDAOTest {
 		//mario accetta a c
 		idao.acceptInvitation(mario, c);
 		List<Notification> notif=ndao.getNotificationByUserId(peppe.getId());
-		System.out.println("Notifiche di peppe: "+notif.size());
-		for(Notification no:notif){
-			System.out.println(no.getDescription());
-		}
+//		System.out.println("Notifiche di peppe: "+notif.size());
+//		for(Notification no:notif){
+//			System.out.println(no.getDescription());
+//		}
 		
-		System.out.println("Peppe sta x leggere le notifiche e cancellarle");
+		//System.out.println("Peppe sta x leggere le notifiche e cancellarle");
 		ndao.deleteNotifications(peppe);
 		
 		 notif=ndao.getNotificationByUserId(peppe.getId());
-			System.out.println("Notifiche di peppe: "+notif.size());
-			for(Notification no:notif){
-				System.out.println(no.getDescription());
-			}
+//			System.out.println("Notifiche di peppe: "+notif.size());
+//			for(Notification no:notif){
+//				System.out.println(no.getDescription());
+//			}
 			//ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId()).isEmpty();
 		
 		String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(),c.getId());

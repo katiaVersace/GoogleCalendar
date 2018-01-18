@@ -55,12 +55,12 @@ public class CalendarDAOTest {
 				String dateInString = "21-01-2018 10:20:56";
 				String dateInString2 = "24-01-2018 16:20:00";
 				//int minutes=5;
-		Occurrence ev3=null;
-		Occurrence ev1=null;
+		int ev3=-1;
+		int ev1=-1;
 		try {
 			
-			ev3=new Occurrence(ciccinoCalendar,ciccino,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
-			ev1=new Occurrence(ciccinoCalendar,ciccino,"memo 1 di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
+			ev3=odao.insertNewEvent(ciccino,ciccinoCalendar,"evento di ciccinoCalendar ","creato da ciccino",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
+			ev1= odao.insertNewEvent(ciccino, ciccinoCalendar, "Evento 2 di ciccinoCalendar ","creato da ciccinoe",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());	
 			
 
 			
@@ -70,8 +70,7 @@ public class CalendarDAOTest {
 		
 	
 //	cdao.save(ciccinoCalendar);
-		odao.save(ev3);
-		odao.save(ev1);
+		cdao.save(ciccinoCalendar);
 		
 		//System.out.println("size of calendars"+allCalendars.size());
 		List<Calendar> allCalendars = cdao.getAllCalendars();
@@ -79,7 +78,7 @@ public class CalendarDAOTest {
 		Assert.assertTrue(ciccinoCalendar.getOccurrences().contains(ev1));
 		Assert.assertTrue(cdao.getCalendarsByEmail(ciccino.getEmail()).size()==2);
 		
-		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccinoCalendar).size()==2);
+		Assert.assertTrue(odao.getEventsByCalendar(ciccinoCalendar).size()==2);
 		
 		Assert.assertTrue(cdao.deleteById(ciccinoCalendar,ciccino));
 			

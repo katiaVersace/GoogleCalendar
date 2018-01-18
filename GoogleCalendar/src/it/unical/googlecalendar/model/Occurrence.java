@@ -25,8 +25,9 @@ import com.google.gson.annotations.Expose;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"occurrence_id"})})
-
-public class Occurrence {
+@DiscriminatorColumn(name = "type")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class Occurrence {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -36,85 +37,39 @@ public class Occurrence {
 
 	@Column(nullable = false)
 	@Expose
-	private String title;
-
-	@Column
-	private Date startTime;
-
-	@Column
-	private Date endTime;
+	private String title;	
 	
 	@Column	
 	private String description;
 	
 	@Column
-	Color primaryColor;
-	
-	@Column
-	Color secondaryColor;
-	
-
-	
-@ManyToOne (cascade=CascadeType.REFRESH)
-	@JoinColumn(name="calendar_id", nullable=false)
-	private Calendar calendar;
-	
-	@ManyToOne  (cascade=CascadeType.REFRESH)
-	@JoinColumn(name="user_id", nullable=false)
-	private User creator;
+	String primaryColor;
+		
 	
 	public Occurrence(){
 		super();
 	}
 	
-	public Occurrence(Calendar calendar,User creator,String title, String description,Date startTime,Date endTime,Color c1, Color c2){
+	public Occurrence(String title, String description,String c1){
 		super();
 		this.title=title;
-		
-		this.startTime=startTime;
-		this.endTime=endTime;
 		this.primaryColor=c1;
-		this.secondaryColor=c2;
 		//many to one association
-		setCalendar(calendar);
-		setCreator(creator);
+		
 		//One to many association 
-		calendar.getOccurrences().add(this);
 		this.description=description;
 		
 	}
 	
 	
-	public Date getStartTime() {
-		return startTime;
-	}
+	
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public Date getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-
-	public Color getPrimaryColor() {
+	public String getPrimaryColor() {
 		return primaryColor;
 	}
 
-	public void setPrimaryColor(Color primaryColor) {
+	public void setPrimaryColor(String primaryColor) {
 		this.primaryColor = primaryColor;
-	}
-
-	public Color getSecondaryColor() {
-		return secondaryColor;
-	}
-
-	public void setSecondaryColor(Color secondaryColor) {
-		this.secondaryColor = secondaryColor;
 	}
 
 	public String getDescription() {
@@ -131,28 +86,6 @@ public class Occurrence {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	
-
-	public Calendar getCalendar() {
-		return calendar;
-	}
-
-	public void setCalendar(Calendar calendar) {
-		this.calendar = calendar;
-	}
-
-	
-
-	public void setCreator(User creator) {
-		this.creator=creator;
-		
-	}
-	
-	public User getCreator() {
-		return creator;
-		
 	}
 	
 
