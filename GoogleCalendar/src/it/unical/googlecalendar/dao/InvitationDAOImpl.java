@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Invitation;
+import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.model.User;
 import it.unical.googlecalendar.model.Users_Calendars;
 
@@ -76,6 +77,17 @@ public class InvitationDAOImpl implements InvitationDAO {
 		return result;
 
 	}
+	
+	public User getSenderOfInvitationById(int invitation_id) {
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		User result = (User) session.createQuery("SELECT u FROM Invitation i, User u WHERE u.id=i.senderId and i.id= :invitation_id").setParameter("invitation_id", invitation_id).uniqueResult();
+
+		session.close();
+		return result;
+
+	}
 
 	public List<Invitation> getInvitationsByCalendarAndReceiver(int receiver_id, int calendar_id) {
 		Session session = sessionFactory.openSession();
@@ -124,26 +136,31 @@ public class InvitationDAOImpl implements InvitationDAO {
 								// accettare per questo calendario quindi esco
 		{
 			List<Invitation> invitationToDelete = getInvitationsByCalendarAndReceiver(u.getId(), c.getId());
-
 			Transaction tx = null;
 			try {
 				tx = session.beginTransaction();
 
 				// creo un'associazione tra l'utente e il calendario ed elimino
-				// gli inviti dal db
+				
 				Users_Calendars association = new Users_Calendars(u, c, myPrivilege, Color.CYAN, c.getTitle());
+				
+				
 				for (Invitation inv : invitationToDelete) {
+					User sender=getSenderOfInvitationById(inv.getId());
+					Notification acceptNotification=new Notification(sender,u.getUsername()+" accepted your invitation to calendar: "+c.getTitle());
 					session.delete(inv);
+					
+					session.update(sender);
 				}
-
 				session.update(c);
 				session.update(u);
+				
 
 				tx.commit();
-
 				result = true;
 
 			} catch (Exception e) {
+				
 				result = false;
 				tx.rollback();
 			}
@@ -152,6 +169,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 		
 		session.close();
+		
 		return result;
 	}
 
@@ -168,6 +186,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 				tx = session.beginTransaction();
 
 				for (Invitation inv : invitationToDelete) {
+					
 					session.delete(inv);
 				}
 				// session.saveOrUpdate(association);
@@ -219,6 +238,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 						Invitation i = new Invitation(sender_id,receiverId.get(0) , calendar, privilege);
 						tx = session.beginTransaction();
 						session.save(i);
+						
 						tx.commit();
 
 						result = true;
@@ -243,10 +263,6 @@ public class InvitationDAOImpl implements InvitationDAO {
 		return false;
 	}
 
-	@Override
-	public boolean sendNotificationOfResponse() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 }

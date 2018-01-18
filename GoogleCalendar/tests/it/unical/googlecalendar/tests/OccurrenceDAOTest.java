@@ -68,7 +68,7 @@ public class OccurrenceDAOTest {
 		Occurrence memo2=null;
 		Occurrence memo3=null;
 		try {
-			System.out.println("Ciccio calendar id "+ciccioCalendar.getId());
+			//System.out.println("Ciccio calendar id "+ciccioCalendar.getId());
 			memo1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
 			memo2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
 			memo3=new Occurrence(ciccioCalendar,ciccio,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
@@ -99,11 +99,11 @@ public class OccurrenceDAOTest {
 //			for(Occurrence o:occList){
 //				System.out.println(o.getTitle());
 //			}
-			List<Occurrence> occ2List=odao.getAllOccurrences();
-			System.out.println("Tutti gli Eventi : "+occ2List.size());
-			for(Occurrence o:occ2List){
-				System.out.println(o.getTitle()+" Id: "+o.getCalendar().getId()+" Start: "+o.getStartTime()+" End: "+o.getEndTime()+" Color1: "+o.getPrimaryColor()+" Color 2"+o.getSecondaryColor());
-			}
+//			List<Occurrence> occ2List=odao.getAllOccurrences();
+//			System.out.println("Tutti gli Eventi : "+occ2List.size());
+//			for(Occurrence o:occ2List){
+//				System.out.println(o.getTitle()+" Id: "+o.getCalendar().getId()+" Start: "+o.getStartTime()+" End: "+o.getEndTime()+" Color1: "+o.getPrimaryColor()+" Color 2"+o.getSecondaryColor());
+//			}
 			
 	
 				

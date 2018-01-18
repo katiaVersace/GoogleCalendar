@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,19 +43,13 @@ public class User {
     private List<Memo> memos=new ArrayList<Memo>();
     
     
+  //notifiche
+    @OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    private List<Notification> notifications=new ArrayList<Notification>();
+    
 
 	    
-   public List<Memo> getMemos() {
-		return memos;
-	}
-
-	public void setMemos(List<Memo> memos) {
-		this.memos = memos;
-	}
-
-	//separated by pipe
-    @Column
-    private String notifications="";   
+  	
     
 	
 	public User() {
@@ -68,6 +63,24 @@ public class User {
 		this.password = password;
 	}
 	
+	
+	 public List<Notification> getNotifications() {
+			return notifications;
+		}
+
+		public void setNotifications(List<Notification> notifications) {
+			this.notifications = notifications;
+		}
+
+	public List<Memo> getMemos() {
+			return memos;
+		}
+
+		public void setMemos(List<Memo> memos) {
+			this.memos = memos;
+		}
+
+
 	public String getEmail() {
 		return email;
 	}
@@ -98,19 +111,10 @@ public class User {
 //		return users_calendars;
 //	}
 	
-	public String[] getNotifications(){
-		if(notifications.isEmpty()){
-			return null;
-		}
-		else{
-			String[] notif=notifications.split("\\|");
-			
-			return notif;
-		}
+	
 		
 		
-		
-	}
+
 		
 //	public String getPriviledgesForCalendar(Calendar c){
 //		for( Users_Calendars uc: users_calendars){

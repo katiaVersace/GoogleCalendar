@@ -14,10 +14,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import it.unical.googlecalendar.configuration.AppConfiguration;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
 import it.unical.googlecalendar.dao.InvitationDAOImpl;
+import it.unical.googlecalendar.dao.NotificationDAO;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.dao.Users_CalendarsDAOImpl;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Invitation;
+import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.model.User;
 import it.unical.googlecalendar.model.Users_Calendars;
 
@@ -35,6 +37,8 @@ public class InvitationDAOTest {
 	private CalendarDAOImpl cdao;
 	@Autowired
 	private Users_CalendarsDAOImpl ucdao;
+	@Autowired
+	private NotificationDAO ndao;
 
 	@Test
 	public void saveTest() {
@@ -71,17 +75,28 @@ public class InvitationDAOTest {
 		//fabio invita mario a c
 		idao.sendInvitation(fabio.getId(), mario.getEmail(), c, "ADMIN");
 		//mario accetta a c
-		Assert.assertTrue(idao.acceptInvitation(mario, c));
+		idao.acceptInvitation(mario, c);
+		List<Notification> notif=ndao.getNotificationByUserId(peppe.getId());
+		System.out.println("Notifiche di peppe: "+notif.size());
+		for(Notification no:notif){
+			System.out.println(no.getDescription());
+		}
 		
-		if(	ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId()).isEmpty())System.out.println("Nessuna associazione creata");
-		else System.out.println("C'è un'associazione tra mario e il calendario nel db");
-		//	String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(), c.getId());
+		System.out.println("Peppe sta x leggere le notifiche e cancellarle");
+		ndao.deleteNotifications(peppe);
+		
+		 notif=ndao.getNotificationByUserId(peppe.getId());
+			System.out.println("Notifiche di peppe: "+notif.size());
+			for(Notification no:notif){
+				System.out.println(no.getDescription());
+			}
+			//ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId()).isEmpty();
 		
 		String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(),c.getId());
 
 		if(privilegiDiMario==null)System.out.println("Privilegi null");
 		
-	System.out.println("Privilegi di mario "+privilegiDiMario);
+//	System.out.println("Privilegi di mario "+privilegiDiMario);
 	Assert.assertTrue(privilegiDiMario!=null);
 	//		System.out.println("inviti di mario dopo che accetti: "+mario.receivedInvitations.size());
 //		 for(Invitation in:mario.receivedInvitations){
