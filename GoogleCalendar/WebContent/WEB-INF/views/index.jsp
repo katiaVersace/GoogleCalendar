@@ -61,19 +61,6 @@
           <ul class="collapse list-unstyled" id="homeSubmenu">
             <form action="">
               <fieldset id="calendarsList">
-                <c:forEach items="${calendars}" var="cal">
-                  <li id="cal_entry_${cal.id}">
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="${cal.id}"
-                        value="${cal.title}"
-                        ng-model="vm.checkedCalendars['${cal.id}']"
-                        ng-change="vm.toggleCalendar('${cal.id}')"/>
-                        ${cal.title}
-                    </label>
-                  </li>
-                </c:forEach>
               </fieldset>
             </form>
           </ul></li>
@@ -148,7 +135,7 @@
       <div class="container col-sm-12">
         <div class="row">
           <div>
-            <div>
+            <div id="toRedraw">
               <h2 class="text-center">{{ vm.calendarTitle }}</h2>
 
               <div class="row">
@@ -168,8 +155,9 @@
                     <!-- DEBUG BUTTON -->
                     <button
                       class="btn btn-primary"
-                      ng-click=''>
+                      ng-click='vm.fn()'>
                       DEBUG_1
+                    </button>
                     <!-- /DEBUG BUTTON -->
                     
                   </div>

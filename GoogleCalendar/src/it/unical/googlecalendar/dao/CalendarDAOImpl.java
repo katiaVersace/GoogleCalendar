@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.sound.midi.SysexMessage;
 
+import org.hibernate.Cache;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -242,6 +243,15 @@ private Users_CalendarsDAOImpl ucdao;
 					tx = session.beginTransaction();
 					c.setTitle(title);
 					c.setDescription(description);
+					
+					// DEBUG
+					session.clear();
+					Cache cache = sessionFactory.getCache();
+					if (cache != null) {
+						cache.evictAllRegions();
+					}
+					// END DEBUG
+					
 					session.update(c);
 					tx.commit();
 					result=true;
@@ -250,6 +260,7 @@ private Users_CalendarsDAOImpl ucdao;
 				} catch (Exception e) {
 					result=false;
 					tx.rollback();
+					e.printStackTrace();
 				}}}
 
 				session.close();

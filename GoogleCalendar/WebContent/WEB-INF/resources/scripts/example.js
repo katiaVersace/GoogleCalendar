@@ -1,7 +1,7 @@
 angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
 angular
   .module('mwl.calendar.docs')
-  .controller('KitchenSinkCtrl', function(moment, calendarConfig) {     
+  .controller('KitchenSinkCtrl', function($compile, $scope, moment) {     
       
     // Controller
     var vm = this;
@@ -19,9 +19,9 @@ angular
     // Events to be displayed
     vm.events = [];
     
-    // Calendars currently shown, by id
+    // Calendars whose events are currently shown, by id
     vm.shownCalendars = [];
-        
+    
     // Calendars currently checked on the sidebar, by id
     // Only used in conjunction with shownCalendars
     vm.checkedCalendars = [];
@@ -59,31 +59,6 @@ angular
     	this.actions = actions;
     }
     
-    // Looks for an element in vm.events by id,
-    // returning the event or null if not found.
-    vm.getEventViewByID = function (id) {
-        var event = vm.events.filter(function (item) {
-            return item.id = id;
-        })
-        return event ? event[0] : null;
-    };
-    
-    vm.getEventDataByID = function (id) {
-        // FIXME: uses view for data, can be done better
-        var event = vm.getEventViewByID(id);
-        
-        if (event != null) {
-            for (var i = 0; i < edb[event.calendar][events].length; i++) {
-                var current = edb[event.calendar][events][i];
-                if (current.id == id) {
-                    event = current;
-                }
-            }
-        }
-        
-        return event;
-    };
-    
     vm.getViewDateBoundaries = function () {
     	var leftBoundary = moment(vm.viewDate).startOf(vm.calendarView);
     	var rightBoundary = moment(vm.viewDate).endOf(vm.calendarView);
@@ -104,11 +79,11 @@ angular
     // ------------------- //
     
     // Repopulate vm.events accordingly to the data fetched from the DB
-    vm.updateEventList = function () {
-    	vm.events = [];
-    	
-    	var boundaries = vm.getViewDateBoundaries();
-    	
+    vm.updateEventList = function () {        
+        vm.events = [];
+
+        var boundaries = vm.getViewDateBoundaries();
+
     	vm.shownCalendars.forEach(function (calendar_id) {
     		vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
        			JSON.parse(events).forEach(function (blueprint) {
@@ -123,13 +98,36 @@ angular
     					"#aaaaaa" // FIXME: substitute with blueprint.secondaryColor,
     				));
     			});
-       	    	// DEBUG
-       	    	console.log(JSON.stringify(vm.events, null, 4));
-       	    	// END DEBUG
     		});
     	});
     };
     
+    // Update the list of calendars displayed within the sidebar
+    vm.updateCalendarList = function () {
+    	var viewList = $("#calendarsList");
+    	vm.JSON_getAllMyCalendars(function (calendars) {
+    		viewList.empty();
+    		JSON.parse(calendars).forEach(function (calendar) {
+    			viewList.append(
+    			    $compile(
+        				"<li id=\"cal_entry_" + calendar.id + "\">\n"
+        			  + "  <label>\n"
+                      + "    <input\n"
+                      + "      type=\"checkbox\"\n"
+                      + "      name=\"" + calendar.id + "\"\n"
+                      + "      value=\"" + calendar.title + "\"\n"
+                      + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
+                      + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
+                      + "     " + calendar.title + "\n"
+                      + "  </label>\n"
+                      + "</li>\n"
+                    )($scope)
+    			);
+    		});
+    	});
+    };
+    
+    // Hide/Show a calendar's events
     vm.toggleCalendar = function (id) {
     	if (vm.checkedCalendars[id]) {
     		vm.shownCalendars.push(id);
@@ -165,10 +163,13 @@ angular
     /*
      * JSON_getAllMyCalendars
      */
-    vm.JSON_getAllMyCalendars = function () {
+    vm.JSON_getAllMyCalendars = function (callback) {
     	$.ajax({
     		type: "POST",
     		url: "JSON_getAllMyCalendars",
+    		success: function (response) {
+    			callback(response);
+    		},
     	});
     };
     
@@ -196,7 +197,6 @@ angular
     	});
     };
     
-    
     /*
      * updateEvent
      */
@@ -222,23 +222,65 @@ angular
     };
     
     /*
+     * deleteOccurenceId
+     */
+    vm.deleteOccurrence = function (id) {
+
+        // TODO: rewrite the interface on IndexController so that
+        // only the occurence's id is needed
+        
+    };
+    
+    /*
+     * insertNewCalendar
+     */
+    vm.insertNewCalendar = function (title, description) {
+    	$.ajax({
+    	   type: "POST",
+    	   url: "insertNewCalendar",
+    	   data: {
+    	       title: title,
+    	       description, description,
+    	   },
+    	   success: function (response) {
+    	       if (response != -1) {
+    	           vm.updateCalendarList();
+    	       }
+    	   },
+    	});
+    };
+    
+    /*
      * deleteCalendarId
      */
     vm.deleteCalendar = function (id) {
-        // Delete calendar in DB
         $.ajax({
             type: "POST",
             url: "delete/" + id,
             success: function (response) {
-                // Client-side deletion (vm.events is updated accordingly)
-                vm.hideCalendar(id);
-                delete edb[id];
-                
-                // Calendar's entry in sidebar is deleted
-                $("#cal_entry_" + id).remove();
+                if (response == "YES") {
+                    vm.updateCalendarList();
+                    vm.updateEventList();
+                }
             },
-            error: function (response) {
-                console.log("ERROR ERROR ERROR ERROR ERROR");
+        });
+    };
+    
+    /*
+     * updateCalendar
+     */
+    vm.updateCalendar = function (calendar_id, title, description) {
+        $.ajax({
+            type: "POST",
+            url: "update/" + calendar_id,
+            data: {
+                title: title,
+                description: description,
+            },
+            success: function (response) {
+                if (response == "YES") {
+                    vm.updateCalendarList();
+                }
             },
         });
     };
@@ -251,160 +293,11 @@ angular
     }
     
     /*
-     * insertNewCalendar
-     */
-    vm.createCalendar = function (title, description) {
-        $.ajax({
-            type: "POST",
-            url: "insertNewCalendar",
-            data: {
-                title: title,
-                description: description,
-            },
-            success: function (response) {
-                if (response != -1) {
-                    // add new calendar to edb
-                    edb[response] = {
-                        title: title,
-                        description: description,
-                        events: [],
-                    };
-                    
-                    // create new entry and add it to the sidebar menu
-                    var entry = 
-                        "<li>\n"
-                      + "  <label id=\"cal_entry_" + response + "\">\n"
-                      + "    <input\n"
-                      + "      type=\"checkbox\"\n"
-                      + "      name=\"" + response + "\"\n"
-                      + "      value=\"" + edb[response].title + "\"\n"
-                      + "      ng-model=\"vm.checkedCalendars['" + response + "']\"\n"
-                      + "      ng-change=\"vm.toggleCalendar('" + response + "')\"\n/>"
-                      + "     " + edb[response].title + "\n"
-                      + "  </label>\n"
-                      + "</li>\n";
-                    
-                    // FIXME: clicking on this entry doesn't work without a page refresh!
-                    $("#calendarsList").append(entry);
-                    
-                } else {
-                    console.log(
-                        "[UNSUCCESSFUL] vm.createCalendar:\n"
-                      + "{\n"
-                      + "    title: " + title + "\n"
-                      + "    description: " + description + "\n"
-                      + "}\n"
-                    );
-                }
-            },
-            error: function (response) {
-                console.log(
-                    "[ERROR] vm.createCalendar:\n"
-                  + "{\n"
-                  + "    title: " + title + "\n"
-                  + "    description: " + description + "\n"
-                  + "}\n"
-                );
-            },
-        });
-    };
-    
-    /*
-     * updateCalendar
-     */
-    vm.updateCalendar = function (calendarId, title, description) {
-        $.ajax({
-            type: "POST",
-            url: "update/" + calendarId,
-            data: {
-                title: title,
-                description: description,
-            },
-            success: function (response) {
-                if (response == "YES") {
-                    // update edb
-                    edb[calendarId].title = title;
-                    edb[calendarId].description = description;
-                    // TODO: update date (?)
-                    
-                    // update calendar list entry
-                    $("#cal_entry_" + calendarId + " > label > input").attr("value", title);
-                    $("#cal_entry_" + calendarId + " > label").contents().last().replaceWith(title);
-                } else {
-                    console.log(
-                        "[UNSUCCESSFUL] vm.updateCalendar:\n"
-                      + "{\n"
-                      + "    calendarId: " + calendarId + "\n"
-                      + "    title: " + title + "\n"
-                      + "    description: " + description + "\n"
-                      + "}\n"
-                    );
-                }
-            },
-            error: function (response) {
-                console.log(
-                    "[ERROR] vm.updateCalendar:\n"
-                  + "{\n"
-                  + "    calendarId: " + calendarId + "\n"
-                  + "    title: " + title + "\n"
-                  + "    description: " + description + "\n"
-                  + "}\n"
-                );
-            },
-        });
-    }
-    
-    /*
      * insertNewMemo
      */
     vm.insertNewMemo = function ( /* ... */ ) {
         // TODO
     }
-    
-    /*
-     * deleteOccurenceId
-     */
-    vm.deleteOccurrence = function (id) {
-        var event = vm.getEventViewByID(id);
-        if (event != null) {
-            $.ajax({
-                type: "POST",
-                url: "deleteOccurrence/" + id,
-                success: function (response) {
-                    if (response == "YES") {
-                        // view is updated
-                        vm.events = vm.events.filter(function (item) {
-                            return item.id != id;
-                        });
-                        
-                        // edb is updated
-                        edb[event.calendar].events = edb[event.calendar].events.filter(function (item) {
-                            return item.id != id;
-                        });
-                        
-                        // DEBUG
-                        console.log("[SUCCESS] vm.deleteOccurrence | response: " + response);
-                        // END DEBUG
-                    } else {
-                        console.log(
-                            "[UNSUCCESSFUL] vm.deleteOccurrence:\n"
-                          + "{\n"
-                          + "    eventId: " + id + "\n"
-                          + "}\n"
-                        );
-                    }
-                },
-                error: function (response) {
-                    console.log(
-                        "[ERROR] vm.deleteOccurrence:\n"
-                      + "{\n"
-                      + "    eventId: " + id + "\n"
-                      + "}\n"
-                    );
-                },
-            });
-        }
-    };
     
     /*
      * updateMemo
@@ -426,7 +319,13 @@ angular
     vm.sendInvitation = function (/* ... */) {
         // TODO
     }
-
+    
+    // ---------- //
+    // -- INIT -- //
+    // ---------- //
+    
+    vm.updateCalendarList();
+    
     // ---------------------------- //
     // --       WASTELAND        -- //
     // -- enter at your own risk -- //
@@ -476,4 +375,6 @@ angular
     // -- DEBUG -- //
     // ----------- //
 
+    vm.fn = function () {
+    };
 });

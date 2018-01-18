@@ -71,8 +71,7 @@ public class IndexController {
 	// viene preso dalla sessione
 	@RequestMapping(value = "/insertNewCalendar", method = RequestMethod.POST)
 	@ResponseBody
-	public int insertNewCalendar(@PathVariable("user_id") String user_id, @RequestParam String title,
-			@RequestParam String description, HttpSession session) {
+	public int insertNewCalendar(HttpSession session, @RequestParam String title, @RequestParam String description) {
 		return dbService.insertNewCalendar((Integer) session.getAttribute("user_id"), title, description);
 	}
 
