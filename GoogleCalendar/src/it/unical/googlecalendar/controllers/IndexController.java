@@ -98,10 +98,14 @@ public class IndexController {
 	// viene preso dalla sessione
 	@RequestMapping(value = "/insertNewEvent/{calendar_id}", method = RequestMethod.POST)
 	@ResponseBody
-	public int insertNewEvent(HttpSession session, @PathVariable("calendar_id") String calendar_id,
-			@RequestParam String title, @RequestParam String description, @RequestParam Date startTime,@RequestParam Date endTime,@RequestParam Color c1,@RequestParam  Color c2) {
+	public int insertNewEvent(HttpSession session, @PathVariable("calendar_id") String calendar_id, @RequestParam String title, 
+			@RequestParam String description, @RequestParam Date startTime,@RequestParam Date endTime, 
+			@RequestParam String c1, @RequestParam String c2) { // <-- java.awt.Color originariamente, al momento String
+//		return dbService.insertNewEvent(Integer.parseInt(calendar_id), (Integer) session.getAttribute("user_id"), title,
+//				 description,startTime,endTime, c1,  c2);
+		// FIXME: una volta aggiustata la storia dei colori si riutilizza il return qui sopra
 		return dbService.insertNewEvent(Integer.parseInt(calendar_id), (Integer) session.getAttribute("user_id"), title,
-				 description,startTime,endTime, c1,  c2);
+				 description,startTime,endTime, Color.black,  Color.BLUE);
 	}
 
 	/*
@@ -134,9 +138,13 @@ public class IndexController {
 	@RequestMapping(value = "/updateEvent/{occurrence_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public String updateEvent(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
-			@RequestParam String title,  @RequestParam String description,@RequestParam Date startTime,@RequestParam Date endTime,@RequestParam Color c1,@RequestParam  Color c2) {
-		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, description,startTime,endTime, c1,  c2,
-				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+			@RequestParam String title,  @RequestParam String description,@RequestParam Date startTime,@RequestParam Date endTime,
+			@RequestParam String c1, @RequestParam String c2) { // <-- java.awt.Color originariamente, al momento String
+//		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, description,startTime,endTime, c1,  c2,
+//				(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+		// FIXME: una volta aggiustata la storia dei colori si riutilizza il return qui sopra
+		return dbService.updateEventById(Integer.parseInt(occurrence_id), title, description,startTime,endTime, 
+				Color.black,  Color.BLUE, (Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
 
 	/*

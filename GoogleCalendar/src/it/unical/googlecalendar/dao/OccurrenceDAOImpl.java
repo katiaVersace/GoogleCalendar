@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.sound.midi.SysexMessage;
 
+import org.hibernate.Cache;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -269,11 +270,12 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public boolean updateEventById(Occurrence v, String title,  String description, Date startTime,Date endTime,Color c1, Color c2,int user_id) {
+	public boolean updateEventById(Occurrence v, String title, String description, Date startTime, Date endTime,
+			Color c1, Color c2, int user_id) {
 		Session session = sessionFactory.openSession();
-		
+
 		boolean result = false;
-		
+
 		// l'utente e il calendario dell'occurrence
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
@@ -283,28 +285,38 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 		if (resultsId.size() != 0) {
 			Users_Calendars uc = resultsId.get(0);
 
-			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
-		
-		Transaction tx = null;
+			if (uc.getPrivileges().equals("ADMIN") || uc.getPrivileges().equals("RW")) {
 
-		try {
+				Transaction tx = null;
 
-			tx = session.beginTransaction();
-			v.setTitle(title);
-			v.setStartTime(startTime);
-			v.setEndTime(endTime);
-			v.setPrimaryColor(c1);
-			v.setSecondaryColor(c2);
-			v.setDescription(description);
-			session.update(v);
-			tx.commit();
-			result = true;
+				try {
+					tx = session.beginTransaction();
+					v.setTitle(title);
+					v.setStartTime(startTime);
+					v.setEndTime(endTime);
+					v.setPrimaryColor(c1);
+					v.setSecondaryColor(c2);
+					v.setDescription(description);
+					
+					// DEBUG
+					session.clear();
+					Cache cache = sessionFactory.getCache();
+					if (cache != null) {
+						cache.evictAllRegions();
+					}
+					// END DEBUG
+					
+					session.saveOrUpdate(v);
+					tx.commit();
+					result = true;
 
-		} catch (Exception e) {
-			result = false;
-			tx.rollback();
+				} catch (Exception e) {
+					result = false;
+					tx.rollback();
+					e.printStackTrace();
+				}
+			}
 		}
-			}}
 		session.close();
 		return result;
 	}

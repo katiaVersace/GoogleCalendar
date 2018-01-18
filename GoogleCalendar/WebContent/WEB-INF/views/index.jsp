@@ -166,13 +166,10 @@
                       ng-click="vm.cellIsOpen = false">Next</button>
                       
                     <!-- DEBUG BUTTON -->
-                    <!--
                     <button
                       class="btn btn-primary"
                       ng-click=''>
-                      DEBUG
-                    </button>
-                    -->
+                      DEBUG_1
                     <!-- /DEBUG BUTTON -->
                     
                   </div>
