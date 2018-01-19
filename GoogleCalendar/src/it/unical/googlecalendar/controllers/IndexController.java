@@ -122,8 +122,7 @@ public class IndexController {
 	 */
 	@RequestMapping(value = "/deleteOccurrence/{occurrenceId}", method = RequestMethod.POST)
 	@ResponseBody
-	public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId,
-			@PathVariable("calendar_id") String calendar_id, HttpSession session) {
+	public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId, HttpSession session) {
 		return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId), (Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
 

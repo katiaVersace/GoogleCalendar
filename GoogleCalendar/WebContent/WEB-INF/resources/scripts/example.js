@@ -202,23 +202,38 @@ angular
      */
     vm.updateEvent = function (id, title, description, 
     		startsAt, endsAt, primaryColor, secondaryColor) {
-    	$.ajax({
-    		type: "POST",
-    		url: "updateEvent/" + id,
-    		data: {
-    			title: title,
-    			description: description,
-    			startTime: startsAt,
-    			endTime: endsAt,
-    			c1: primaryColor,
-    			c2: secondaryColor,
-    		},
-    		success: function (response) {
-    			if (response == "YES") {
-    				vm.updateEventList();
-    			}
-    		},
-    	});
+        	$.ajax({
+        		type: "POST",
+        		url: "updateEvent/" + id,
+        		data: {
+        			title: title,
+        			description: description,
+        			startTime: startsAt,
+        			endTime: endsAt,
+        			c1: primaryColor,
+        			c2: secondaryColor,
+        		},
+        		success: function (response) {
+        			if (response == "YES") {
+        				vm.updateEventList();
+        			}
+        		},
+        	});
+    };
+    
+    /*
+     * deleteOccurenceId
+     */
+    vm.deleteOccurrence = function (id) {
+        $.ajax({
+            type: "POST",
+            url: "deleteOccurrence/" + id,
+            success: function (response) {
+                if (response == "YES") {
+                    vm.updateEventList();
+                }
+            },
+        });
     };
     
     /*
@@ -235,14 +250,6 @@ angular
      */
     vm.updateMemo = function ( /* ... */ ) {
         // TODO
-    };
-    
-    /*
-     * deleteOccurenceId
-     */
-    vm.deleteOccurrence = function (id) {
-        // FIXME: rewrite the interface on IndexController so that
-        //        only the occurence's id is needed
     };
     
     /*
