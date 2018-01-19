@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -65,6 +67,10 @@ public class Occurrence {
 	@JoinColumn(name="user_id", nullable=false)
 	private User creator;
 	
+	//alarms
+    @OneToMany(mappedBy = "occurrence",orphanRemoval=true,cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    private List<Alarm> alarms=new ArrayList<Alarm>();
+	
 	public Occurrence(){
 		super();
 	}
@@ -84,6 +90,14 @@ public class Occurrence {
 		calendar.getOccurrences().add(this);
 		this.description=description;
 		
+	}
+
+	public List<Alarm> getAlarms() {
+		return alarms;
+	}
+
+	public void setAlarms(List<Alarm> alarms) {
+		this.alarms = alarms;
 	}
 
 	public Date getStartTime() {

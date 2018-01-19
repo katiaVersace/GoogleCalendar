@@ -16,11 +16,13 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
+import it.unical.googlecalendar.dao.AlarmDAO;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
 import it.unical.googlecalendar.dao.InvitationDAOImpl;
 import it.unical.googlecalendar.dao.MemoDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
+import it.unical.googlecalendar.model.Alarm;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Occurrence;
@@ -40,6 +42,8 @@ public class DbService {
 	private InvitationDAOImpl idao;
 	@Autowired
 	private MemoDAO mdao;
+	@Autowired
+	private AlarmDAO adao;
 	
 	@PostConstruct
 	public void initialize() {
@@ -176,5 +180,26 @@ public class DbService {
 	
 	public List<Occurrence> getMyEventsInPeriod(String email, int calendar_id, String start, String end) {
 		return odao.getOccurrenceByEmailInPeriod(email, calendar_id, start, end);
+	}
+
+
+	
+
+	public boolean updateAlarm(int alarm_id, int minutes) {
+		Alarm a=adao.getAlarmById(alarm_id);
+		return adao.updateAlarmById(a, minutes);
+	}
+
+
+	public int addAlarm(int user_id, int occurrence_id, int minutes) {
+		User u=udao.getUserById(user_id);
+		Occurrence o=odao.getOccurrenceById(occurrence_id);
+		return adao.insertNewAlarm(u, o, minutes);
+	}
+
+
+	public boolean deleteAlarm(int alarm_id) {
+		Alarm a=adao.getAlarmById(alarm_id);
+		return adao.deleteAlarmById(a);
 	}
 }

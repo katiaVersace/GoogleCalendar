@@ -123,7 +123,7 @@ public class IndexController {
 	@RequestMapping(value = "/deleteOccurrence/{occurrenceId}", method = RequestMethod.POST)
 	@ResponseBody
 	public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId,
-			@PathVariable("calendar_id") String calendar_id, HttpSession session) {
+			 HttpSession session) {
 		return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId), (Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
 
@@ -204,4 +204,34 @@ public class IndexController {
 		return gson.toJson(dbService.getMyEventsInPeriod((String) session.getAttribute("email"),
 				Integer.parseInt(calendar_id), start, end));
 	}
+	
+	
+	@RequestMapping(value = "/addAlarm/{occurrence_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public int addAlarm(HttpSession session, @RequestParam int minutes,
+			@PathVariable("occurrence_id") String occurrence_id) {
+		return dbService.addAlarm((Integer) session.getAttribute("user_id"),Integer.parseInt(occurrence_id),minutes);
+	}
+	
+
+	@RequestMapping(value = "/updateAlarm/{alarm_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String updateAlarm(HttpSession session, @RequestParam int minutes,
+			@PathVariable("alarm_id") String alarm_id) {
+		return dbService.updateAlarm(Integer.parseInt(alarm_id),minutes) ? "YES" : "NO";
+	}
+	
+
+	@RequestMapping(value = "/deleteAlarm/{alarm_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteAlarm(HttpSession session, @RequestParam int minutes,
+			@PathVariable("alarm_id") String alarm_id) {
+		return dbService.deleteAlarm(Integer.parseInt(alarm_id)) ? "YES" : "NO";
+	}
+	
+	
+	
+	
+	
+	
 }
