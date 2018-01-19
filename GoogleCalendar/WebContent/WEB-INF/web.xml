@@ -16,7 +16,7 @@
 		</init-param>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>it.unical.googlecalendar.configuration.AppConfiguration</param-value>
+			<param-value>it.unical.googlecalendar.configuration.AppConfigurationProduction</param-value>
 		</init-param>
 		
 		
