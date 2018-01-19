@@ -33,8 +33,7 @@ public interface OccurrenceDAO {
 
 	
 
-	boolean deleteById(Occurrence o, User u, Calendar c);
-
+	
 	
 	//boolean updateEventById(Event v, String title, Date data, String description, int user_id);
 
@@ -50,5 +49,7 @@ public interface OccurrenceDAO {
 
 	boolean updateEventById(Occurrence v, String title, String description, Date startTime, Date endTime, String c1,
 			String c2, int user_id);
+
+	boolean deleteById(Occurrence oc, User u);
 	
 }

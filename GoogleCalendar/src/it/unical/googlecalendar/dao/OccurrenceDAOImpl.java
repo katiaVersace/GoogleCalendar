@@ -231,10 +231,11 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 //	}
 
 	@Override
-	public boolean deleteById(Occurrence oc,User u, Calendar ca) {
+	public boolean deleteById(Occurrence oc,User u) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		boolean result = false;
+		Calendar ca=session.get(Calendar.class, oc.getCalendar().getId());
 
 		// per controllare i privilegi devo prendermi l'associazione tra
 		// l'utente e il calendario dell'occurrence

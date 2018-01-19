@@ -130,11 +130,10 @@ public class DbService {
 
 	
 
-	public boolean deleteOccurrenceById(int occurrenceId, int user_id,int calendar_id) {
+	public boolean deleteOccurrenceById(int occurrenceId, int user_id) {
 		Occurrence c=odao.getOccurrenceById(occurrenceId);
 		User u=udao.getUserById(user_id);
-		Calendar ca=cdao.getCalendarById(calendar_id);
-		return odao.deleteById(c,u,ca);
+		return odao.deleteById(c,u);
 	}
 
 	public boolean updateEventById(int event_id, String title, String description, Date startTime, Date endTime, String c1,String c2,int user_id) {

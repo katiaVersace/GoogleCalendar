@@ -120,12 +120,11 @@ public class IndexController {
 	/*
 	 * deleteOccurrenceId
 	 */
-	@RequestMapping(value = "/deleteOccurrence/{calendar_id}/{occurrenceId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/deleteOccurrence/{occurrenceId}", method = RequestMethod.POST)
 	@ResponseBody
 	public String deleteOccurrenceId(@PathVariable("occurrenceId") String occurrenceId,
 			@PathVariable("calendar_id") String calendar_id, HttpSession session) {
-		return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId), (Integer) session.getAttribute("user_id"),
-				Integer.parseInt(occurrenceId)) ? "YES" : "NO";
+		return dbService.deleteOccurrenceById(Integer.parseInt(occurrenceId), (Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
 
 	/*

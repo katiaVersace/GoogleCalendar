@@ -69,9 +69,9 @@ public class OccurrenceDAOTest {
 		Occurrence memo3=null;
 		try {
 			//System.out.println("Ciccio calendar id "+ciccioCalendar.getId());
-			memo1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString(),30);
-			memo2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString(),10);
-			memo3=new Occurrence(ciccioCalendar,ciccio,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString(),0);
+			memo1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
+			memo2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
+			memo3=new Occurrence(ciccioCalendar,ciccio,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
 			
 			
 		} catch (ParseException e) {
