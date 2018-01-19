@@ -32,7 +32,7 @@ angular
     // with behavior
     var actions = [{
         label: '<i class=\'glyphicon glyphicon-remove\'></i>',
-        onClick: function(args) {
+        onClick: function (args) {
             vm.deleteOccurrence(args.calendarEvent.id);
       },
     }];
@@ -60,17 +60,9 @@ angular
     }
     
     vm.getViewDateBoundaries = function () {
-    	var leftBoundary = moment(vm.viewDate).startOf(vm.calendarView);
-    	var rightBoundary = moment(vm.viewDate).endOf(vm.calendarView);
-    	
-    	if (vm.calendarView == "month") {
-    		leftBoundary.subtract(1, "week");
-    		rightBoundary.add(1, "week");
-    	}
-    	
     	return {
-            start: leftBoundary.toDate(),
-            end: rightBoundary.toDate(),
+            start: moment(vm.viewDate).startOf(vm.calendarView).toDate(),
+            end: moment(vm.viewDate).endOf(vm.calendarView).toDate(),
         };
     };
     
@@ -222,13 +214,27 @@ angular
     };
     
     /*
+     * insertNewMemo
+     */
+    vm.insertNewMemo = function ( /* ... */ ) {
+        $.ajax({
+            
+        });
+    };
+    
+    /*
+     * updateMemo
+     */
+    vm.updateMemo = function ( /* ... */ ) {
+        // TODO
+    };
+    
+    /*
      * deleteOccurenceId
      */
     vm.deleteOccurrence = function (id) {
-
-        // TODO: rewrite the interface on IndexController so that
-        // only the occurence's id is needed
-        
+        // FIXME: rewrite the interface on IndexController so that
+        //        only the occurence's id is needed
     };
     
     /*
@@ -254,16 +260,8 @@ angular
      * deleteCalendarId
      */
     vm.deleteCalendar = function (id) {
-        $.ajax({
-            type: "POST",
-            url: "delete/" + id,
-            success: function (response) {
-                if (response == "YES") {
-                    vm.updateCalendarList();
-                    vm.updateEventList();
-                }
-            },
-        });
+        // FIXME: this shouldn't be here, a user can only disconnect
+        //        while deleting is db's burden
     };
     
     /*
@@ -289,42 +287,65 @@ angular
      * disconnectFromCalendar
      */
     vm.disconnectFromCalendar = function (id) {
-        // TODO
-    }
-    
-    /*
-     * insertNewMemo
-     */
-    vm.insertNewMemo = function ( /* ... */ ) {
-        // TODO
-    }
-    
-    /*
-     * updateMemo
-     */
-    vm.updateMemo = function ( /* ... */ ) {
-        // TODO
-    }
+        $.ajax({
+            type: "POST",
+            url: "disconnect/" + id,
+            success: function (response) {
+                if (response == "YES") {
+                    vm.updateCalendarList();
+                    vm.updateEventList();
+                }
+            },
+        });
+    };
     
     /*
      * updateUser
      */
-    vm.updateUser = function ( /* ... */ ) {
-        // TODO
-    }
+    vm.updateUser = function (username, password) {
+        $.ajax({
+            type: "POST",
+            url: "updateUser",
+            data: {
+                username: username,
+                password: password,
+            },
+            success: function (response) {
+                // FIXME: graphical representations of the username
+                //        inside the page need to be updated. IndexController
+                //        should expose a function for retrieving the current
+                //        username, to be used at page initialization and after
+                //        a successful call to vm.updateUser
+            },
+        });
+    };
     
     /*
      * sendInvitation
      */
-    vm.sendInvitation = function (/* ... */) {
-        // TODO
-    }
+    vm.sendInvitation = function (calendar_id, email, privileges) {
+        $.ajax({
+            type: "POST",
+            url: "sendInvitation/" + calendar_id,
+            data: {
+                receiver_email: email,
+                privilege: privileges,
+            },
+            success: function (response) {
+                if (reponse == "YES") {
+                    // TODO
+                }
+            },
+        });
+    };
     
     // ---------- //
     // -- INIT -- //
     // ---------- //
     
-    vm.updateCalendarList();
+    (function () {
+        vm.updateCalendarList();        
+    })();
     
     // ---------------------------- //
     // --       WASTELAND        -- //
