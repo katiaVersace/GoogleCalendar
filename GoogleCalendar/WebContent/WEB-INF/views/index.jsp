@@ -229,7 +229,7 @@ console.log(JSON.stringify(edb, null, 4));
 											uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
 										
 										<!-- TASTO CHE STA IN ALTO A DESTRA -->	
-									<button class="btn btn-primary pull-right" ng-click="vm.openEventModal()" style="margin-left: 10px;">
+									<button id = "btn-add" class="btn btn-primary pull-right" ng-click="vm.openEventModal()" style="margin-left: 10px;" disabled="disabled">
 					
 									<i style="font-size: 16px; color: white;" class="glyphicon glyphicon-save-file"></i>
 									 Add event</button>

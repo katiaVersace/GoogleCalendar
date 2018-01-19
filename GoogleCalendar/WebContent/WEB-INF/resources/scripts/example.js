@@ -235,6 +235,8 @@ angular
 							resizable : false,
 							actions : actions
 						};
+						document.getElementById('btn-add').disabled = false;
+						
 
 						if (vm.calendarView === 'month') {
 							if ((vm.cellIsOpen && moment(date).startOf('day')
@@ -283,7 +285,9 @@ angular
 						//vm.temp.descr = value;
 						vm.events.push(vm.temp);
 						vm.contId++;
-											
+						
+						document.getElementById('btn-add').disabled = true;
+						
 						// contenuto del modale evento
 						// var id = document.querySelector('input[name =
 						// "rr"]:checked').value;
