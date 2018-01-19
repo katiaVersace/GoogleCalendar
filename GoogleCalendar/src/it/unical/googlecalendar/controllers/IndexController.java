@@ -1,10 +1,12 @@
 package it.unical.googlecalendar.controllers;
 
-
-import java.awt.Color;
-import java.util.Collection;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import it.unical.googlecalendar.services.DbService;
 
@@ -39,6 +39,32 @@ public class IndexController {
 		model.addAttribute("calendars", dbService.getCalendarsForEmail(email));
 
 		return "index";
+	}
+	
+	/*
+	 * SSE TEST
+	 */
+	@RequestMapping("/notifies")
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+		throws ServletException, IOException {
+		//content type must be set to text/event-stream
+		response.setContentType("text/event-stream");	
+
+		//encoding must be set to UTF-8
+		response.setCharacterEncoding("UTF-8");
+
+		PrintWriter writer = response.getWriter();
+
+		for(int i=0; i<10; i++) {
+			writer.write("data: "+ System.currentTimeMillis() +"\n\n");
+
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		writer.close();
 	}
 
 	/*
