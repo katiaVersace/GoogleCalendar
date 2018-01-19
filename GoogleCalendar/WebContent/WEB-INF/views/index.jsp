@@ -131,14 +131,6 @@
         <div class="container-fluid">
 
           <div class="navbar-header">
-            <button
-              type="button"
-              id="sidebarCollapse"
-              class="btn btn-info navbar-btn"
-              style="background: #3c92db;">
-              <i class="glyphicon glyphicon-align-left"></i> <span>Toggle
-                Sidebar</span>
-            </button>
           </div>
 
           <div class="navbar-header">
@@ -579,26 +571,10 @@
           </div>
 
           <div>
-            <fieldset>
-              <form
-                id="form-btn"
-                style="position: relative; text-align: center;">
-                <c:forEach
-                  items="${calendars}"
-                  var="cal">
-                  <li style="list-style-type: none;"><input
-                    type="radio"
-                    id="${cal.id}+1"
-                    name="rr"
-                    value="${cal.id}"
-                    ng-model="vm.checkedCalendars['${cal.id}']"
-                    ng-change="vm.toggleCalendar('${cal.id}')" /> <label
-                    for="${cal.id}+1"><span></span> ${cal.title}</label></li>
-                </c:forEach>
-              </form>
+            <form>
+            <fieldset id="calendarsListModal" ">
             </fieldset>
-
-            <h3 style="text-align: center; color: white; padding-top: 10px;">Add
+           <h3 style="text-align: center; color: white; padding-top: 10px;">Add
               Event</h3>
 
             <div id="event_tmp">
@@ -726,12 +702,28 @@
             onclick="document.getElementById('modal-wrapper6').style.display='none'"
             class="close"
             title="Close PopUp">&times;</span>
-        </div>
+       
+
+            <h3 style="text-align: center; color: white; padding-top: 30px;">Update
+              Event</h3>
+             <a
+            href="#"
+            class="avatar"><i
+            style= "text-align:center; font-size: 45px; color: white;"
+            class="glyphicon glyphicon-pencil"></i></a>
+ 			</div>
 
         <div
           class="modal-content"
           style="width: 90%;">
 
+ 		 <div>
+
+              
+           
+              	<div
+            class="btn-group"
+            style="float: right;">
           <button
             type="button"
             class="btn btn-primary dropdown-toggle"
@@ -776,11 +768,13 @@
               class="clocks"
               data-id="none">none</a></li>
           </div>
-
-          <div>
-
-            <h3 style="text-align: center; color: white; padding-top: 10px;">Update
-              Event</h3>
+          </div>
+              
+              
+              
+           
+            
+              
 
             <div id="event_tmp">
               <table class="table table-bordered">
@@ -870,6 +864,10 @@
                 placeholder="Description"
                 id="descEvent"
                 ng-model="vm.temp.descr"></textarea>
+              
+              
+           
+              
               <!-- TASTO CHE STA NEL MODAL -->
               <button
                 type="button"
@@ -879,7 +877,7 @@
                 style="background: #42A5F5">
                 <span><strong>Update Event</strong></span>
 
-              </button -->
+              </button> 
             </div>
           </div>
 

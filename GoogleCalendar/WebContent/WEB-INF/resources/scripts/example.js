@@ -32,12 +32,16 @@ angular
     // Events to be displayed
     vm.events = [];
     
+    
+       
     // Calendars whose events are currently shown, by id
     vm.shownCalendars = [];
     
     // Calendars currently checked on the sidebar, by id
     // Only used in conjunction with shownCalendars
     vm.checkedCalendars = [];
+    
+    vm.calendarsArray = [];
     
     vm.cellIsOpen = true;
     
@@ -133,31 +137,72 @@ angular
         	vm.JSON_getAllMyCalendars(function (calendars) {
         		viewList.empty();
         		JSON.parse(calendars).forEach(function (calendar) {
+        			vm.calendarsArray.push(calendar);
         			viewList.append(
                      $compile(
                           "<li id=\"cal_entry_" + calendar.id + "\">\n"
                         + "  <label>\n"
                         + "    <input\n"
                         + "      type=\"checkbox\"\n"
+                        + "      id= \"" + calendar.id + "\"\n"
                         + "      name=\"" + calendar.id + "\"\n"
                         + "      value=\"" + calendar.title + "\"\n"
                         + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
                         + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
-                        + "    <label for=\"" + calendar.id + ">" + calendar.title + "</label>\n"
-                        + "    <label>\n"
+                        + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
+                        + "  </label>\n"
+                        + "  <label>\n" 
                         + "      <i\n"
                         + "        class=\"glyphicon glyphicon-cog\"\n"
                         + "        onclick=\"manageCalendar('${cal.title}','${cal.id}')\"\n"
                         + "        style=\"margin-left: 80%;\">\n"
-                        + "      </i>"
+                        + "      </i>\n"
                         + "    </label>\n"
-                        + "  </label>\n"
                         + "</li>\n"
                      )($scope)
         			);
+        			
         		});
+        		vm.updateCalendarListModal();	
         	});
+        	
     };
+    
+    
+    
+ // Update the list of calendars displayed within the Modal
+ // Update the list of calendars displayed within the Modal
+    vm.updateCalendarListModal = function () {
+        	var viewList = $("#calendarsListModal");
+        	
+        	var string = "<div  class=\"btn-group\">\n"
+                +"<button type=\"button\" class=\"btn btn-primary dropdown-toggle\"" 
+                +  "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">"
+                +"<i style=\"font-size: 25px; color: white;\"" 
+                +  "class=\"glyphicon glyphicon-list-alt\"></i> <span class=\"caret\"></span>"
+                +"</button>"
+                +"<h4 id=\"ChoiceCalendar\" style=\"color: white; padding-left:120px;\"></h4>"
+                +"<ul class=\"dropdown-menu\">";
+        	
+        	for(i = 0;i< vm.calendarsArray.length;i++) {
+        		
+        		var title = vm.calendarsArray[i].title;
+        		var id = vm.calendarsArray[i].id;
+        		
+        		var x = title;
+        		title = x.replace(/'/g,"\\'");
+        		alert(title);
+        	 
+        		
+        		string+="<li><a href=\"javascript:void(0)\" onclick=\"setCalendar('"+title+"')\"" +
+        			" class = \"calendars\" data-id=\"" + id+ "\">" +vm.calendarsArray[i].title+"</a></li>";
+        		}
+           	
+        	
+        	
+        	viewList.append(string);      	
+    };
+    
     
     // Hide/Show a calendar's events
     vm.toggleCalendar = function (id) {
@@ -555,7 +600,6 @@ angular
 
 	// MANAGE EVENT
 	vm.openEventModal = function() {
-		
 		modal(5);
 	};
 

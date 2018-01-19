@@ -27,3 +27,7 @@ function resetClock() {
 	document.getElementById('TourId').value = "none";
 
 }
+
+function setCalendar(calendar){
+	document.getElementById('ChoiceCalendar').innerHTML = calendar;
+}
