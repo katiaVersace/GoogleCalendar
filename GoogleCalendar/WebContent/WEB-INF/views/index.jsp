@@ -407,6 +407,25 @@ console.log(JSON.stringify(edb, null, 4));
 					</div>
 					
 					 <div class="modal-content" style="width: 90%;" >
+					 	
+					 	
+					 	<div  class="btn-group"  style="float: right;">	
+							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  							<i style="font-size: 25px; color: white;" class="glyphicon glyphicon-time"></i>
+  							<span class="caret"></span>
+  							</button>
+  							<input type="text" style="font-size:15px; width:80px; height:40px;" id="TourId"></input>
+ 						    <ul class="dropdown-menu scrollable-menu" id="ulGenres">
+  							<li><a href="#" data-pdsa-dropdown-val="0">At event time</a></li>
+   			 				<li><a href="#" data-pdsa-dropdown-val="10">10 min first</a></li>
+             				<li><a href="#" data-pdsa-dropdown-val="20">20 min first</a></li>
+    						<li><a href="#" data-pdsa-dropdown-val="30">30 min first</a></li>
+  							<li><a href="#" data-pdsa-dropdown-val="none">none</a></li>
+  							</ul>
+						</div> 
+					 			
+					 
+					 
       			         <div >
       			         	  <fieldset>
       			         		<form id="form-btn" style="position: relative; text-align: center;">
@@ -773,5 +792,20 @@ function addEventInCalendar(){
              });
     </script>
 
+<script type="text/javascript">
+$(document).ready(function () {
+	  $("#ulGenres li a").on("click", function () {
+	    var id = $(this).data('pdsa-dropdown-val');
+	    $("#TourId").val(id);
+	    var text = $(this).text();
+	    $("#selectButton").html(text + '&nbsp;<span class="caret"></span>');
+	    $("#SelectedText").val(text);
+	  });
+	  var id = $("#TourId").val();
+	  $("#ulGenres li a").filter("[data-pdsa-dropdown-val=" + id + "]").trigger("click");
+});
+</script>
+
+
 </body>
-</html>1
+</html>
