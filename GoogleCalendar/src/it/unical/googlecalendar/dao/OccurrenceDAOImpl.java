@@ -150,8 +150,8 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			      + "WHERE o.calendar = uc.calendar "
 				  + "  and o.calendar.id = :calendar_id "
 				  + "  and u.email = :email "
-				  + "  and startTime >= :startPeriod "
-				  + "  and startTime <= :endPeriod "
+				  + "  and ((startTime >= :startPeriod and startTime <= :endPeriod) or "
+				  + "       (endTime >= :startPeriod and endTime <= :endPeriod)) "
 			);
 			
 			query.setParameter("email", email);

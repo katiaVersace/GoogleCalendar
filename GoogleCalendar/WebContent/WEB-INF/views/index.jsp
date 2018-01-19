@@ -144,13 +144,13 @@
 
                     <button class="btn btn-primary" mwl-date-modifier
                       date="vm.viewDate" decrement="vm.calendarView"
-                      ng-click="vm.cellIsOpen = false">Previous</button>
+                      ng-click="vm.viewModifierBehavior()">Previous</button>
                     <button class="btn btn-default" mwl-date-modifier
                       date="vm.viewDate" set-to-today
-                      ng-click="vm.cellIsOpen = false">Today</button>
+                      ng-click="vm.viewModifierBehavior()">Today</button>
                     <button class="btn btn-primary" mwl-date-modifier
                       date="vm.viewDate" increment="vm.calendarView"
-                      ng-click="vm.cellIsOpen = false">Next</button>
+                      ng-click="vm.viewModifierBehavior()">Next</button>
                       
                     <!-- DEBUG BUTTON -->
                     <button
@@ -168,13 +168,13 @@
                 <div class="col-md-6 text-center">
                   <div class="btn-group">
                     <label class="btn btn-primary" ng-model="vm.calendarView"
-                      uib-btn-radio="'year'" ng-click="vm.cellIsOpen = false">Year</label>
+                      uib-btn-radio="'year'" ng-click="vm.viewModifierBehavior()">Year</label>
                     <label class="btn btn-primary" ng-model="vm.calendarView"
-                      uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Month</label>
+                      uib-btn-radio="'month'" ng-click="vm.viewModifierBehavior()">Month</label>
                     <label class="btn btn-primary" ng-model="vm.calendarView"
-                      uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Week</label>
+                      uib-btn-radio="'week'" ng-click="vm.viewModifierBehavior()">Week</label>
                     <label class="btn btn-primary" ng-model="vm.calendarView"
-                      uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
+                      uib-btn-radio="'day'" ng-click="vm.viewModifierBehavior()">Day</label>
                   </div>
                 </div>
 

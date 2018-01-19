@@ -33,7 +33,7 @@ angular
     var actions = [{
         label: '<i class=\'glyphicon glyphicon-remove\'></i>',
         onClick: function (args) {
-            vm.deleteOccurrence(args.calendarEvent.id);
+            // TODO: delete occurrence
       },
     }];
     
@@ -59,8 +59,8 @@ angular
     	this.actions = actions;
     }
     
-    vm.getViewDateBoundaries = function () {
-    	return {
+    vm.getViewDateBoundaries = function () {        
+        return {
             start: moment(vm.viewDate).startOf(vm.calendarView).toDate(),
             end: moment(vm.viewDate).endOf(vm.calendarView).toDate(),
         };
@@ -71,65 +71,73 @@ angular
     // ------------------- //
     
     // Repopulate vm.events accordingly to the data fetched from the DB
-    vm.updateEventList = function () {        
+    vm.updateEventList = function () {
         vm.events = [];
 
         var boundaries = vm.getViewDateBoundaries();
 
-    	vm.shownCalendars.forEach(function (calendar_id) {
-    		vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
+        	vm.shownCalendars.forEach(function (calendar_id) {
+        		vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
        			JSON.parse(events).forEach(function (blueprint) {
-    				vm.events.push(new vm.Event(
-    					blueprint.id,
-    					blueprint.calendar.id,
-    					blueprint.title,
-    					blueprint.description,
-    					new Date(blueprint.startTime),
-    					new Date(blueprint.endTime),
-    					"#555555", // FIXME: substitute with blueprint.primaryColor,
-    					"#aaaaaa" // FIXME: substitute with blueprint.secondaryColor,
-    				));
-    			});
-    		});
-    	});
+        				vm.events.push(new vm.Event(
+        					blueprint.id,
+        					blueprint.calendar.id,
+        					blueprint.title,
+        					blueprint.description,
+        					new Date(blueprint.startTime),
+        					new Date(blueprint.endTime),
+        					"#555555", // FIXME: substitute with blueprint.primaryColor,
+        					"#aaaaaa" // FIXME: substitute with blueprint.secondaryColor,
+        				));
+       			});
+       			// Needed for asynchronous update of vm.events
+       			$scope.$digest();
+        		});
+        	});
     };
     
     // Update the list of calendars displayed within the sidebar
     vm.updateCalendarList = function () {
-    	var viewList = $("#calendarsList");
-    	vm.JSON_getAllMyCalendars(function (calendars) {
-    		viewList.empty();
-    		JSON.parse(calendars).forEach(function (calendar) {
-    			viewList.append(
-    			    $compile(
-        				"<li id=\"cal_entry_" + calendar.id + "\">\n"
-        			  + "  <label>\n"
-                      + "    <input\n"
-                      + "      type=\"checkbox\"\n"
-                      + "      name=\"" + calendar.id + "\"\n"
-                      + "      value=\"" + calendar.title + "\"\n"
-                      + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
-                      + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
-                      + "     " + calendar.title + "\n"
-                      + "  </label>\n"
-                      + "</li>\n"
-                    )($scope)
-    			);
-    		});
-    	});
+        	var viewList = $("#calendarsList");
+        	vm.JSON_getAllMyCalendars(function (calendars) {
+        		viewList.empty();
+        		JSON.parse(calendars).forEach(function (calendar) {
+        			viewList.append(
+                     $compile(
+            				"<li id=\"cal_entry_" + calendar.id + "\">\n"
+            			  + "  <label>\n"
+                          + "    <input\n"
+                          + "      type=\"checkbox\"\n"
+                          + "      name=\"" + calendar.id + "\"\n"
+                          + "      value=\"" + calendar.title + "\"\n"
+                          + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
+                          + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
+                          + "     " + calendar.title + "\n"
+                          + "  </label>\n"
+                          + "</li>\n"
+                     )($scope)
+        			);
+        		});
+        	});
     };
     
     // Hide/Show a calendar's events
     vm.toggleCalendar = function (id) {
-    	if (vm.checkedCalendars[id]) {
-    		vm.shownCalendars.push(id);
-    	} else {
-    		vm.shownCalendars = vm.shownCalendars.filter(function (element) {
-    			return element != id;
-    		});
-    	}
-    	vm.updateEventList();
+        	if (vm.checkedCalendars[id]) {
+        		vm.shownCalendars.push(id);
+        	} else {
+        		vm.shownCalendars = vm.shownCalendars.filter(function (element) {
+        			return element != id;
+        		});
+        	}
+        	vm.updateEventList();
     };
+    
+    // Update event list when
+    vm.viewModifierBehavior = function () {
+        vm.cellIsOpen = false;
+        vm.updateEventList();
+    }
     
     // -------------------------- //
     // -- DATABASE INTERACTION -- //
@@ -397,5 +405,6 @@ angular
     // ----------- //
 
     vm.fn = function () {
+        console.log(JSON.stringify(vm.events, null, 4));
     };
 });
