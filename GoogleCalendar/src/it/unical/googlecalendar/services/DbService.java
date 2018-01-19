@@ -202,4 +202,16 @@ public class DbService {
 		Alarm a=adao.getAlarmById(alarm_id);
 		return adao.deleteAlarmById(a);
 	}
+	
+	public List<Alarm> getMyAlarms(int user_id){
+		return adao.getAlarmsByUserId(user_id);
+	
+	}
+	
+    public Alarm getTheAlarmForAnOccurrence(int user_id, int occurrence_id){
+        return adao.getAlarmsByOccurrenceIdAndUserId(user_id, occurrence_id);
+    }
+    
+    
+	
 }

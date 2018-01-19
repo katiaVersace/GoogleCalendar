@@ -59,19 +59,16 @@ public class AlarmDAO {
 
 	}
 
-	public Alarm getAlarmsByUserId(int user_id) {
+	public List<Alarm> getAlarmsByUserId(int user_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
 		List<Alarm> result = session.createQuery("SELECT m FROM Alarm m where m.user.id= :user_id")
 				.setParameter("user_id", user_id).getResultList();
 
-		session.close();
-		if (result.size() > 0)
-			return result.get(0);
-		else
-			return null;
-
+		
+			return result;
+		
 	}
 	
 	public Alarm getAlarmsByOccurrenceIdAndUserId(int user_id,int occurrence_id) {

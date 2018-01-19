@@ -232,6 +232,19 @@ public class IndexController {
 	
 	
 	
+	@RequestMapping(value = "/JSON_getMyAlarms", method = RequestMethod.POST)
+	@ResponseBody
+	public String JSON_getMyEventsInPeriod(HttpSession session) {
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+		return gson.toJson(dbService.getMyAlarms((Integer) session.getAttribute("user_id")));
+	}
+	
+	@RequestMapping(value = "/JSON_getAlarmForOccurrence/{occurrence_id}", method = RequestMethod.POST)
+	@ResponseBody
+	public String JSON_getAlarmForAnOccurrence(HttpSession session,@PathVariable("occurrence_id") String occurrence_id) {
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+		return gson.toJson(dbService.getTheAlarmForAnOccurrence((Integer) session.getAttribute("user_id"), Integer.parseInt(occurrence_id)));
+	}
 	
 	
 }
