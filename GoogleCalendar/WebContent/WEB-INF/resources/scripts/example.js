@@ -2,6 +2,9 @@ var edb = {};
 var imported = document.createElement('script');
 imported.src = 'resources/scripts/openModal.js';
 document.head.appendChild(imported);
+var imported2 = document.createElement('script');
+imported2.src = 'resources/scripts/clocks.js';
+document.head.appendChild(imported2);
 
 angular.module('mwl.calendar.docs', [ 'mwl.calendar', 'ngAnimate',
 		'ui.bootstrap', 'colorpicker.module' ]);
@@ -37,51 +40,57 @@ angular
 					// temp event to update
 					vm.tmpEvt = undefined;
 					vm.tmpMemo = undefined;
-					
-					vm.memo= undefined;
-					
-					 vm.clickUpdateEvent = function(event) {
-						if(!event.memo){ 
-						vm.temp = {
-							title : event.title,
-							id : event.id,
-							memo : false,
-							descr : event.descr,
-							startsAt : event.startsAt,
-							endsAt : event.endsAt,
-							color : {
-								primary : event.color.primary,
-								secondary : event.color.secondary,
-									},
-							draggable : false,
-							resizable : false,
-							actions : actions
-						};
-						vm.tmpEvt = event;
-						modal(6);
-					 }
-					else{
-						var str = event.title;
-						var res = str.slice(102);
-						vm.memo = {
-						    title : res,
-							id : event.id,
-							memo : true,
-							descr : event.descr,
-							startsAt : moment(),
-							color : {
-								primary : event.color.primary,
-									},
-							draggable : false,
-							resizable : false,
-							actions : actions
+
+					vm.memo = undefined;
+
+					vm.clickUpdateEvent = function(event) {
+
+						if (!event.memo) {
+
+							vm.temp = {
+								title : event.title,
+								id : event.id,
+								memo : false,
+								descr : event.descr,
+								clock : event.clock,
+								startsAt : event.startsAt,
+								endsAt : event.endsAt,
+								color : {
+									primary : event.color.primary,
+									secondary : event.color.secondary,
+								},
+								draggable : false,
+								resizable : false,
+								actions : actions
+							};
+
+							vm.tmpEvt = event;
+							
+							updateClock(vm.temp.clock);
+
+							//document.getElementById("TourId").value = vm.temp.clock;
+							modal(6);
+						} else {
+							var str = event.title;
+							var res = str.slice(102);
+							vm.memo = {
+								title : res,
+								id : event.id,
+								memo : true,
+								descr : event.descr,
+								startsAt : moment(),
+								color : {
+									primary : event.color.primary,
+								},
+								draggable : false,
+								resizable : false,
+								actions : actions
 							};
 							vm.tmpMemo = event;
 							modal(8);
 						}
-					 };
-						
-					
+					};
+
 					vm.deleteEvent = function(event) {
 						vm.events = vm.events.filter(function(item) {
 							return item.id != event.id;
@@ -194,6 +203,7 @@ angular
 							id : vm.contId,
 							memo : false,
 							descr : '',
+							clock : 'none',
 							startsAt : startDate,
 							endsAt : endDate,
 							color : {
@@ -225,6 +235,7 @@ angular
 							title : 'New event',
 							descr : '',
 							memo : false,
+							clock : 'none',
 							startsAt : vm.firstDateClicked,
 							endsAt : vm.lastDateClicked,
 							color : {
@@ -236,7 +247,6 @@ angular
 							actions : actions
 						};
 						document.getElementById('btn-add').disabled = false;
-						
 
 						if (vm.calendarView === 'month') {
 							if ((vm.cellIsOpen && moment(date).startOf('day')
@@ -262,32 +272,32 @@ angular
 						}
 					};
 
-					
 					vm.cellModifier = function(cell) {
 						vm.vtrCell.push(cell);
 						console.log(vm.vtrCell.length);
 						console.log(vm.vtrCell[length - 1]);
 
 					};
-					
-					
-			
-					
-					
-			// MANAGE EVENT		
-			vm.openEventModal = function() {
-						modal(5);
-					};		
-			
-			vm.addEvent = function() {
 
-						//var value = document.getElementById("descEvent").value;
-						//vm.temp.descr = value;
+					// MANAGE EVENT
+					vm.openEventModal = function() {
+						
+						modal(5);
+					};
+
+					vm.addEvent = function() {
+
+						// var value =
+						// document.getElementById("descEvent").value;
+						// vm.temp.descr = value;
+
+						vm.temp.clock = document.getElementById("TourId").value;
+						
 						vm.events.push(vm.temp);
 						vm.contId++;
-						
+
 						document.getElementById('btn-add').disabled = true;
-						
+
 						// contenuto del modale evento
 						// var id = document.querySelector('input[name =
 						// "rr"]:checked').value;
@@ -302,22 +312,24 @@ angular
 						// document.getElementById('dataEnd').value;
 						// var timeEnd =
 						// document.getElementById('timeEnd').value;
-						//alert(vm.temp.id);
-										
+						// alert(vm.temp.id);
+						resetClock();
 						document.getElementById('modal-wrapper5').style.display = 'none';
-     		}
-			
-			vm.updateEvents = function() {
-						var index = vm.events.indexOf(vm.tmpEvt);
-						if(index > -1){
-						       vm.events.splice(index,1);	
-						}
+					}
+
+					vm.updateEvents = function() {
 						
+						var index = vm.events.indexOf(vm.tmpEvt);
+						if (index > -1) {
+							vm.events.splice(index, 1);
+						}
+
+						//vm.events[index].title = vm.temp.title
 						vm.tmpEvt = {
 							title : vm.temp.title,
 							id : vm.temp.id,
 							memo : false,
-							descr : vm.temp.descr,	
+							descr : vm.temp.descr,
 							startsAt : vm.temp.startsAt,
 							endsAt : vm.temp.endsAt,
 							color : {
@@ -328,72 +340,73 @@ angular
 							resizable : false,
 							actions : actions
 						};
+
 						
+						vm.tmpEvt.clock = document.getElementById('TourId2').value;
 						vm.events.push(vm.tmpEvt);
+						
+						resetClock();
 						document.getElementById('modal-wrapper6').style.display = 'none';
 
-			}
-					
-					
-					
-			// MANAGE MEMO		
-			vm.openMemoModal = function() {
-			modal(7);
-						
-			vm.memo = {
-					    title: 'New Memo',
-				        id : vm.contId,
-			            startsAt: moment(),
-			            color: {
-					           	primary: "#123456",
-					           },
-					    draggable: false,
-					    resizable: false,
-					    memo : true,
-					    actions: actions
-			   		};
-					
-			};
-			
-		  vm.addMemo = function() {
-			  
-			    vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'+vm.memo.title;
-	    		vm.events.push(vm.memo);
-	    		vm.contId++;
-	    		document.getElementById('modal-wrapper7').style.display='none';
-				
-			}
+					}
 
-		  
-		vm.updateMemo = function() {
-				var index = vm.events.indexOf(vm.tmpMemo);
-				if(index > -1){
-				       vm.events.splice(index,1);	
-				}
-				
-				vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'+vm.memo.title;
-		    	vm.tmpMemo = {
-					title : vm.memo.title,
-					id : vm.memo.id,
-					descr : vm.memo.descr,	
-					startsAt : moment(),
-					color : {
-						primary : vm.memo.color.primary,
-					},
-					draggable : false,
-					resizable : false,
-					memo : true,
-					actions : actions
-				};
-				
-				vm.events.push(vm.tmpMemo);
-				document.getElementById('modal-wrapper8').style.display = 'none';
+					// MANAGE MEMO
+					vm.openMemoModal = function() {
+						modal(7);
 
-	}
+						vm.memo = {
+							title : 'New Memo',
+							id : vm.contId,
+							startsAt : moment(),
+							color : {
+								primary : "#123456",
+							},
+							draggable : false,
+							resizable : false,
+							memo : true,
+							actions : actions
+						};
 
-		  
-		  
-});
+					};
+
+					vm.addMemo = function() {
+
+						vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
+								+ vm.memo.title;
+						vm.events.push(vm.memo);
+						vm.contId++;
+						document.getElementById('modal-wrapper7').style.display = 'none';
+
+					}
+
+					vm.updateMemo = function() {
+						var index = vm.events.indexOf(vm.tmpMemo);
+						if (index > -1) {
+							vm.events.splice(index, 1);
+						}
+
+						vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
+								+ vm.memo.title;
+						vm.tmpMemo = {
+							title : vm.memo.title,
+							id : vm.memo.id,
+							descr : vm.memo.descr,
+							startsAt : moment(),
+							color : {
+								primary : vm.memo.color.primary,
+							},
+							draggable : false,
+							resizable : false,
+							memo : true,
+							actions : actions
+						};
+
+						vm.events.push(vm.tmpMemo);
+						document.getElementById('modal-wrapper8').style.display = 'none';
+
+					}
+
+				});
 
 hoverCell = function(date, date1, cell) {
 	if (cell.date >= date && cell.date <= date1) {
