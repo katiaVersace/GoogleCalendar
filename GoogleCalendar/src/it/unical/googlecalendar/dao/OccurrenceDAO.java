@@ -43,10 +43,12 @@ public interface OccurrenceDAO {
 	Occurrence getOccurrenceById(int o_id);
 
 	
-	int insertNewEvent(Calendar c, User u, String title, String description, Date startTime, Date endTime, Color c1,
-			Color c2);
+	
+	
+	int insertNewEvent(Calendar c, User u, String title, String description, Date startTime, Date endTime, String c1,
+			String c2);
 
-	boolean updateEventById(Occurrence v, String title, String description, Date startTime, Date endTime, Color c1,
-			Color c2, int user_id);
+	boolean updateEventById(Occurrence v, String title, String description, Date startTime, Date endTime, String c1,
+			String c2, int user_id);
 	
 }

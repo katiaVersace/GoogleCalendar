@@ -51,14 +51,10 @@ public class Occurrence {
 	private String description;
 	
 	@Column
-	@Expose
-	Color primaryColor;
+	String primaryColor;
 	
 	@Column
-	@Expose
-	Color secondaryColor;
-	
-
+	String secondaryColor;
 	
 	@ManyToOne (cascade=CascadeType.REFRESH)
 	@JoinColumn(name="calendar_id", nullable=false)
@@ -73,7 +69,7 @@ public class Occurrence {
 		super();
 	}
 	
-	public Occurrence(Calendar calendar,User creator,String title, String description,Date startTime,Date endTime,Color c1, Color c2){
+	public Occurrence(Calendar calendar,User creator,String title, String description,Date startTime,Date endTime,String c1, String c2){
 		super();
 		this.title=title;
 		
@@ -89,8 +85,7 @@ public class Occurrence {
 		this.description=description;
 		
 	}
-	
-	
+
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -107,19 +102,19 @@ public class Occurrence {
 		this.endTime = endTime;
 	}
 
-	public Color getPrimaryColor() {
+	public String getPrimaryColor() {
 		return primaryColor;
 	}
 
-	public void setPrimaryColor(Color primaryColor) {
+	public void setPrimaryColor(String primaryColor) {
 		this.primaryColor = primaryColor;
 	}
 
-	public Color getSecondaryColor() {
+	public String getSecondaryColor() {
 		return secondaryColor;
 	}
 
-	public void setSecondaryColor(Color secondaryColor) {
+	public void setSecondaryColor(String secondaryColor) {
 		this.secondaryColor = secondaryColor;
 	}
 

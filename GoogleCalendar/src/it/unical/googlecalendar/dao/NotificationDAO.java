@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Query;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,20 +12,20 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import it.unical.googlecalendar.model.Memo;
+import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.model.User;
 
 @Repository
-public class MemoDAO {
+public class NotificationDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	public MemoDAO() {
+	public NotificationDAO() {
 
 	}
 
-	public boolean save(Memo Memo) {
+	public boolean save(Notification notification) {
 
 		Session session = sessionFactory.openSession();
 		boolean result = false;
@@ -33,7 +34,7 @@ public class MemoDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.save(Memo);
+			session.save(notification);
 			tx.commit();
 			result = true;
 
@@ -48,75 +49,46 @@ public class MemoDAO {
 
 	}
 
-	public List<Memo> getAllMemos() {
+	public List<Notification> getAllNotification() {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		List<Memo> result = session.createNativeQuery("SELECT * FROM Memo", Memo.class).list();
+		List<Notification> result = session.createNativeQuery("SELECT * FROM Notification",Notification.class).list();
 
 		session.close();
 		return result;
 
 	}
 
-	public Memo getMemoByUserId(int user_id) {
+	public List<Notification> getNotificationByUserId(int user_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		List<Memo> result = session.createQuery("SELECT m FROM Memo m where m.user.id= :user_id")
+		List<Notification> result = session.createQuery("SELECT n FROM Notification n where n.user.id= :user_id")
 				.setParameter("user_id", user_id).getResultList();
 
 		session.close();
-		if (result.size() > 0)
-			return result.get(0);
-		else
-			return null;
-
-	}
-
-	public boolean updateMemoById(Memo m, int creator, String title, Date date, String description, String color1
-			) {
-		Session session = sessionFactory.openSession();
-		boolean result = false;
-		Transaction tx = null;
-
-		if (m.getUser().getId()==creator) {
-			try {
-				tx = session.beginTransaction();
-				m.setTitle(title);
-				m.setCreationDate(date);
-				m.setDescription(description);
-				m.setPrimaryColor(color1);
-				session.update(m);
-				tx.commit();
-				result = true;
-
-			} catch (Exception e) {
-				// e.printStackTrace();
-				tx.rollback();
-				result = false;
-			}
-		}
-
-		session.close();
 		return result;
 
 	}
 
-	public boolean deleteMemoById(Memo m, User u) {
+
+	public boolean deleteNotifications(User u) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		boolean result = false;
 
-		if (m.getUser().equals(u)) {
+	
 			try {
 				tx = session.beginTransaction();
 
-				session.delete(m);
-				session.flush();
+				Query query = session
+						.createQuery("DELETE FROM Notification n WHERE n.user.id= :user_id");
+				query.setParameter("user_id",u.getId());
+				 query.executeUpdate();
 
 				tx.commit();
-				u.getMemos().remove(m);
+				u.getNotifications().clear();
 				result = true;
 
 			} catch (Exception e) {
@@ -124,22 +96,22 @@ public class MemoDAO {
 				result = false;
 				tx.rollback();
 			}
-		}
+		
 
 		session.close();
 		return result;
 	}
 
-	public int insertNewMemo(User u, String title, Date data, String description, String c1) {
+	public int sendNotification(User u, String description) {
 		Session session = sessionFactory.openSession();
-		Memo m = new Memo(u, title, data, description,c1);
+		Notification n = new Notification(u,description);
 		int result =-1;
 		Transaction tx = null;
 
 		try {
 			tx = session.beginTransaction();
-			session.save(m);
-			result=m.getId();
+			session.save(n);
+			result=n.getId();
 			tx.commit();
 
 		} catch (Exception e) {
@@ -151,11 +123,11 @@ public class MemoDAO {
 		return result;
 	}
 
-	public Memo getMemoById(int memo_id) {
+	public Notification getNotificationById(int notification_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		Memo result = session.get(Memo.class,memo_id);
+		Notification result = session.get(Notification.class,notification_id);
 
 		session.close();
 		return result;

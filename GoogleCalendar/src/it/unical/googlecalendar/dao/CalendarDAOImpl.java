@@ -122,7 +122,7 @@ private Users_CalendarsDAOImpl ucdao;
 		
 		//gestire se sei l'ultimo admin chi diventa admin?
 		    if(resultAssociation.getPrivileges().equals("ADMIN")){
-		
+		    		
 		try {
 			
 			tx = session.beginTransaction();
@@ -154,23 +154,49 @@ private Users_CalendarsDAOImpl ucdao;
 	
 	@Override
 	public boolean disconnectUserFromCalendarById(Calendar c, User u) {
-		Session session = sessionFactory.openSession();
-		
-		Transaction tx = null;
 		boolean result = false;
-		int resultId=0;
+		Session session = sessionFactory.openSession();
+		Users_Calendars resultAssociation;
 		List<Users_Calendars> resultsId=ucdao.getAssociationByUserIdAndCalendarId(u.getId(), c.getId());
 		if(resultsId.size()!=0){
-		resultId = resultsId.get(0).getId();
+		resultAssociation = resultsId.get(0);
+		boolean toDelete=false;
+		Transaction tx = null;		
+		//Se sei l'ultimo degli admin
+		    if(resultAssociation.getPrivileges().equals("ADMIN")&&numOfUsersWithPriviledgeForCalendar(c, "ADMIN")==1){
+		    	Users_Calendars uc;
+		    	
+		    		if(numOfUsersWithPriviledgeForCalendar(c, "RW")>0){
+		    			uc=usersWithPriviledgeForCalendar(c, "RW").get(0);
+		    			uc.setPrivileges("ADMIN");
+		    			tx = session.beginTransaction();
+		    			session.update(uc);
+		    			tx.commit();
+		    		}
+		    		else if(numOfUsersWithPriviledgeForCalendar(c, "R")>0){
+		    			uc=usersWithPriviledgeForCalendar(c, "R").get(0);
+		    			uc.setPrivileges("ADMIN");
+		    			tx = session.beginTransaction();
+		    			session.update(uc);
+		    			tx.commit();
+		    		} 
+		    			else toDelete=true;
+		    	}
+		
+		int resultId=0;
 		Users_Calendars uc = (Users_Calendars) session.get(Users_Calendars.class, resultId);
-		
-		
 		try {
 			
 			tx = session.beginTransaction();
-			session.delete(uc);
-			session.flush();
 			
+			//se rimuovo il calendario a cascata rimuovo anche l'associazione
+			if(toDelete){
+			deleteById(c, u);
+						}
+			//altrimenti rimuovo solo l'associazione
+			else session.delete(uc);
+
+			session.flush();
 			tx.commit();
 			
 			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
@@ -188,6 +214,7 @@ private Users_CalendarsDAOImpl ucdao;
 		//}
 		
 		session.close();
+		
 		return result;
 	}
 
@@ -277,6 +304,34 @@ return result;
 		session.close();
 		return result;
 		
+	}
+	
+	
+	public int numOfUsersWithPriviledgeForCalendar(Calendar c, String privilege){
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Query query = session
+				.createQuery("FROM Users_Calendars uc WHERE uc.calendar.id = :calendar_id and uc.privileges= :privilege");
+		query.setParameter("calendar_id", c.getId()).setParameter("privilege",privilege);
+		List<String> result = query.getResultList();
+		session.close();
+		return result.size();
+	
+	}
+	
+	
+	public List<Users_Calendars> usersWithPriviledgeForCalendar(Calendar c, String privilege){
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Query query = session
+				.createQuery("SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id = :calendar_id and uc.privileges= :privilege");
+		query.setParameter("calendar_id", c.getId()).setParameter("privilege",privilege);
+		List<Users_Calendars> result = query.getResultList();
+		session.close();
+		return result;
+	
 	}
 	
 }

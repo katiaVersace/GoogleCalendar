@@ -62,10 +62,10 @@ public class DbService {
 		Occurrence ev3=null;
 		Occurrence ev4=null;
 		try {
-			ev1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
-			ev2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
-			ev3=new Occurrence(katiaCalendar2,katia,"Ricordati che devi morire","Sii retto, ma non in faccia",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black,Color.BLUE);
-			ev4=new Occurrence(katiaCalendar2,katia,"Una mano è solo un piede che non ha mai smesso di sognare","Saggezza",sdf.parse(leftBoundary),sdf.parse(rightBoundary),Color.black,Color.BLUE);
+			ev1=new Occurrence(katiaCalendar,katia,"Comprare il latte","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),"#555555","#aaaaaa");
+			ev2=new Occurrence(katiaCalendar,katia,"Comprare il pane","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),"#555555","#aaaaaa");
+			ev3=new Occurrence(katiaCalendar2,katia,"Ricordati che devi morire","Sii retto, ma non in faccia",sdf.parse(dateInString),sdf.parse(dateInString2),"#555555","#aaaaaa");
+			ev4=new Occurrence(katiaCalendar2,katia,"Una mano ï¿½ solo un piede che non ha mai smesso di sognare","Saggezza",sdf.parse(leftBoundary),sdf.parse(rightBoundary),"#555555","#aaaaaa");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -73,8 +73,7 @@ public class DbService {
 		odao.save(ev2);
 		odao.save(ev3);
 		odao.save(ev4);
-		
-	}
+}
 	
 
 	public Collection<Occurrence> stampaTuttiGliEventi() {
@@ -116,7 +115,7 @@ public class DbService {
 	}
 
 
-	public int insertNewEvent(int calendar_id, int creator_id, String title, String description, Date startTime, Date endTime, Color c1,Color c2) {
+	public int insertNewEvent(int calendar_id, int creator_id, String title, String description, Date startTime, Date endTime, String c1,String c2) {
 		Calendar c=cdao.getCalendarById(calendar_id);
 		User u=udao.getUserById(creator_id);
 		
@@ -124,9 +123,9 @@ public class DbService {
 	}
 
 
-	public int insertNewMemo(int creator_id, String title, Date data, String description, Color c1, Color c2) {
+	public int insertNewMemo(int creator_id, String title, Date data, String description, String c1) {
 				User u=udao.getUserById(creator_id);
-				return mdao.insertNewMemo(u,title,data,description,c1,c2);
+				return mdao.insertNewMemo(u,title,data,description,c1);
 	}
 
 	
@@ -138,7 +137,7 @@ public class DbService {
 		return odao.deleteById(c,u,ca);
 	}
 
-	public boolean updateEventById(int event_id, String title, String description, Date startTime, Date endTime, Color c1,Color c2,int user_id) {
+	public boolean updateEventById(int event_id, String title, String description, Date startTime, Date endTime, String c1,String c2,int user_id) {
 		Occurrence e=(Occurrence) odao.getOccurrenceById(event_id);		
 		return odao.updateEventById(e, title,  description,startTime,endTime, c1,  c2, user_id);
 	}
@@ -159,9 +158,9 @@ public class DbService {
 	}
 
 	public boolean updateMemoById(int memo_id, int user_id, String title, Date data, String description,
-			Color c1, Color c2) {
+			String c1) {
 		Memo m=mdao.getMemoById(memo_id);
-	return mdao. updateMemoById(m,user_id, title,data, description,c1,c2);
+	return mdao. updateMemoById(m,user_id, title,data, description,c1);
 
 	}
 

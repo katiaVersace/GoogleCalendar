@@ -187,7 +187,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public int insertNewEvent(Calendar c, User u, String title, String description,Date startTime,Date endTime,Color c1, Color c2) {
+	public int insertNewEvent(Calendar c, User u, String title, String description,Date startTime,Date endTime,String c1, String c2) {
 		Session session = sessionFactory.openSession();
 		Occurrence ev = new Occurrence(c, u, title, description,startTime,endTime, c1, c2);
 		int result =-1;
@@ -270,8 +270,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public boolean updateEventById(Occurrence v, String title, String description, Date startTime, Date endTime,
-			Color c1, Color c2, int user_id) {
+	public boolean updateEventById(Occurrence v, String title,  String description, Date startTime,Date endTime,String c1, String c2,int user_id) {
 		Session session = sessionFactory.openSession();
 
 		boolean result = false;
@@ -288,7 +287,6 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			if (uc.getPrivileges().equals("ADMIN") || uc.getPrivileges().equals("RW")) {
 
 				Transaction tx = null;
-
 				try {
 					tx = session.beginTransaction();
 					v.setTitle(title);
@@ -309,7 +307,6 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 					session.saveOrUpdate(v);
 					tx.commit();
 					result = true;
-
 				} catch (Exception e) {
 					result = false;
 					tx.rollback();

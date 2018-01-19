@@ -14,29 +14,20 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"memo_id"})})
-public class Memo  {
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"notification_id"})})
+public class Notification  {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="memo_id",unique = true)
+	@Column(name="notification_id",unique = true)
 	protected int id;
 
-	@Column(nullable = false)
-	private String title;
-
-	@Column(nullable = false)
-	private Date creationDate;
 
 	@Column
 	private String description;
 	
 	@Column
-	private String primaryColor;
-
-	
-	@Column
-	private String secondaryColor;
+	private Date timestamp;
 	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "user_id",nullable = false)
@@ -44,20 +35,27 @@ public class Memo  {
 
 	
 	
-	public Memo(){
+	public Notification(){
 		super();
 	}
 	
-	public Memo (User creator,String title, Date date, String description,String color1){
-		this.title=title;
-		this.creationDate=date;
+	public Notification (User user,String description){
 		this.description=description;		
-		this.primaryColor=color1;
-		this.user=creator;
-		user.getMemos().add(this);
-	
+		
+		this.user=user;
+		timestamp=new Date();
+		user.getNotifications().add(this);
+		
 	}
 	
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -66,44 +64,13 @@ public class Memo  {
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public Date getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-
+	
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getPrimaryColor() {
-		return primaryColor;
-	}
-
-	public void setPrimaryColor(String primaryColor) {
-		this.primaryColor = primaryColor;
-	}
-
-	public String getSecondaryColor() {
-		return secondaryColor;
-	}
-
-	public void setSecondaryColor(String secondaryColor) {
-		this.secondaryColor = secondaryColor;
 	}
 
 	public User getUser() {
@@ -133,7 +100,7 @@ public class Memo  {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Memo other = (Memo) obj;
+		Notification other = (Notification) obj;
 		if (id != other.id)
 			return false;
 		return true;

@@ -20,27 +20,27 @@ import it.unical.googlecalendar.model.User;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AppConfiguration.class)
 @WebAppConfiguration
-public class MemoTest {	
+public class MemoTest {
 	@Autowired
 	private MemoDAO mdao;
 	@Autowired
 	private UserDAOImpl udao;
-	
+
 	@Test
 	public void saveTest() {
-		
-		User pippo = new User("pippo88@p.it","pippo", "1234");
+
+		User pippo = new User("pippo88@p.it", "pippo", "1234");
 		udao.save(pippo);
-Memo m=new Memo(pippo, "Memo1", new Date(), "prova", Color.BLACK, Color.cyan);
-Memo m1=new Memo(pippo, "Memo2", new Date(), "prova2", Color.BLACK, Color.cyan);
-mdao.save(m1);
-	mdao.save(m);
-	
-	List<Memo>list=pippo.getMemos();
-	System.out.println("Size memos di pippo"+list.size());
-	for(Memo mem:list){
-		System.out.println(mem.getTitle()+" "+m.getUser().getUsername());
-	}
+		Memo m = new Memo(pippo, "Memo1", new Date(), "prova", Color.BLACK.toString());
+		Memo m1 = new Memo(pippo, "Memo2", new Date(), "prova2", Color.BLACK.toString());
+		mdao.save(m1);
+		mdao.save(m);
+
+		List<Memo> list = pippo.getMemos();
+		//System.out.println("Size memos di pippo" + list.size());
+//		for (Memo mem : list) {
+//			System.out.println(mem.getTitle() + " " + m.getUser().getUsername());
+//		}
 	}
 
 }

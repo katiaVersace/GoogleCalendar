@@ -18,8 +18,7 @@ public interface InvitationDAO {
 	
 	void update(Invitation invitation);
 	boolean changePrivilegeOfInvitation();
-	boolean sendNotificationOfResponse();
-
+	
 	boolean acceptInvitation(User u, Calendar c);
 
 	boolean declineInvitation(User u, Calendar c);
