@@ -20,6 +20,10 @@ td.fc-today {
 
 }
 
+.cal-week-box-cell{
+	display: none;
+}
+
 .fc-first th{
 	font-family: 'Roboto', sans-serif;
     background:#1c6c13!important;
@@ -731,21 +735,15 @@ table.fc-header{
 .fc-event .ui-resizable-handle {
 	display: none !important;
 	}
-	
-	
-	
-	
-	
-	
-	
-	#welcomeMessage {
+
+#welcomeMessage {
 	 height: 60px;
   margin:0 0 5px 0;
   text-align: center;
   
 	}
 	
-	.align-left{
+.align-left{
    float: left;
  }
 

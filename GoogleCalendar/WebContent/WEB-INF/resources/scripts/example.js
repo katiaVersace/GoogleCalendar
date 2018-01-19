@@ -1,3 +1,16 @@
+var imported = document.createElement('script');
+imported.src = 'resources/scripts/openModal.js';
+document.head.appendChild(imported);
+var imported2 = document.createElement('script');
+imported2.src = 'resources/scripts/clocks.js';
+document.head.appendChild(imported2);
+
+hoverCell = function(date, date1, cell) {
+    if (cell.date >= date && cell.date <= date1) {
+        cell.cssClass = 'clicked-cell';
+    }
+};
+
 angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
 angular
   .module('mwl.calendar.docs')
@@ -31,11 +44,29 @@ angular
     // List of glyphs shown after entries in a day's event list,
     // with behavior
     var actions = [{
+        label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
+        onClick : function(args) {
+            vm.clickUpdateEvent(args.calendarEvent);
+        }
+      }, {
         label: '<i class=\'glyphicon glyphicon-remove\'></i>',
         onClick: function (args) {
             // TODO: delete occurrence
       },
     }];
+    
+    // ---- MERGE MARIO MARCO
+    vm.vtrCell = [];
+    // event for modal
+    vm.temp = undefined;
+    // clicked cell
+    vm.lastCellClicked = undefined;
+    vm.contId = 0;
+    // temp event to update
+    vm.tmpEvt = undefined;
+    vm.tmpMemo = undefined;
+    vm.memo = undefined;
+    //
     
     // --------------- //
     // -- UTILITIES -- //
@@ -44,21 +75,21 @@ angular
     // Event Constructor
     vm.Event = function (id, calendar, title, description, 
     		startsAt, endsAt, primaryColor, secondaryColor) {
-    	this.id = id;
-    	this.calendar = calendar;
-    	this.title = title;
-    	this.description = description;
-    	this.startsAt = startsAt;
-    	this.endsAt = endsAt;
-    	this.color = {
-			primary: primaryColor,
-			secondary: secondaryColor,
-    	};
-    	this.draggable = false;
-    	this.resizable = false;
-    	this.actions = actions;
+        	this.id = id;
+        	this.calendar = calendar;
+        	this.title = title;
+        	this.description = description;
+        	this.startsAt = startsAt;
+        	this.endsAt = endsAt;
+        	this.color = {
+    			primary: primaryColor,
+    			secondary: secondaryColor,
+        	};
+        	this.draggable = false;
+        	this.resizable = false;
+        	this.actions = actions;
     }
-    
+        
     vm.getViewDateBoundaries = function () {        
         return {
             start: moment(vm.viewDate).startOf(vm.calendarView).toDate(),
@@ -104,17 +135,24 @@ angular
         		JSON.parse(calendars).forEach(function (calendar) {
         			viewList.append(
                      $compile(
-            				"<li id=\"cal_entry_" + calendar.id + "\">\n"
-            			  + "  <label>\n"
-                          + "    <input\n"
-                          + "      type=\"checkbox\"\n"
-                          + "      name=\"" + calendar.id + "\"\n"
-                          + "      value=\"" + calendar.title + "\"\n"
-                          + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
-                          + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
-                          + "     " + calendar.title + "\n"
-                          + "  </label>\n"
-                          + "</li>\n"
+                          "<li id=\"cal_entry_" + calendar.id + "\">\n"
+                        + "  <label>\n"
+                        + "    <input\n"
+                        + "      type=\"checkbox\"\n"
+                        + "      name=\"" + calendar.id + "\"\n"
+                        + "      value=\"" + calendar.title + "\"\n"
+                        + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
+                        + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
+                        + "    <label for=\"" + calendar.id + ">" + calendar.title + "</label>\n"
+                        + "    <label>\n"
+                        + "      <i\n"
+                        + "        class=\"glyphicon glyphicon-cog\"\n"
+                        + "        onclick=\"manageCalendar('${cal.title}','${cal.id}')\"\n"
+                        + "        style=\"margin-left: 80%;\">\n"
+                        + "      </i>"
+                        + "    </label>\n"
+                        + "  </label>\n"
+                        + "</li>\n"
                      )($scope)
         			);
         		});
@@ -178,23 +216,23 @@ angular
      */
     vm.insertNewEvent = function (calendar_id, title, description, 
     		startsAt, endsAt, primaryColor, secondaryColor) {
-    	$.ajax({
-    		type: "POST",
-    		url: "insertNewEvent/" + calendar_id,
-    		data: {
-    			title: title,
-    			description: description,
-    			startTime: startsAt,
-    			endTime: endsAt,
-    			c1: primaryColor,
-    			c2: secondaryColor,
-    		},
-    		success: function (response) {
-    			if (response != -1) {
-    				vm.updateEventList();
-    			}
-    		},
-    	});
+        	$.ajax({
+        		type: "POST",
+        		url: "insertNewEvent/" + calendar_id,
+        		data: {
+        			title: title,
+        			description: description,
+        			startTime: startsAt,
+        			endTime: endsAt,
+        			c1: primaryColor,
+        			c2: secondaryColor,
+        		},
+        		success: function (response) {
+        			if (response != -1) {
+        				vm.updateEventList();
+        			}
+        		},
+        	});
     };
     
     /*
@@ -269,14 +307,6 @@ angular
     	       }
     	   },
     	});
-    };
-    
-    /*
-     * deleteCalendarId
-     */
-    vm.deleteCalendar = function (id) {
-        // FIXME: this shouldn't be here, a user can only disconnect
-        //        while deleting is db's burden
     };
     
     /*
@@ -370,7 +400,7 @@ angular
     vm.eventClicked = function(event) {
         // TODO
     };
-
+    
     vm.eventEdited = function(event) {
         // TODO
     };
@@ -389,29 +419,270 @@ angular
         event[field] = !event[field];
     };
 
+
+    vm.clickUpdateEvent = function(event) {
+        	if (!event.memo) {
+        		vm.temp = {
+        			title : event.title,
+        			id : event.id,
+        			memo : false,
+        			descr : event.descr,
+        			clock : event.clock, // TODO: fix clock on DB
+        			startsAt : event.startsAt,
+        			endsAt : event.endsAt,
+        			color : {
+        				primary : event.color.primary,
+        				secondary : event.color.secondary,
+        			},
+        			draggable : false,
+        			resizable : false,
+        			actions : actions
+        		};
+        
+        		vm.tmpEvt = event;
+        		
+        		updateClock(vm.temp.clock);
+        		// document.getElementById("TourId").value = vm.temp.clock;
+            modal(6);
+        } else {
+            var str = event.title;
+            var res = str.slice(102);
+            vm.memo = {
+                title : res,
+                id : event.id,
+                memo : true,
+                descr : event.descr,
+                startsAt : moment(),
+                color : {
+                    primary : event.color.primary,
+                },
+                draggable : false,
+                resizable : false,
+                actions : actions
+            };
+            vm.tmpMemo = event;
+            modal(8);
+        }
+    };
+    
+    vm.rangeSelected = function(startDate, endDate) {
+
+        if (vm.lastCellClicked != undefined) {
+            vm.lastCellClicked.cssClass = '.clear-cell';
+        }
+
+        vm.firstDateClicked = startDate;
+        vm.lastDateClicked = endDate;
+        vm.temp = {
+            title : 'New event',
+            id : vm.contId,
+            memo : false,
+            descr : '',
+            clock : 'none',
+            startsAt : startDate,
+            endsAt : endDate,
+            color : {
+                primary : "#123456",
+                secondary : "#123458"
+            },
+            draggable : false,
+            resizable : false,
+            actions : actions
+        };
+        vm.openEventModal();
+
+    };
+
     vm.timespanClicked = function(date, cell) { 
+        vm.firstDateClicked = date;
+        vm.lastDateClicked = date;
+    
+        if (vm.lastCellClicked != undefined) {
+            vm.lastCellClicked.cssClass = '.clear-cell';
+        }
+    
+        hoverCell(vm.firstDateClicked, vm.lastDateClicked, cell);
+        vm.lastCellClicked = cell;
+    
+        vm.temp = {
+            id : vm.contId,
+            title : 'New event',
+            descr : '',
+            memo : false,
+            clock : 'none',
+            startsAt : vm.firstDateClicked,
+            endsAt : vm.lastDateClicked,
+            color : {
+                primary : "#123456",
+                secondary : "#123456",
+            },
+            draggable : false,
+            resizable : false,
+            actions : actions
+        };
+        document.getElementById('btn-add').disabled = false;
+    
         if (vm.calendarView === 'month') {
-            if ((vm.cellIsOpen && moment(date).startOf('day').isSame(moment(vm.viewDate).startOf('day'))) || cell.events.length === 0 || !cell.inMonth) {
+            if ((vm.cellIsOpen && moment(date).startOf('day')
+                    .isSame(moment(vm.viewDate).startOf('day')))
+                    || cell.events.length === 0
+                    || !cell.inMonth) {
                 vm.cellIsOpen = false;
             } else {
                 vm.cellIsOpen = true;
                 vm.viewDate = date;
             }
         } else if (vm.calendarView === 'year') {
-            if ((vm.cellIsOpen && moment(date).startOf('month').isSame(moment(vm.viewDate).startOf('month'))) || cell.events.length === 0) {
+            if ((vm.cellIsOpen && moment(date).startOf('month')
+                    .isSame(
+                            moment(vm.viewDate)
+                                    .startOf('month')))
+                    || cell.events.length === 0) {
                 vm.cellIsOpen = false;
             } else {
                 vm.cellIsOpen = true;
                 vm.viewDate = date;
             }
-        }    
+        }
     };
     
-    // ----------- //
-    // -- DEBUG -- //
-    // ----------- //
+	vm.cellModifier = function(cell) {
+		vm.vtrCell.push(cell);
+		console.log(vm.vtrCell.length);
+		console.log(vm.vtrCell[length - 1]);
 
-    vm.fn = function () {
-        console.log(JSON.stringify(vm.events, null, 4));
-    };
+	};
+
+	// MANAGE EVENT
+	vm.openEventModal = function() {
+		
+		modal(5);
+	};
+
+	vm.addEvent = function() {
+
+		// var value =
+		// document.getElementById("descEvent").value;
+		// vm.temp.descr = value;
+
+		vm.temp.clock = document.getElementById("TourId").value;
+		
+		// TODO: remove
+		vm.events.push(vm.temp);
+		vm.contId++;
+
+		document.getElementById('btn-add').disabled = true;
+
+		// contenuto del modale evento
+		// var id = document.querySelector('input[name =
+		// "rr"]:checked').value;
+		// var title = document.getElementById('titl').value;
+		// var colP = document.getElementById('colP').value;
+		// var colS = document.getElementById('colS').value;
+		// var dataStart =
+		// document.getElementById('dataStart').value;
+		// var timeStart =
+		// document.getElementById('timeStart').value ;
+		// var dataEnd =
+		// document.getElementById('dataEnd').value;
+		// var timeEnd =
+		// document.getElementById('timeEnd').value;
+		// alert(vm.temp.id);
+		resetClock();
+		document.getElementById('modal-wrapper5').style.display = 'none';
+	}
+
+	vm.updateEvents = function() {
+		
+		var index = vm.events.indexOf(vm.tmpEvt);
+		if (index > -1) {
+		    // TODO: remove
+			vm.events.splice(index, 1);
+		}
+
+		//vm.events[index].title = vm.temp.title
+		vm.tmpEvt = {
+			title : vm.temp.title,
+			id : vm.temp.id,
+			memo : false,
+			descr : vm.temp.descr,
+			startsAt : vm.temp.startsAt,
+			endsAt : vm.temp.endsAt,
+			color : {
+				primary : vm.temp.color.primary,
+				secondary : vm.temp.color.secondary,
+			},
+			draggable : false,
+			resizable : false,
+			actions : actions
+		};
+
+		
+		vm.tmpEvt.clock = document.getElementById('TourId2').value;
+		// TODO: remove
+		vm.events.push(vm.tmpEvt);
+		
+		resetClock();
+		document.getElementById('modal-wrapper6').style.display = 'none';
+
+	}
+
+	// MANAGE MEMO
+	vm.openMemoModal = function() {
+		modal(7);
+
+		vm.memo = {
+			title : 'New Memo',
+			id : vm.contId,
+			startsAt : moment(),
+			color : {
+				primary : "#123456",
+			},
+			draggable : false,
+			resizable : false,
+			memo : true,
+			actions : actions
+		};
+
+	};
+
+	// questa funzione non servira' piu' perche' facciamo l'update direttamente dal database
+	vm.addMemo = function() {
+
+		vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
+				+ vm.memo.title;
+		// TODO: remove
+		vm.events.push(vm.memo);
+		vm.contId++;
+		document.getElementById('modal-wrapper7').style.display = 'none';
+
+	}
+
+	vm.updateMemo = function() {
+		var index = vm.events.indexOf(vm.tmpMemo);
+		if (index > -1) {
+		    // TODO: remove
+			vm.events.splice(index, 1);
+		}
+
+		vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
+				+ vm.memo.title;
+		vm.tmpMemo = {
+			title : vm.memo.title,
+			id : vm.memo.id,
+			descr : vm.memo.descr,
+			startsAt : moment(),
+			color : {
+				primary : vm.memo.color.primary,
+			},
+			draggable : false,
+			resizable : false,
+			memo : true,
+			actions : actions
+		};
+
+		// TODO: remove
+		vm.events.push(vm.tmpMemo);
+		document.getElementById('modal-wrapper8').style.display = 'none';
+	}
 });
