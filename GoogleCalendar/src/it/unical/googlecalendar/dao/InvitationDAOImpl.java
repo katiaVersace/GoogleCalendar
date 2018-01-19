@@ -89,6 +89,10 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 	}
 
+	
+	
+	
+	
 	public List<Invitation> getInvitationsByCalendarAndReceiver(int receiver_id, int calendar_id) {
 		Session session = sessionFactory.openSession();
 
@@ -96,6 +100,20 @@ public class InvitationDAOImpl implements InvitationDAO {
 		Query query1 = session.createQuery(
 				"SELECT i FROM Invitation i WHERE i.receiver.id= :user_id and i.calendar.id= :calendar_id");
 		query1.setParameter("user_id", receiver_id).setParameter("calendar_id", calendar_id);
+
+		List<Invitation> result = query1.getResultList();
+		session.close();
+		return result;
+
+	}
+	
+	public List<Invitation> getInvitationsByReceiverId(int receiver_id) {
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Query query1 = session.createQuery(
+				"SELECT i FROM Invitation i WHERE i.receiver.id= :user_id");
+		query1.setParameter("user_id", receiver_id);
 
 		List<Invitation> result = query1.getResultList();
 		session.close();

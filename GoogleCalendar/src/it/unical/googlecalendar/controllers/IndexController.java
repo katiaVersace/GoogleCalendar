@@ -205,7 +205,7 @@ public class IndexController {
 				Integer.parseInt(calendar_id), start, end));
 	}
 	
-	
+//FIXME:Giuseppe aggiungi questo metodo!!	
 	@RequestMapping(value = "/addAlarm/{occurrence_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public int addAlarm(HttpSession session, @RequestParam int minutes,
@@ -214,6 +214,8 @@ public class IndexController {
 	}
 	
 
+
+	//FIXME:Giuseppe aggiungi questo metodo!!
 	@RequestMapping(value = "/updateAlarm/{alarm_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public String updateAlarm(HttpSession session, @RequestParam int minutes,
@@ -222,6 +224,7 @@ public class IndexController {
 	}
 	
 
+	//FIXME:Giuseppe aggiungi questo metodo!!
 	@RequestMapping(value = "/deleteAlarm/{alarm_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public String deleteAlarm(HttpSession session, @RequestParam int minutes,
@@ -231,7 +234,8 @@ public class IndexController {
 	
 	
 	
-	
+
+	//FIXME:Giuseppe aggiungi questo metodo!!
 	@RequestMapping(value = "/JSON_getMyAlarms", method = RequestMethod.POST)
 	@ResponseBody
 	public String JSON_getMyEventsInPeriod(HttpSession session) {
@@ -239,6 +243,8 @@ public class IndexController {
 		return gson.toJson(dbService.getMyAlarms((Integer) session.getAttribute("user_id")));
 	}
 	
+
+	//FIXME:Giuseppe aggiungi questo metodo!!
 	@RequestMapping(value = "/JSON_getAlarmForOccurrence/{occurrence_id}", method = RequestMethod.POST)
 	@ResponseBody
 	public String JSON_getAlarmForAnOccurrence(HttpSession session,@PathVariable("occurrence_id") String occurrence_id) {
@@ -246,5 +252,19 @@ public class IndexController {
 		return gson.toJson(dbService.getTheAlarmForAnOccurrence((Integer) session.getAttribute("user_id"), Integer.parseInt(occurrence_id)));
 	}
 	
+	//FIXME:Giuseppe aggiungi questo metodo!!
+		@RequestMapping(value = "/JSON_getMyNotifications", method = RequestMethod.POST)
+		@ResponseBody
+		public String JSON_getMyNotifications(HttpSession session) {
+			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+			return gson.toJson(dbService.getMyNotifications((Integer) session.getAttribute("user_id")));
+		}
+   //FIXME:Giuseppe aggiungi questo metodo!!
+		@RequestMapping(value = "/JSON_getMyInvitations", method = RequestMethod.POST)
+		@ResponseBody
+		public String JSON_getMyInvitations(HttpSession session) {
+			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+			return gson.toJson(dbService.getMyInvitation((Integer) session.getAttribute("user_id")));
+		}
 	
 }

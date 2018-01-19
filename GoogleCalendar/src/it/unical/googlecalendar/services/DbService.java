@@ -15,16 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import it.unical.googlecalendar.dao.AlarmDAO;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
 import it.unical.googlecalendar.dao.InvitationDAOImpl;
 import it.unical.googlecalendar.dao.MemoDAO;
+import it.unical.googlecalendar.dao.NotificationDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.model.Alarm;
 import it.unical.googlecalendar.model.Calendar;
+import it.unical.googlecalendar.model.Invitation;
 import it.unical.googlecalendar.model.Memo;
+import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 
@@ -44,6 +48,8 @@ public class DbService {
 	private MemoDAO mdao;
 	@Autowired
 	private AlarmDAO adao;
+	@Autowired
+	private NotificationDAO ndao;
 	
 	@PostConstruct
 	public void initialize() {
@@ -211,6 +217,15 @@ public class DbService {
     public Alarm getTheAlarmForAnOccurrence(int user_id, int occurrence_id){
         return adao.getAlarmsByOccurrenceIdAndUserId(user_id, occurrence_id);
     }
+
+
+	public List<Notification> getMyNotifications(int user_id) {
+		return ndao.getNotificationByUserId(user_id);
+	}
+    
+	public List<Invitation> getMyInvitation(int user_id) {
+		return idao.getInvitationsByReceiverId(user_id);
+	}
     
     
 	
