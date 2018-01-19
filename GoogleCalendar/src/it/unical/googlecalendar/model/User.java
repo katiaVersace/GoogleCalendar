@@ -49,6 +49,7 @@ public class User {
     
   //alarms
     @OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
+    
     private List<Alarm> alarms=new ArrayList<Alarm>();
     
 	    

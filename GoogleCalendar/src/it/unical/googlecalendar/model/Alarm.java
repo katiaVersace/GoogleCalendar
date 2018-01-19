@@ -20,6 +20,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.google.gson.annotations.Expose;
+
 
 
 	@Entity
@@ -37,6 +39,8 @@ import javax.persistence.UniqueConstraint;
 		@GeneratedValue(strategy = GenerationType.AUTO)
 
 		@Column(name = "alarm_id",unique = true)
+		@Expose
+		
 		private int id;
 
 		// association
@@ -51,6 +55,7 @@ import javax.persistence.UniqueConstraint;
 
 		// additional attributes
 		@Column(nullable = false)
+		@Expose
 		int alarm=0;
 
 				public Alarm() {

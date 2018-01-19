@@ -109,13 +109,12 @@ public class AlarmDAO {
 
 	}
 
-	public boolean deleteAlarmById(Alarm m) {
+	public boolean deleteAlarmById(Alarm m,User u) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		boolean result = false;
-		User u=session.get(User.class, m.getId());
-
 		
+				
 			try {
 				tx = session.beginTransaction();
 

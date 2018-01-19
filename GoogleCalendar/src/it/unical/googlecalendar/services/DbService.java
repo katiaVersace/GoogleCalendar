@@ -204,9 +204,10 @@ public class DbService {
 	}
 
 
-	public boolean deleteAlarm(int alarm_id) {
+	public boolean deleteAlarm(int alarm_id,int user_id) {
+		User u=udao.getUserById(user_id);
 		Alarm a=adao.getAlarmById(alarm_id);
-		return adao.deleteAlarmById(a);
+		return adao.deleteAlarmById(a,u);
 	}
 	
 	public List<Alarm> getMyAlarms(int user_id){

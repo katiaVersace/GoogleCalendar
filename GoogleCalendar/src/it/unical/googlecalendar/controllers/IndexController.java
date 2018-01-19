@@ -229,7 +229,7 @@ public class IndexController {
 	@ResponseBody
 	public String deleteAlarm(HttpSession session, @RequestParam int minutes,
 			@PathVariable("alarm_id") String alarm_id) {
-		return dbService.deleteAlarm(Integer.parseInt(alarm_id)) ? "YES" : "NO";
+		return dbService.deleteAlarm(Integer.parseInt(alarm_id),(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
 	}
 	
 	
