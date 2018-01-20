@@ -574,7 +574,7 @@
             <form>
             <fieldset id="calendarsListModal" ">
             </fieldset>
-            <label id ="choicheId" style="visibility: hidden;"></label>
+            <label id ="choiceId" style="visibility: hidden;"></label>
            <h3 style="text-align: center; color: white; padding-top: 10px;">Add
               Event</h3>
 
@@ -671,7 +671,7 @@
               <button
                 type="button"
                 id="addEvnt"
-                ng-click="vm.addEvent()"
+                ng-click="vm.addEventView()"
                 class="btn btn-info navbar-btn"
                 style="background: #42A5F5">
                 <span><strong>Add </strong></span>
@@ -873,7 +873,7 @@
               <button
                 type="button"
                 id="upEvent"
-                ng-click="vm.updateEvents()"
+                ng-click="vm.updateEventView()"
                 class="btn btn-info navbar-btn"
                 style="background: #42A5F5">
                 <span><strong>Update Event</strong></span>
@@ -953,7 +953,7 @@
               type="button"
               id="newCalendar"
               class="btn btn-info navbar-btn"
-              ng-click="vm.addMemo()"
+              ng-click="vm.addMemoView()"
               style="background: #42A5F5">
               <span><strong>Add</strong></span>
             </button>
@@ -1024,7 +1024,7 @@
               type="button"
               id="newCalendar"
               class="btn btn-info navbar-btn"
-              ng-click="vm.updateMemo()"
+              ng-click="vm.updateMemoView()"
               style="background: #42A5F5">
               <span><strong>Add</strong></span>
             </button>
