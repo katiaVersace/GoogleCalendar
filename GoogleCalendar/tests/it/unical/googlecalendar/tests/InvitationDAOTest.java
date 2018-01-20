@@ -94,10 +94,10 @@ public class InvitationDAOTest {
 		
 		String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(),c.getId());
 
-		if(privilegiDiMario==null)System.out.println("Privilegi null");
+		
 		
 //	System.out.println("Privilegi di mario "+privilegiDiMario);
-	Assert.assertTrue(privilegiDiMario!=null);
+	Assert.assertTrue(privilegiDiMario.equals("ADMIN"));
 	//		System.out.println("inviti di mario dopo che accetti: "+mario.receivedInvitations.size());
 //		 for(Invitation in:mario.receivedInvitations){
 //				 System.out.println("Invitok: "+in.getSenderId()+in.getReceiver().getUsername()+" + "+in.getPrivilege());
