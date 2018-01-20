@@ -55,7 +55,10 @@ angular
       },
     }];
     
-    // ---- MERGE MARIO MARCO
+    // --------------------------- //
+    // -- MERGE MARIO MARCO [1] -- //
+    // --------------------------- //
+    
     vm.vtrCell = [];
     // event for modal
     vm.temp = undefined;
@@ -90,12 +93,12 @@ angular
         this.actions = actions;
     };
     
-    // Memo Constructor (deceives vm.events to think it is a regular event)
+    // Memo Constructor (deceives vm.events into thinking it's a regular event)
     vm.Memo = function (id, title, description, color, dateAdded) {
         var now = new Date();
         
         this.id = id;
-        this.calendar = undefined; // FIXME: insert memo
+        this.calendar = undefined; // FIXME: insert memo calendar (or whatever)
         this.title = title;
         this.description = description;
         this.startsAt = now; // graphical purposes only (renders it on the current day)
@@ -152,11 +155,11 @@ angular
     
     // Update the list of calendars displayed within the sidebar
     vm.updateCalendarList = function () {
-        	var viewList = $("#calendarsList");
-        	vm.JSON_getAllMyCalendars(function (calendars) {
-        		viewList.empty();
-        		JSON.parse(calendars).forEach(function (calendar) {
-        			viewList.append(
+            var viewList = $("#calendarsList");
+            vm.JSON_getAllMyCalendars(function (calendars) {
+                viewList.empty();
+                JSON.parse(calendars).forEach(function (calendar) {
+                    viewList.append(
                      $compile(
                           "<li id=\"cal_entry_" + calendar.id + "\">\n"
                         + "  <label>\n"
@@ -177,9 +180,9 @@ angular
                         + "  </label>\n"
                         + "</li>\n"
                      )($scope)
-        			);
-        		});
-        	});
+                    );
+                });
+            });
     };
     
     // Hide/Show a calendar's events
@@ -540,57 +543,33 @@ angular
         vm.updateCalendarList();        
     })();
     
-    // ---------------------------- //
-    // --       WASTELAND        -- //
-    // -- enter at your own risk -- //
-    // ---------------------------- //
-    
-    vm.eventClicked = function(event) {
-        // TODO
-    };
-    
-    vm.eventEdited = function(event) {
-        // TODO
-    };
-
-    vm.eventDeleted = function(event) {
-        // TODO
-    };
-
-    vm.eventTimesChanged = function(event) {
-        // TODO
-    };
-
-    vm.toggle = function($event, field, event) {
-        $event.preventDefault();
-        $event.stopPropagation();
-        event[field] = !event[field];
-    };
-
+    // --------------------------- //
+    // -- MERGE MARIO MARCO [2] -- //
+    // --------------------------- //
 
     vm.clickUpdateEvent = function(event) {
-        	if (!event.memo) {
-        		vm.temp = {
-        			title : event.title,
-        			id : event.id,
-        			memo : false,
-        			descr : event.descr,
-        			clock : event.clock, // TODO: fix clock on DB
-        			startsAt : event.startsAt,
-        			endsAt : event.endsAt,
-        			color : {
-        				primary : event.color.primary,
-        				secondary : event.color.secondary,
-        			},
-        			draggable : false,
-        			resizable : false,
-        			actions : actions
-        		};
+            if (!event.memo) {
+                vm.temp = {
+                    title : event.title,
+                    id : event.id,
+                    memo : false,
+                    descr : event.descr,
+                    clock : event.clock, // TODO: fix clock on DB
+                    startsAt : event.startsAt,
+                    endsAt : event.endsAt,
+                    color : {
+                        primary : event.color.primary,
+                        secondary : event.color.secondary,
+                    },
+                    draggable : false,
+                    resizable : false,
+                    actions : actions
+                };
         
-        		vm.tmpEvt = event;
-        		
-        		updateClock(vm.temp.clock);
-        		// document.getElementById("TourId").value = vm.temp.clock;
+                vm.tmpEvt = event;
+                
+                updateClock(vm.temp.clock);
+                // document.getElementById("TourId").value = vm.temp.clock;
             modal(6);
         } else {
             var str = event.title;
@@ -694,150 +673,175 @@ angular
         }
     };
     
-	vm.cellModifier = function(cell) {
-		vm.vtrCell.push(cell);
-		console.log(vm.vtrCell.length);
-		console.log(vm.vtrCell[length - 1]);
-	};
-
-	// MANAGE EVENT
-	vm.openEventModal = function() {
-		
-		modal(5);
-	};
-
-	vm.addEvent = function() {
-
-		// var value =
-		// document.getElementById("descEvent").value;
-		// vm.temp.descr = value;
-
-		vm.temp.clock = document.getElementById("TourId").value;
-		
-		// TODO: remove
-		vm.events.push(vm.temp);
-		vm.contId++;
-
-		document.getElementById('btn-add').disabled = true;
-
-		// contenuto del modale evento
-		// var id = document.querySelector('input[name =
-		// "rr"]:checked').value;
-		// var title = document.getElementById('titl').value;
-		// var colP = document.getElementById('colP').value;
-		// var colS = document.getElementById('colS').value;
-		// var dataStart =
-		// document.getElementById('dataStart').value;
-		// var timeStart =
-		// document.getElementById('timeStart').value ;
-		// var dataEnd =
-		// document.getElementById('dataEnd').value;
-		// var timeEnd =
-		// document.getElementById('timeEnd').value;
-		// alert(vm.temp.id);
-		resetClock();
-		document.getElementById('modal-wrapper5').style.display = 'none';
-	}
-
-	vm.updateEvents = function() {
-		
-		var index = vm.events.indexOf(vm.tmpEvt);
-		if (index > -1) {
-		    // TODO: remove
-			vm.events.splice(index, 1);
-		}
-
-		//vm.events[index].title = vm.temp.title
-		vm.tmpEvt = {
-			title : vm.temp.title,
-			id : vm.temp.id,
-			memo : false,
-			descr : vm.temp.descr,
-			startsAt : vm.temp.startsAt,
-			endsAt : vm.temp.endsAt,
-			color : {
-				primary : vm.temp.color.primary,
-				secondary : vm.temp.color.secondary,
-			},
-			draggable : false,
-			resizable : false,
-			actions : actions
-		};
-
-		
-		vm.tmpEvt.clock = document.getElementById('TourId2').value;
-		// TODO: remove
-		vm.events.push(vm.tmpEvt);
-		
-		resetClock();
-		document.getElementById('modal-wrapper6').style.display = 'none';
-
-	}
-
-	// MANAGE MEMO
-	vm.openMemoModal = function() {
-		modal(7);
-
-		vm.memo = {
-			title : 'New Memo',
-			id : vm.contId,
-			startsAt : moment(),
-			color : {
-				primary : "#123456",
-			},
-			draggable : false,
-			resizable : false,
-			memo : true,
-			actions : actions
-		};
-
-	};
-
-	// questa funzione non servira' piu' perche' facciamo l'update direttamente dal database
-	vm.addMemo = function() {
-
-		vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
-				+ vm.memo.title;
-		// TODO: remove
-		vm.events.push(vm.memo);
-		vm.contId++;
-		document.getElementById('modal-wrapper7').style.display = 'none';
-
-	}
-
-	vm.updateMemo = function() {
-		var index = vm.events.indexOf(vm.tmpMemo);
-		if (index > -1) {
-		    // TODO: remove
-			vm.events.splice(index, 1);
-		}
-
-		vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
-				+ vm.memo.title;
-		vm.tmpMemo = {
-			title : vm.memo.title,
-			id : vm.memo.id,
-			descr : vm.memo.descr,
-			startsAt : moment(),
-			color : {
-				primary : vm.memo.color.primary,
-			},
-			draggable : false,
-			resizable : false,
-			memo : true,
-			actions : actions
-		};
-
-		// TODO: remove
-		vm.events.push(vm.tmpMemo);
-		document.getElementById('modal-wrapper8').style.display = 'none';
-	}
-
-	// ----------- //
-	// -- DEBUG -- //
-	// ----------- //
-	
-    vm.fn = function () {
-        console.log(JSON.stringify(vm.events, null, 4));
+    vm.cellModifier = function(cell) {
+        vm.vtrCell.push(cell);
+        console.log(vm.vtrCell.length);
+        console.log(vm.vtrCell[length - 1]);
     };
+
+    // MANAGE EVENT
+    vm.openEventModal = function() {
+        
+        modal(5);
+    };
+
+    vm.addEvent = function() {
+
+        // var value =
+        // document.getElementById("descEvent").value;
+        // vm.temp.descr = value;
+
+        vm.temp.clock = document.getElementById("TourId").value;
+        
+        // TODO: remove
+        vm.events.push(vm.temp);
+        vm.contId++;
+
+        document.getElementById('btn-add').disabled = true;
+
+        // contenuto del modale evento
+        // var id = document.querySelector('input[name =
+        // "rr"]:checked').value;
+        // var title = document.getElementById('titl').value;
+        // var colP = document.getElementById('colP').value;
+        // var colS = document.getElementById('colS').value;
+        // var dataStart =
+        // document.getElementById('dataStart').value;
+        // var timeStart =
+        // document.getElementById('timeStart').value ;
+        // var dataEnd =
+        // document.getElementById('dataEnd').value;
+        // var timeEnd =
+        // document.getElementById('timeEnd').value;
+        // alert(vm.temp.id);
+        resetClock();
+        document.getElementById('modal-wrapper5').style.display = 'none';
+    }
+
+    vm.updateEvents = function() {
+        
+        var index = vm.events.indexOf(vm.tmpEvt);
+        if (index > -1) {
+            // TODO: remove
+            vm.events.splice(index, 1);
+        }
+
+        //vm.events[index].title = vm.temp.title
+        vm.tmpEvt = {
+            title : vm.temp.title,
+            id : vm.temp.id,
+            memo : false,
+            descr : vm.temp.descr,
+            startsAt : vm.temp.startsAt,
+            endsAt : vm.temp.endsAt,
+            color : {
+                primary : vm.temp.color.primary,
+                secondary : vm.temp.color.secondary,
+            },
+            draggable : false,
+            resizable : false,
+            actions : actions
+        };
+
+        
+        vm.tmpEvt.clock = document.getElementById('TourId2').value;
+        // TODO: remove
+        vm.events.push(vm.tmpEvt);
+        
+        resetClock();
+        document.getElementById('modal-wrapper6').style.display = 'none';
+
+    }
+
+    // MANAGE MEMO
+    vm.openMemoModal = function() {
+        modal(7);
+
+        vm.memo = {
+            title : 'New Memo',
+            id : vm.contId,
+            startsAt : moment(),
+            color : {
+                primary : "#123456",
+            },
+            draggable : false,
+            resizable : false,
+            memo : true,
+            actions : actions
+        };
+
+    };
+
+    // questa funzione non servira' piu' perche' facciamo l'update direttamente dal database
+    vm.addMemo = function() {
+
+        vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
+                + vm.memo.title;
+        // TODO: remove
+        vm.events.push(vm.memo);
+        vm.contId++;
+        document.getElementById('modal-wrapper7').style.display = 'none';
+
+    }
+
+    vm.updateMemo = function() {
+        var index = vm.events.indexOf(vm.tmpMemo);
+        if (index > -1) {
+            // TODO: remove
+            vm.events.splice(index, 1);
+        }
+
+        vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
+                + vm.memo.title;
+        vm.tmpMemo = {
+            title : vm.memo.title,
+            id : vm.memo.id,
+            descr : vm.memo.descr,
+            startsAt : moment(),
+            color : {
+                primary : vm.memo.color.primary,
+            },
+            draggable : false,
+            resizable : false,
+            memo : true,
+            actions : actions
+        };
+
+        // TODO: remove
+        vm.events.push(vm.tmpMemo);
+        document.getElementById('modal-wrapper8').style.display = 'none';
+    }
+    
+    // ---------------------------- //
+    // --       WASTELAND        -- //
+    // -- enter at your own risk -- //
+    // ---------------------------- //
+    
+    vm.eventClicked = function(event) {
+        // TODO
+    };
+    
+    vm.eventEdited = function(event) {
+        // TODO
+    };
+
+    vm.eventDeleted = function(event) {
+        // TODO
+    };
+    
+    vm.eventTimesChanged = function(event) {
+        // TODO
+    };
+    
+    vm.toggle = function($event, field, event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        event[field] = !event[field];
+    };
+
+    // ----------- //
+    // -- DEBUG -- //
+    // ----------- //
+    
+    vm.fn = function () { };
 });
