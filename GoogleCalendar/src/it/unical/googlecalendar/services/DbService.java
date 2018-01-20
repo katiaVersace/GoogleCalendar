@@ -221,8 +221,8 @@ public class DbService {
     }
 
 
-	public List<Notification> getMyNotifications(int user_id) {
-		return ndao.getNotificationByUserId(user_id);
+	public List<Notification> getUnsentNotifications(int user_id) {
+		return ndao.getUnsentNotificationByUserId(user_id);
 	}
     
 	public List<Invitation> getMyInvitation(int user_id) {
@@ -233,6 +233,17 @@ public class DbService {
 	public List<Memo> getMyMemos(int user_id) {
 		User u=udao.getUserById(user_id);
 		return mdao.getMemoByUserId(user_id);
+	}
+
+
+	public boolean resetSentState(int user_id) {
+		return ndao.resetSentStateByUserId(user_id);
+	}
+
+
+	public boolean deleteNotifications(int user) {
+		User u=udao.getUserById(user);
+		return ndao.deleteNotifications(u);
 	}
     
     

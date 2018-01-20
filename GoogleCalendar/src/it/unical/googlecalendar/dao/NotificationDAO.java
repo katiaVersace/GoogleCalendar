@@ -60,16 +60,69 @@ public class NotificationDAO {
 
 	}
 
-	public List<Notification> getNotificationByUserId(int user_id) {
+	//Questa qui è la funzione che il server SSE invoca per vedere quali sono le notifiche da inviare
+	public List<Notification> getUnsentNotificationByUserId(int user_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		List<Notification> result = session.createQuery("SELECT n FROM Notification n where n.user.id= :user_id")
+		List<Notification> result = session.createQuery("SELECT n FROM Notification n where n.user.id= :user_id and n.sent is false")
 				.setParameter("user_id", user_id).getResultList();
+		
+		Transaction tx = null;
+		
+//TODO se nn funziona pulire cache
+		try {
+			tx = session.beginTransaction();
+			
+			for(Notification noti:result){
+				noti.setSent(true);
+				
+				session.update(noti);
+			}
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			// e.printStackTrace();
+			tx.rollback();
+			
+		}
+
 
 		session.close();
 		return result;
 
+	}
+	
+	//Questa qui viene chiamata dall'utente al login 
+	public boolean resetSentStateByUserId(int user_id) {
+		Session session = sessionFactory.openSession();
+		boolean result = false;
+
+		Transaction tx = null;
+		List<Notification> n = session.createQuery("SELECT n FROM Notification n where n.user.id= :user_id ")
+				.setParameter("user_id", user_id).getResultList();
+//TODO se nn funziona pulire cache
+		try {
+			tx = session.beginTransaction();
+			
+			for(Notification noti:n){
+				noti.setSent(false);
+				
+				session.update(noti);
+			}
+			
+			tx.commit();
+			result = true;
+
+		} catch (Exception e) {
+			// e.printStackTrace();
+			tx.rollback();
+			result = false;
+		}
+
+		session.close();
+		return result;
 	}
 
 

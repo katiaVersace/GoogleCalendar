@@ -1,7 +1,9 @@
 package it.unical.googlecalendar.controllers;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.services.DbService;
 
 @Controller
@@ -253,14 +256,26 @@ public class IndexController {
     }
 
     /*
-     * JSON_getMyNotifications
+     * JSON_getUnsentNotifications called by user at login
      */
-    @RequestMapping(value = "/JSON_getMyNotifications", method = RequestMethod.POST)
+    @RequestMapping(value = "/resetSentStateByUserId", method = RequestMethod.POST)
     @ResponseBody
-    public String JSON_getMyNotifications(HttpSession session) {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(dbService.getMyNotifications((Integer) session.getAttribute("user_id")));
+    public String resetSentStateByUserId(HttpSession session) {
+    	 return dbService.resetSentState((Integer) session.getAttribute("user_id")) ? "YES"  : "NO";
+        
     }
+    
+    
+    /*
+     * L'utente notifica che ha letto le notifiche
+     */
+    @RequestMapping(value = "/deleteNotifications", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteNotifications(HttpSession session) {
+    	 return dbService.deleteNotifications((Integer) session.getAttribute("user_id")) ? "YES"  : "NO";
+        
+    }
+    
 
     /*
      * JSON_getMyInvitations
@@ -285,9 +300,16 @@ public class IndexController {
     /*
      * SSE messages subscription
      */
-    @RequestMapping(value = "/notifies")
-    public void doGet(HttpServletRequest request, HttpServletResponse response) 
+    @RequestMapping(value = "/notifies/{user_id}")
+    public void doGet(HttpServletRequest request, HttpServletResponse response, @PathVariable ("user_id") String user_id) 
             throws ServletException, IOException {
+    	
+    	response.setContentType("text/event-stream");
+    	response.setCharacterEncoding("UTF-8");
+    	PrintWriter writer = response.getWriter();
+    	Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    	gson.toJson(dbService.getUnsentNotifications(Integer.parseInt(user_id)));
+    	writer.close();
         return;
     }
 }

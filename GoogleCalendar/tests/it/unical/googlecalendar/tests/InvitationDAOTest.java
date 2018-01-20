@@ -76,7 +76,7 @@ public class InvitationDAOTest {
 		idao.sendInvitation(fabio.getId(), mario.getEmail(), c, "ADMIN");
 		//mario accetta a c
 		idao.acceptInvitation(mario, c);
-		List<Notification> notif=ndao.getNotificationByUserId(peppe.getId());
+		List<Notification> notif=ndao.getUnsentNotificationByUserId(peppe.getId());
 //		System.out.println("Notifiche di peppe: "+notif.size());
 //		for(Notification no:notif){
 //			System.out.println(no.getDescription());
@@ -85,7 +85,7 @@ public class InvitationDAOTest {
 		//System.out.println("Peppe sta x leggere le notifiche e cancellarle");
 		ndao.deleteNotifications(peppe);
 		
-		 notif=ndao.getNotificationByUserId(peppe.getId());
+		 notif=ndao.getUnsentNotificationByUserId(peppe.getId());
 //			System.out.println("Notifiche di peppe: "+notif.size());
 //			for(Notification no:notif){
 //				System.out.println(no.getDescription());

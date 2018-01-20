@@ -34,6 +34,9 @@ public class Notification  {
 	@Expose
 	private Date timestamp;
 	
+	@Column
+	private  boolean sent=false;
+	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "user_id",nullable = false)
 	private User user;
@@ -53,6 +56,14 @@ public class Notification  {
 		
 	}
 	
+	public boolean isSent() {
+		return sent;
+	}
+
+	public void setSent(boolean sent) {
+		this.sent = sent;
+	}
+
 	public Date getTimestamp() {
 		return timestamp;
 	}
