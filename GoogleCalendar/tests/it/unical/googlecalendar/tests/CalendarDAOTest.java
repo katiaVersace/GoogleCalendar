@@ -60,7 +60,13 @@ public class CalendarDAOTest {
 		try {
 			
 			ev3=new Occurrence(ciccinoCalendar,ciccino,"memo di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
-			ev1=new Occurrence(ciccinoCalendar,ciccino,"memo 1 di ciccio","Ricordati di comprare il latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
+			odao.save(ev3);
+		//	System.out.println("id ev3: s"+ev3.getId());
+			
+			
+			ev1=new Occurrence(ciccinoCalendar,ciccino,"memo 1 di ciccio","Ricordati di comprare il 2latte",sdf.parse(dateInString),sdf.parse(dateInString2),Color.black.toString(),Color.BLUE.toString());
+			odao.save(ev1);
+			//System.out.println("id ev1: "+ev1.getId());
 			
 
 			
@@ -70,12 +76,17 @@ public class CalendarDAOTest {
 		
 	
 //	cdao.save(ciccinoCalendar);
-		odao.save(ev3);
-		odao.save(ev1);
+		
+		
 		
 		//System.out.println("size of calendars"+allCalendars.size());
 		List<Calendar> allCalendars = cdao.getAllCalendars();
 		Assert.assertTrue(allCalendars.contains(ciccinoCalendar));
+//		
+//		System.out.println("Occurrences di ciccinoCalendar:");
+//		for(Occurrence o:ciccinoCalendar.getOccurrences())
+//			System.out.println(o.getTitle());
+//		
 		Assert.assertTrue(ciccinoCalendar.getOccurrences().contains(ev1));
 		Assert.assertTrue(cdao.getCalendarsByEmail(ciccino.getEmail()).size()==2);
 		

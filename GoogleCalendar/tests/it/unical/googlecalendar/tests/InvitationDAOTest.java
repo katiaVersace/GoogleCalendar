@@ -91,7 +91,12 @@ public class InvitationDAOTest {
 //				System.out.println(no.getDescription());
 //			}
 			//ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId()).isEmpty();
-		
+//		 System.out.println("Associazioni");
+//		 List <Users_Calendars>ass= ucdao.getAllAssociation();
+//		 for(Users_Calendars u:ass){
+//			 System.out.println(u.getUser().getUsername()+" "+u.getCalendarName());
+//		 }
+//		
 		String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(),c.getId());
 
 		
