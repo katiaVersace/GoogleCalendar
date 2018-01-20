@@ -170,12 +170,9 @@ public class IndexController {
 
     /*
      * deleteMemoById
-     * FIXME: c'è un @PathVariable("memo_id") String calendar_id (?)
      */
     @RequestMapping(value = "/deleteMemo/{memo_id}", method = RequestMethod.POST)
     @ResponseBody
-//    public String deleteMemoById(@PathVariable("memo_id") String memo_id, @PathVariable("memo_id") String calendar_id,
-//            HttpSession session) {
     public String deleteMemoById(@PathVariable("memo_id") String memo_id, HttpSession session) {
         return dbService.deleteMemoById(Integer.parseInt(memo_id), (Integer) session.getAttribute("user_id")) ? "YES"
                 : "NO";
@@ -228,7 +225,6 @@ public class IndexController {
                 Integer.parseInt(calendar_id), start, end));
     }
 
-    // FIXME: signature name JSON_getMyEventsInPeriod -> JSON_getMyAlarms (?)
     @RequestMapping(value = "/JSON_getMyAlarms", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_getMyAlarms(HttpSession session) {
