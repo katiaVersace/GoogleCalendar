@@ -227,6 +227,12 @@ public class DbService {
 	public List<Invitation> getMyInvitation(int user_id) {
 		return idao.getInvitationsByReceiverId(user_id);
 	}
+
+
+	public List<Memo> getMyMemos(int user_id) {
+		User u=udao.getUserById(user_id);
+		return mdao.getMemoByUserId(user_id);
+	}
     
     
 	

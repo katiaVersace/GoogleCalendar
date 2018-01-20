@@ -232,9 +232,7 @@ public class IndexController {
         return gson.toJson(dbService.getMyAlarms((Integer) session.getAttribute("user_id")));
     }
     
-    /*
-     * TODO: fare funzione JSON_getMyMemos
-     */
+  
 
     /*
      * JSON_getAlarmForAnOccurrence
@@ -267,4 +265,19 @@ public class IndexController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(dbService.getMyInvitation((Integer) session.getAttribute("user_id")));
     }
+   
+    /*
+     * JSON_getMyMemos
+     */
+    @RequestMapping(value = "/JSON_getMyMemos", method = RequestMethod.POST)
+    @ResponseBody
+    public String JSON_getMyMemos(HttpSession session) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(dbService.getMyMemos((Integer) session.getAttribute("user_id")));
+    }
+    
+    
+    
+    
+    
 }

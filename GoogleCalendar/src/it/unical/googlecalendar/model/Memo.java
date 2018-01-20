@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"memo_id"})})
 public class Memo  {
@@ -20,23 +22,25 @@ public class Memo  {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="memo_id",unique = true)
+	@Expose
 	protected int id;
 
 	@Column(nullable = false)
+	@Expose
 	private String title;
 
 	@Column(nullable = false)
+	@Expose
 	private Date creationDate;
 
 	@Column
+	@Expose
 	private String description;
 	
 	@Column
+	@Expose
 	private String primaryColor;
 
-	
-	@Column
-	private String secondaryColor;
 	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "user_id",nullable = false)
@@ -98,13 +102,7 @@ public class Memo  {
 		this.primaryColor = primaryColor;
 	}
 
-	public String getSecondaryColor() {
-		return secondaryColor;
-	}
-
-	public void setSecondaryColor(String secondaryColor) {
-		this.secondaryColor = secondaryColor;
-	}
+	
 
 	public User getUser() {
 		return user;

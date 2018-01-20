@@ -59,7 +59,7 @@ public class MemoDAO {
 
 	}
 
-	public Memo getMemoByUserId(int user_id) {
+	public List<Memo> getMemoByUserId(int user_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
@@ -67,11 +67,7 @@ public class MemoDAO {
 				.setParameter("user_id", user_id).getResultList();
 
 		session.close();
-		if (result.size() > 0)
-			return result.get(0);
-		else
-			return null;
-
+		return result;
 	}
 
 	public boolean updateMemoById(Memo m, int creator, String title, Date date, String description, String color1
