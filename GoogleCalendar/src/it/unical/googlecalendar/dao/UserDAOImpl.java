@@ -109,7 +109,7 @@ public class UserDAOImpl implements UserDAO {
 		Session session = sessionFactory.openSession();
 		
 		
-		boolean result=false;
+				boolean result=false;
 				Transaction tx = null;
 
 				try {
@@ -128,7 +128,7 @@ public class UserDAOImpl implements UserDAO {
 				}
 
 				session.close();
-return result;
+				return result;
 	}
 
 	@Override
@@ -161,7 +161,7 @@ return result;
 
 		// sql query
 		User result = session.get(User.class,u_id);
-
+			
 		session.close();
 		return result;
 		

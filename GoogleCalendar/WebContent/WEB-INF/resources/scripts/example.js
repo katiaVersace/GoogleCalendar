@@ -147,6 +147,7 @@ angular
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
+                	console.log(JSON.stringify(blueprint, 4, null));
                     vm.events.push(new vm.Event(
                         blueprint.id,
                         blueprint.calendar.id,
@@ -154,9 +155,9 @@ angular
                         blueprint.description,
                         new Date(blueprint.startTime),
                         new Date(blueprint.endTime),
-                        "#555555", // FIXME: substitute with
+                        blueprint.primaryColor, // FIXME: substitute with
                                     // blueprint.primaryColor,
-                        "#aaaaaa" // FIXME: substitute with
+                        blueprint.secondaryColor // FIXME: substitute with
                                     // blueprint.secondaryColor,
                     ));
                 });
@@ -177,28 +178,29 @@ angular
                 var x = calendar.title;
                 var title = x.replace(/'/g,"\\'");;
                 viewList.append(
-                     $compile(
-                          "<li id=\"cal_entry_" + calendar.id + "\">\n"
-                        + "  <label>\n"
-                        + "    <input\n"
-                        + "      type=\"checkbox\"\n"
-                        + "      id= \"" + calendar.id + "\"\n"
-                        + "      name=\"" + calendar.id + "\"\n"
-                        + "      value=\"" + calendar.title + "\"\n"
-                        + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
-                        + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
-                        + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
-                        + " </label>\n"
-                        + " <label>\n" 
-                        + "      <i\n"
-                        + "        class=\"glyphicon glyphicon-cog\"\n"
-                        + "        ng-click=\"vm.updateCalendarView('"+title+"','"+calendar.id+"')\"\n"
-                        + "        style=\"margin-left: 80%;\">\n"
-                        + "      </i>\n"
-                        + "    </label>\n"
-                        + "</li>\n"
-                     )($scope)
+                 $compile(
+                      "<li id=\"cal_entry_" + calendar.id + "\">\n"
+                    + "  <label>\n"
+                    + "    <input\n"
+                    + "      type=\"checkbox\"\n"
+                    + "      id= \"" + calendar.id + "\"\n"
+                    + "      name=\"" + calendar.id + "\"\n"
+                    + "      value=\"" + calendar.title + "\"\n"
+                    + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
+                    + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
+                    + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
+                    + " </label>\n"
+                    + " <label>\n" 
+                    + "      <i\n"
+                    + "        class=\"glyphicon glyphicon-cog\"\n"
+                    + "        ng-click=\"vm.updateCalendarView('"+title+"','"+calendar.id+"')\"\n"
+                    + "        style=\"margin-left: 80%;\">\n"
+                    + "      </i>\n"
+                    + "    </label>\n"
+                    + "</li>\n"
+                 )($scope)
                 );
+                
             });
             vm.updateCalendarListModal();   
         });
@@ -247,6 +249,8 @@ angular
        document.getElementById('modal-wrapper1').style.display = 'none';
        document.getElementById("nameCal").value = '';
        document.getElementById("descrCalendar").value = ''
+       
+    
     };
 
     
@@ -601,6 +605,7 @@ angular
                 //        username, to be used at page initialization and after
                 //        a successful call to vm.updateUser
             },
+            
         });
     };
     

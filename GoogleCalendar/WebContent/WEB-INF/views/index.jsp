@@ -669,7 +669,7 @@
                 rows="2"
                 placeholder="Description"
                 id="descEvent"
-                ng-model="vm.temp.descr"></textarea>
+                ng-model="vm.temp.description"></textarea>
 
               <button
                 type="button"
@@ -721,11 +721,9 @@
           class="modal-content"
           style="width: 90%;">
 
- 		 <div>
+       <div>
 
-              
-           
-              	<div
+       	<div
             class="btn-group"
             style="float: right;">
           <button
@@ -774,13 +772,7 @@
           </div>
           </div>
               
-              
-              
-           
-            
-              
-
-            <div id="event_tmp">
+          <div id="event_tmp">
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -867,7 +859,7 @@
                 rows="2"
                 placeholder="Description"
                 id="descEvent"
-                ng-model="vm.temp.descr"></textarea>
+                ng-model="vm.temp.description"></textarea>
               
               
            
@@ -949,7 +941,7 @@
                 rows="2"
                 placeholder="Description"
                 id="descMemo"
-                ng-model="vm.memo.descr"></textarea>
+                ng-model="vm.memo.description"></textarea>
             </div>
 
             <button
@@ -1020,7 +1012,7 @@
                 rows="2"
                 placeholder="Description"
                 id="descMemo"
-                ng-model="vm.memo.descr"></textarea>
+                ng-model="vm.memo.description"></textarea>
             </div>
 
             <button

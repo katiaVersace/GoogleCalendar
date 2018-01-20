@@ -167,8 +167,7 @@ public class DbService {
 		return idao.sendInvitation(user_id, receiver_email ,ca,privilege);
 	}
 
-	public boolean updateMemoById(int memo_id, int user_id, String title, Date data, String description,
-			String c1) {
+	public boolean updateMemoById(int memo_id, int user_id, String title, Date data, String description,String c1) {
 		Memo m=mdao.getMemoById(memo_id);
 	return mdao. updateMemoById(m,user_id, title,data, description,c1);
 
@@ -177,8 +176,7 @@ public class DbService {
 	public boolean deleteMemoById(int memo_id, int user_id) {
 		Memo c=mdao.getMemoById(memo_id);
 		User u=udao.getUserById(user_id);
-	
-		return mdao.deleteMemoById(c,u);
+	    return mdao.deleteMemoById(c,u);
 	}
 
 	public List<Calendar> getAllMyCalendars(String email) {
