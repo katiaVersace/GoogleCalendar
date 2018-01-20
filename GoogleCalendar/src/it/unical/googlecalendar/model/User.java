@@ -44,7 +44,7 @@ public class User {
     
     
   //notifiche
-    @OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
     private List<Notification> notifications=new ArrayList<Notification>();
     
   //alarms

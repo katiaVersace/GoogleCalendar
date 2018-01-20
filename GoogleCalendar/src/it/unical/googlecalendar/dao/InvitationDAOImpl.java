@@ -78,11 +78,11 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 	}
 	
-	public User getSenderOfInvitationById(int invitation_id) {
+	public int getSenderOfInvitationById(int invitation_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		User result = (User) session.createQuery("SELECT u FROM Invitation i, User u WHERE u.id=i.senderId and i.id= :invitation_id").setParameter("invitation_id", invitation_id).uniqueResult();
+		int result =  (int) session.createQuery("SELECT i.senderId FROM Invitation i  WHERE i.id= :invitation_id").setParameter("invitation_id", invitation_id).uniqueResult();
 
 		session.close();
 		return result;
@@ -152,7 +152,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 		
 		if (myPrivilege != null)// signofica che non ho ricevuto inviti da
 								// accettare per questo calendario quindi esco
-		{
+		{System.out.println(myPrivilege+" "+u.getUsername());
 			List<Invitation> invitationToDelete = getInvitationsByCalendarAndReceiver(u.getId(), c.getId());
 			Transaction tx = null;
 			try {
@@ -161,15 +161,21 @@ public class InvitationDAOImpl implements InvitationDAO {
 				// creo un'associazione tra l'utente e il calendario ed elimino
 				
 				Users_Calendars association = new Users_Calendars(u, c, myPrivilege, Color.CYAN, c.getTitle());
-				
-				
+			
 				for (Invitation inv : invitationToDelete) {
-					User sender=getSenderOfInvitationById(inv.getId());
-					Notification acceptNotification=new Notification(sender,u.getUsername()+" accepted your invitation to calendar: "+c.getTitle());
-					session.delete(inv);
+					System.out.println("inv "+inv.getId()+" "+inv.getReceiver().getUsername());
 					
+					User sender=session.get(User.class,getSenderOfInvitationById(inv.getId()));
+					sender.getNotifications();
+					
+					Notification acceptNotification=new Notification(sender,u.getUsername()+" accepted your invitation to calendar: "+c.getTitle());
+					System.out.println("1");
+					session.delete(inv);
+					System.out.println("2");
 					session.update(sender);
+					System.out.println("3");
 				}
+				
 				session.update(c);
 				session.update(u);
 				
@@ -182,12 +188,12 @@ public class InvitationDAOImpl implements InvitationDAO {
 				result = false;
 				tx.rollback();
 			}
-		}
+		} else System.out.println("errore 1");
 		
 
 		
 		session.close();
-		
+		System.out.println("accepting of "+u.getUsername()+result);
 		return result;
 	}
 
