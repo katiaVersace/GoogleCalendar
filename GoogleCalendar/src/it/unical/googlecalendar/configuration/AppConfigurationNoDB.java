@@ -21,7 +21,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = "it.unical.googlecalendar")
-public class AppConfiguration implements WebMvcConfigurer {
+public class AppConfigurationNoDB implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

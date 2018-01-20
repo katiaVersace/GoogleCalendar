@@ -177,29 +177,28 @@ angular
                 var x = calendar.title;
                 var title = x.replace(/'/g,"\\'");;
                 viewList.append(
-                 $compile(
-                      "<li id=\"cal_entry_" + calendar.id + "\">\n"
-                    + "  <label>\n"
-                    + "    <input\n"
-                    + "      type=\"checkbox\"\n"
-                    + "      id= \"" + calendar.id + "\"\n"
-                    + "      name=\"" + calendar.id + "\"\n"
-                    + "      value=\"" + calendar.title + "\"\n"
-                    + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
-                    + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
-                    + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
-                    + " </label>\n"
-                    + " <label>\n" 
-                    + "      <i\n"
-                    + "        class=\"glyphicon glyphicon-cog\"\n"
-                    + "        ng-click=\"vm.updateCalendarView('"+title+"','"+calendar.id+"')\"\n"
-                    + "        style=\"margin-left: 80%;\">\n"
-                    + "      </i>\n"
-                    + "    </label>\n"
-                    + "</li>\n"
-                 )($scope)
+                     $compile(
+                          "<li id=\"cal_entry_" + calendar.id + "\">\n"
+                        + "  <label>\n"
+                        + "    <input\n"
+                        + "      type=\"checkbox\"\n"
+                        + "      id= \"" + calendar.id + "\"\n"
+                        + "      name=\"" + calendar.id + "\"\n"
+                        + "      value=\"" + calendar.title + "\"\n"
+                        + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
+                        + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
+                        + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
+                        + " </label>\n"
+                        + " <label>\n" 
+                        + "      <i\n"
+                        + "        class=\"glyphicon glyphicon-cog\"\n"
+                        + "        ng-click=\"vm.updateCalendarView('"+title+"','"+calendar.id+"')\"\n"
+                        + "        style=\"margin-left: 80%;\">\n"
+                        + "      </i>\n"
+                        + "    </label>\n"
+                        + "</li>\n"
+                     )($scope)
                 );
-                
             });
             vm.updateCalendarListModal();   
         });
@@ -244,12 +243,10 @@ angular
    
        var title = document.getElementById("nameCal").value;
        var description = document.getElementById("descrCalendar").value;
-       vm.insertNewCalendar(title, description)
+       vm.insertNewCalendar(title, description);
        document.getElementById('modal-wrapper1').style.display = 'none';
        document.getElementById("nameCal").value = '';
        document.getElementById("descrCalendar").value = ''
-       
-    
     };
 
     

@@ -204,9 +204,11 @@
                       ng-click="vm.viewModifierBehavior()">Next</button>
 
                     <!-- DEBUG BUTTON -->
+                    <!--
                     <button
                       class="btn btn-primary"
                       ng-click='vm.generatePrivilageActions()'>DEBUG_1</button>
+                    -->
                     <!-- /DEBUG BUTTON -->
 
                   </div>
