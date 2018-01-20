@@ -187,8 +187,10 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-	public int insertNewEvent(Calendar c, User u, String title, String description,Date startTime,Date endTime,String c1, String c2) {
+public int insertNewEvent(Calendar ca, User u, String title, String description,Date startTime,Date endTime,String c1, String c2) {
+		
 		Session session = sessionFactory.openSession();
+		Calendar c=session.get(Calendar.class, ca.getId());
 		Occurrence ev = new Occurrence(c, u, title, description,startTime,endTime, c1, c2);
 		int result =-1;
 		Transaction tx = null;
