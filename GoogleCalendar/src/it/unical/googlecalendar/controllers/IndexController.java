@@ -1,7 +1,11 @@
 package it.unical.googlecalendar.controllers;
 
+import java.io.IOException;
 import java.util.Date;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +39,7 @@ public class IndexController {
 
         return "index";
     }
-
+    
     /*
      * deleteCalendarId
      */
@@ -178,7 +182,9 @@ public class IndexController {
                 : "NO";
     }
 
-    // TODO: Giuseppe aggiungi questo metodo!!
+    /*
+     * addAlarm
+     */
     @RequestMapping(value = "/addAlarm/{occurrence_id}", method = RequestMethod.POST)
     @ResponseBody
     public int addAlarm(HttpSession session, @RequestParam int minutes,
@@ -186,6 +192,7 @@ public class IndexController {
         return dbService.addAlarm((Integer) session.getAttribute("user_id"), Integer.parseInt(occurrence_id), minutes);
     }
 
+    // FIXME: alarm_id -> occurrence_id
     // TODO: Giuseppe aggiungi questo metodo!!
     @RequestMapping(value = "/updateAlarm/{alarm_id}", method = RequestMethod.POST)
     @ResponseBody
@@ -194,6 +201,7 @@ public class IndexController {
         return dbService.updateAlarm(Integer.parseInt(alarm_id), minutes) ? "YES" : "NO";
     }
 
+    // FIXME: alarm_id -> occurrence_id
     // TODO: Giuseppe aggiungi questo metodo!!
     @RequestMapping(value = "/deleteAlarm/{alarm_id}", method = RequestMethod.POST)
     @ResponseBody
@@ -272,5 +280,14 @@ public class IndexController {
     public String JSON_getMyMemos(HttpSession session) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(dbService.getMyMemos((Integer) session.getAttribute("user_id")));
+    }
+    
+    /*
+     * SSE messages subscription
+     */
+    @RequestMapping(value = "/notifies")
+    public void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        return;
     }
 }

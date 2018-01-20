@@ -425,6 +425,37 @@ angular
     };
     
     /*
+     * addAlarm
+     * TODO: test me
+     */
+    vm.addAlarm = function (occurrence_id, minutes) {
+        $.ajax({
+            type: "POST",
+            url: "addAlarm/" + occurrence_id,
+            data: {
+                minutes: minutes,
+            },
+            success: function (response) {
+                // TODO
+            },
+        });
+    };
+    
+    /*
+     * updateAlarm
+     */
+    vm.updateAlarm = function (/* ... */) {
+        // TODO
+    }
+    
+    /*
+     * deleteAlarm
+     */
+    vm.deleteAlarm = function (/* ... */) {
+        // TODO
+    }
+    
+    /*
      * updateUser
      */
     vm.updateUser = function (username, password) {
