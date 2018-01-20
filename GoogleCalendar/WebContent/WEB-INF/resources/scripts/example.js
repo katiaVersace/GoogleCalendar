@@ -17,7 +17,12 @@ angular.module('mwl.calendar.docs').controller(
 			var ev1 = "ev1";
 			var dateEv1 = new Date();
 			dateEv1.setHours(01, 00, 00);
+			// Load an alarm sound
+		    vm.sound = new Audio("http://www.freespecialeffects.co.uk/soundfx/sirens/alarm_01.wav");
+		    vm.sound.loop = true;
 
+			
+			
 			// milliseconds x Minute
 			vm.MS_PER_MINUTE = 60000;
 
@@ -27,10 +32,14 @@ angular.module('mwl.calendar.docs').controller(
 			vm.alert = function(){
 				// temporary
 				// after test setAlarm(event,minutes);
+				vm.sound.play();
 				setAlarm(ev1, dateEv1, 1);
 			}
 			
 		
+			vm.stopAlarm(){
+				vm.sound.pause();
+			}
 			// ////////////////////////////////////////////////////////////////
 			// ///////////////////////////////////////////////////////////////
 
