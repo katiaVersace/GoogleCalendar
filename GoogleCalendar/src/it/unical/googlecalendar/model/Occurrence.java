@@ -54,9 +54,11 @@ public class Occurrence {
 	private String description;
 	
 	@Column
+	@Expose
 	String primaryColor;
 	
 	@Column
+	@Expose
 	String secondaryColor;
 	
 	@ManyToOne (cascade=CascadeType.REFRESH)
