@@ -28,6 +28,10 @@ function resetClock() {
 
 }
 
-function setCalendar(calendar){
+function setCalendar(calendar,id){
+	
+	alert(id);
+	
 	document.getElementById('ChoiceCalendar').innerHTML = calendar;
+	document.getElementById('choicheId').value = id;
 }

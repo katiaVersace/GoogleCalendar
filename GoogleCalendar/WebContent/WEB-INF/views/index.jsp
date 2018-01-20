@@ -259,9 +259,9 @@
               <br>
 
               <!-- <div class="alert alert-info">
-     Select range on a day on the view.
-     <strong ng-show="vm.lastDateClicked" >You selected on this day: from {{ vm.firstDateClicked | date:'medium' }} to {{ vm.lastDateClicked | date:'medium' }}</strong>
- </div> -->
+     			Select range on a day on the view.
+    			 <strong ng-show="vm.lastDateClicked" >You selected on this day: from {{ vm.firstDateClicked | date:'medium' }} to {{ vm.lastDateClicked | date:'medium' }}</strong>
+ 			</div> -->
               <mwl-calendar
                 events="vm.events"
                 view="vm.calendarView"
@@ -574,6 +574,7 @@
             <form>
             <fieldset id="calendarsListModal" ">
             </fieldset>
+            <label id ="choicheId" style="visibility: hidden;"></label>
            <h3 style="text-align: center; color: white; padding-top: 10px;">Add
               Event</h3>
 

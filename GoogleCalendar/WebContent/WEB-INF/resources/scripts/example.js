@@ -134,6 +134,7 @@ angular
     // Update the list of calendars displayed within the sidebar
     vm.updateCalendarList = function () {
         	var viewList = $("#calendarsList");
+        	vm.calendarsArray = [];
         	vm.JSON_getAllMyCalendars(function (calendars) {
         		viewList.empty();
         		JSON.parse(calendars).forEach(function (calendar) {
@@ -150,8 +151,8 @@ angular
                         + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
                         + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
                         + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
-                        + "  </label>\n"
-                        + "  <label>\n" 
+                        + "</label>\n"
+                        + "<label>\n" 
                         + "      <i\n"
                         + "        class=\"glyphicon glyphicon-cog\"\n"
                         + "        onclick=\"manageCalendar('${cal.title}','${cal.id}')\"\n"
@@ -165,8 +166,7 @@ angular
         		});
         		vm.updateCalendarListModal();	
         	});
-        	
-    };
+     };
     
     
     
@@ -194,13 +194,10 @@ angular
         		alert(title);
         	 
         		
-        		string+="<li><a href=\"javascript:void(0)\" onclick=\"setCalendar('"+title+"')\"" +
+        		string+="<li><a href=\"javascript:void(0)\" onclick=\"setCalendar('"+title+"','"+id+"')\"" +
         			" class = \"calendars\" data-id=\"" + id+ "\">" +vm.calendarsArray[i].title+"</a></li>";
         		}
-           	
-        	
-        	
-        	viewList.append(string);      	
+           	viewList.append(string);      	
     };
     
     
