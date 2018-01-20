@@ -300,16 +300,22 @@ public class IndexController {
     /*
      * SSE messages subscription
      */
-    @RequestMapping(value = "/notifies/{user_id}")
-    public void doGet(HttpServletRequest request, HttpServletResponse response, @PathVariable ("user_id") String user_id) 
+    @RequestMapping(value = "/notifies")
+    public void doGet(HttpServletRequest request, HttpServletResponse response, HttpSession session) 
             throws ServletException, IOException {
-    	
+    	    	
     	response.setContentType("text/event-stream");
     	response.setCharacterEncoding("UTF-8");
+    	
     	PrintWriter writer = response.getWriter();
     	Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-    	gson.toJson(dbService.getUnsentNotifications(Integer.parseInt(user_id)));
+    	
+    	if(((Integer) session.getAttribute("user_id")) != null) {
+    		String toSend = gson.toJson("data: " + dbService.getUnsentNotifications((Integer) session.getAttribute("user_id"))) + "\n\n";
+    		System.out.println(toSend);
+        	writer.write(toSend);
+        	writer.flush();
+    	}
     	writer.close();
-        return;
     }
 }

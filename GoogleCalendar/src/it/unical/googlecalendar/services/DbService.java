@@ -60,7 +60,8 @@ public class DbService {
 		Calendar katiaCalendar2 = new Calendar(katia,"Calendar n2", "second list of katia's events");
 		cdao.save(katiaCalendar2);
 		cdao.save(katiaCalendar);
-		
+		Notification n=new Notification(katia,"la mia prima notifica");
+		ndao.save(n);
 		//ora creo un evento e lo associo al mio calendario
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
 		String dateInString = "21-01-2018 10:20:56";
