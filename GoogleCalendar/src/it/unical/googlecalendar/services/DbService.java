@@ -152,9 +152,12 @@ public class DbService {
 		return odao.updateEventById(e, title,  description,startTime,endTime, c1,  c2, user_id);
 	}
 
-	public boolean updateUserById(int user_id, String username, String password) {
+	public String updateUserById(int user_id, String username, String oldPassword, String newPassword) {
 		User u=udao.getUserById(user_id);
-		return udao.updateUserById(u, username,password);}
+		return udao.updateUserById(u, username,oldPassword, newPassword);
+			
+		
+	 }
 	
 	public boolean disconnectMeByCalendar(int user_id, int calendarId) {
 		User u=udao.getUserById(user_id);

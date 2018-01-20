@@ -114,7 +114,7 @@
                             <li><a href="#">Page 3</a></li> -->
           </ul></li>
 
-        <li><a onclick="modal('2')"> <i
+        <li><a onclick="openModalType2()"> <i
             class="glyphicon glyphicon-user"></i> Update profile
         </a></li>
         <li><a onclick="modal('3')"> <i
@@ -255,8 +255,7 @@
                       <i
                         style="font-size: 16px; color: white;"
                         class="glyphicon glyphicon-pushpin"></i> Add Memo
-                    </button>
-
+a
                   </div>
                 </div>
               </div>
@@ -1049,6 +1048,16 @@
                 document.getElementById('modal-wrapper2').style.display = 'none';
             }
         </script> -->
+
+
+ <script type="text/javascript">
+ var openModalType2 = function() {
+	  var name = document.getElementById("nameUser").value = '';
+      var oldP = document.getElementById("oldP").value = '';
+      var newP = document.getElementById("newP").value = '';
+	  modal(2);	
+ }
+</script> 
 
 
   <!-- CALENDAR SETTINGS Madal(4)-->

@@ -17,7 +17,7 @@ public interface UserDAO {
 	
 	boolean update(User user);
 
-	boolean updateUserById(User u, String username, String password);
+	String updateUserById(User u, String username, String oldPassword,String password);
 
 	User getUserById(int u_id);
 

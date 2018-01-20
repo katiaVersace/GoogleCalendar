@@ -267,10 +267,8 @@ angular
         var oldP = document.getElementById("oldP").value;
         var newP = document.getElementById("newP").value;
         
-        // TO DO controllo username empty string
-        document.getElementById('usernameHome').innerHTML = name;
         
-        vm.updateUser(name,newP);
+        vm.updateUser(name,oldP,newP);
         
         document.getElementById('modal-wrapper2').style.display = 'none';
         
@@ -590,22 +588,21 @@ angular
     /*
      * updateUser
      */
-    vm.updateUser = function (username, password) {
+    vm.updateUser = function (username, oldPassword , password) {
         $.ajax({
             type: "POST",
             url: "updateUser",
             data: {
                 username: username,
+                oldPassword : oldPassword,
                 password: password,
             },
             success: function (response) {
-                // FIXME: graphical representations of the username
-                //        inside the page need to be updated. IndexController
-                //        should expose a function for retrieving the current
-                //        username, to be used at page initialization and after
-                //        a successful call to vm.updateUser
-            },
-            
+            		if(response == "User update successfully" || response == "Username changed successfully")
+                        document.getElementById('usernameHome').innerHTML = username;
+
+                	alert(response);
+             },
         });
     };
     

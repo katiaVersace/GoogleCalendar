@@ -157,8 +157,8 @@ public class IndexController {
     // viene preso dalla sessione
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     @ResponseBody
-    public String updateUser(HttpSession session, @RequestParam String username, @RequestParam String password) {
-        return dbService.updateUserById( (Integer) session.getAttribute("user_id"), username, password) ? "YES" : "NO";
+    public String updateUser(HttpSession session, @RequestParam String username, @RequestParam String oldPassword ,@RequestParam String password) {
+        return dbService.updateUserById( (Integer) session.getAttribute("user_id"), username,oldPassword,password);
     }
 
     /*
