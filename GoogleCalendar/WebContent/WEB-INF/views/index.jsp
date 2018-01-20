@@ -185,6 +185,31 @@
 											date="vm.viewDate" increment="vm.calendarView"
 											ng-click="vm.cellIsOpen = false">Next</button>
                                          <button class="btn btn-primary" ng-click="vm.deleteCalendar()"/>delete</button>
+                                         
+                                         
+                                         
+                                    <!--      
+                                           /////////////////////////////////////////////////77
+                                           /////////////////////////////////////////////////77
+                                      		/////////////////////////////////////////////////77 ALARM CODEEEEEEEEEEE
+                                          -->
+                                         
+                                         
+                                         
+                                         <button class="btn btn-brimary" ng-click="vm.alert()"/>SET ALARM</button>
+                                         
+                                         <button class="btn btn-brimary" ng-click="vm.stopAlarm()"/>STOP RING</button>
+                                         
+                                         
+                                         
+                                         
+                                              <!--      
+                                           /////////////////////////////////////////////////77
+                                           /////////////////////////////////////////////////77
+                                      		/////////////////////////////////////////////////77 ALARM CODEEEEEEEEEEE
+                                          -->
+                                         
+                                        
 									</div>
 								</div>
 
