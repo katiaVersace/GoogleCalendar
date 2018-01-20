@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -65,6 +68,16 @@ public class Occurrence {
 	@JoinColumn(name="user_id", nullable=false)
 	private User creator;
 	
+	//alarms
+    @OneToMany(mappedBy = "occurrence",orphanRemoval=true,cascade=CascadeType.ALL)
+    private List<Alarm> alarms=new ArrayList<Alarm>();
+    
+    //Repetition
+    @OneToOne(mappedBy = "occurrence",orphanRemoval=true,cascade=CascadeType.ALL)
+    @Expose
+    private Repetition repetition;
+    
+	
 	public Occurrence(){
 		super();
 	}
@@ -84,6 +97,30 @@ public class Occurrence {
 		calendar.getOccurrences().add(this);
 		this.description=description;
 		
+	}
+
+//	public List<Repetition> getRepetitions() {
+//		return repetitions;
+//	}
+//
+//	public void setRepetitions(List<Repetition> repetitions) {
+//		this.repetitions = repetitions;
+//	}
+
+	public Repetition getRepetition() {
+		return repetition;
+	}
+
+
+	public void setRepetition(Repetition repetition2) {
+		this.repetition=repetition2;
+	}
+	public List<Alarm> getAlarms() {
+		return alarms;
+	}
+
+	public void setAlarms(List<Alarm> alarms) {
+		this.alarms = alarms;
 	}
 
 	public Date getStartTime() {
@@ -187,5 +224,6 @@ public class Occurrence {
 			return false;
 		return true;
 	}
+
 	
 }

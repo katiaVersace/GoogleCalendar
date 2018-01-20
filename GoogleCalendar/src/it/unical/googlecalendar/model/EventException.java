@@ -16,49 +16,63 @@ import javax.persistence.UniqueConstraint;
 import com.google.gson.annotations.Expose;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"notification_id"})})
-public class Notification  {
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"EventException_id"})})
+public class EventException  {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="notification_id",unique = true)
+	@Column(name="EventException_id",unique = true)
 	@Expose
 	protected int id;
 
+	@Column(nullable = false)
+	@Expose
+	private Date startTime;
 
-	@Column
+	@Column(nullable = false)
 	@Expose
-	private String description;
-	
-	@Column
-	@Expose
-	private Date timestamp;
+	private Date endTime;
+
 	
 	@ManyToOne(cascade=CascadeType.REFRESH)
-	@JoinColumn(name = "user_id",nullable = false)
-	private User user;
+	@JoinColumn(name = "repetition_id",nullable = false)
+	private Repetition repetition;
 
 	
 	
-	public Notification(){
+	public EventException(){
 		super();
 	}
 	
-	public Notification (User user,String description){
-		this.description=description;		
-		
-		this.user=user;
-		timestamp=new Date();
-		user.getNotifications().add(this);
-		
+	public EventException (Repetition r, Date startTime,Date endTime){
+		this.startTime=startTime;
+		this.endTime=endTime;
+		r.getExceptions().add(this);
+	
 	}
 	
-	public Date getTimestamp() {
-		return timestamp;
+	public Date getStartTime() {
+		return startTime;
 	}
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public Repetition getRepetition() {
+		return repetition;
+	}
+
+	public void setRepetition(Repetition repetition) {
+		this.repetition = repetition;
 	}
 
 	public int getId() {
@@ -68,25 +82,6 @@ public class Notification  {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-
 	
 	@Override
 	public int hashCode() {
@@ -105,7 +100,7 @@ public class Notification  {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Notification other = (Notification) obj;
+		EventException other = (EventException) obj;
 		if (id != other.id)
 			return false;
 		return true;

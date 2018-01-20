@@ -15,14 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
+import it.unical.googlecalendar.dao.AlarmDAO;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
 import it.unical.googlecalendar.dao.InvitationDAOImpl;
 import it.unical.googlecalendar.dao.MemoDAO;
+import it.unical.googlecalendar.dao.NotificationDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
+import it.unical.googlecalendar.model.Alarm;
 import it.unical.googlecalendar.model.Calendar;
+import it.unical.googlecalendar.model.Invitation;
 import it.unical.googlecalendar.model.Memo;
+import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 
@@ -40,6 +46,10 @@ public class DbService {
 	private InvitationDAOImpl idao;
 	@Autowired
 	private MemoDAO mdao;
+	@Autowired
+	private AlarmDAO adao;
+	@Autowired
+	private NotificationDAO ndao;
 	
 	@PostConstruct
 	public void initialize() {
@@ -177,4 +187,53 @@ public class DbService {
 	public List<Occurrence> getMyEventsInPeriod(String email, int calendar_id, String start, String end) {
 		return odao.getOccurrenceByEmailInPeriod(email, calendar_id, start, end);
 	}
+
+
+	
+
+	public boolean updateAlarm(int alarm_id, int minutes) {
+		Alarm a=adao.getAlarmById(alarm_id);
+		return adao.updateAlarmById(a, minutes);
+	}
+
+
+	public int addAlarm(int user_id, int occurrence_id, int minutes) {
+		User u=udao.getUserById(user_id);
+		Occurrence o=odao.getOccurrenceById(occurrence_id);
+		return adao.insertNewAlarm(u, o, minutes);
+	}
+
+
+	public boolean deleteAlarm(int alarm_id,int user_id) {
+		User u=udao.getUserById(user_id);
+		Alarm a=adao.getAlarmById(alarm_id);
+		return adao.deleteAlarmById(a,u);
+	}
+	
+	public List<Alarm> getMyAlarms(int user_id){
+		return adao.getAlarmsByUserId(user_id);
+	
+	}
+	
+    public Alarm getTheAlarmForAnOccurrence(int user_id, int occurrence_id){
+        return adao.getAlarmsByOccurrenceIdAndUserId(user_id, occurrence_id);
+    }
+
+
+	public List<Notification> getMyNotifications(int user_id) {
+		return ndao.getNotificationByUserId(user_id);
+	}
+    
+	public List<Invitation> getMyInvitation(int user_id) {
+		return idao.getInvitationsByReceiverId(user_id);
+	}
+
+
+	public List<Memo> getMyMemos(int user_id) {
+		User u=udao.getUserById(user_id);
+		return mdao.getMemoByUserId(user_id);
+	}
+    
+    
+	
 }

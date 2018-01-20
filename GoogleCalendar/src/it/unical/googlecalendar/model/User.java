@@ -47,7 +47,11 @@ public class User {
     @OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     private List<Notification> notifications=new ArrayList<Notification>();
     
-
+  //alarms
+    @OneToMany(mappedBy = "user",orphanRemoval=true,cascade=CascadeType.ALL)
+    
+    private List<Alarm> alarms=new ArrayList<Alarm>();
+    
 	    
   	
     
@@ -64,7 +68,15 @@ public class User {
 	}
 	
 	
-	 public List<Notification> getNotifications() {
+	 public List<Alarm> getAlarms() {
+		return alarms;
+	}
+
+	public void setAlarms(List<Alarm> alarms) {
+		this.alarms = alarms;
+	}
+
+	public List<Notification> getNotifications() {
 			return notifications;
 		}
 

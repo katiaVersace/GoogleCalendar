@@ -66,7 +66,6 @@ angular
     vm.tmpEvt = undefined;
     vm.tmpMemo = undefined;
     vm.memo = undefined;
-    //
     
     // --------------- //
     // -- UTILITIES -- //
@@ -74,22 +73,44 @@ angular
     
     // Event Constructor
     vm.Event = function (id, calendar, title, description, 
-    		startsAt, endsAt, primaryColor, secondaryColor) {
-        	this.id = id;
-        	this.calendar = calendar;
-        	this.title = title;
-        	this.description = description;
-        	this.startsAt = startsAt;
-        	this.endsAt = endsAt;
-        	this.color = {
-    			primary: primaryColor,
-    			secondary: secondaryColor,
-        	};
-        	this.draggable = false;
-        	this.resizable = false;
-        	this.actions = actions;
-    }
+            startsAt, endsAt, primaryColor, secondaryColor) {
+        this.id = id;
+        this.calendar = calendar;
+        this.title = title;
+        this.description = description;
+        this.startsAt = startsAt;
+        this.endsAt = endsAt;
+        this.color = {
+            primary: primaryColor,
+            secondary: secondaryColor,
+        };
+        this.draggable = false;
+        this.resizable = false;
+        this.memo = false;
+        this.actions = actions;
+    };
+    
+    // Memo Constructor (deceives vm.events to think it is a regular event)
+    vm.Memo = function (id, title, description, color, dateAdded) {
+        var now = new Date();
         
+        this.id = id;
+        this.calendar = undefined; // FIXME: insert memo
+        this.title = title;
+        this.description = description;
+        this.startsAt = now; // graphical purposes only (renders it on the current day)
+        this.endsAt = now; // graphical purposes only (renders it on the current day)
+        this.dateAdded = now; // date this memo was added/saved on db
+        this.color = {
+            primary: color,
+            secondary: color,
+        };
+        this.draggable = false;
+        this.resizable = false;
+        this.memo = true;
+        this.actions = actions;
+    };
+    
     vm.getViewDateBoundaries = function () {        
         return {
             start: moment(vm.viewDate).startOf(vm.calendarView).toDate(),
@@ -107,24 +128,26 @@ angular
 
         var boundaries = vm.getViewDateBoundaries();
 
-        	vm.shownCalendars.forEach(function (calendar_id) {
-        		vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
-       			JSON.parse(events).forEach(function (blueprint) {
-        				vm.events.push(new vm.Event(
-        					blueprint.id,
-        					blueprint.calendar.id,
-        					blueprint.title,
-        					blueprint.description,
-        					new Date(blueprint.startTime),
-        					new Date(blueprint.endTime),
-        					"#555555", // FIXME: substitute with blueprint.primaryColor,
-        					"#aaaaaa" // FIXME: substitute with blueprint.secondaryColor,
-        				));
-       			});
-       			// Needed for asynchronous update of vm.events
-       			$scope.$digest();
-        		});
-        	});
+        vm.shownCalendars.forEach(function (calendar_id) {
+            vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
+                JSON.parse(events).forEach(function (blueprint) {
+                    vm.events.push(new vm.Event(
+                        blueprint.id,
+                        blueprint.calendar.id,
+                        blueprint.title,
+                        blueprint.description,
+                        new Date(blueprint.startTime),
+                        new Date(blueprint.endTime),
+                        "#555555", // FIXME: substitute with
+                                    // blueprint.primaryColor,
+                        "#aaaaaa" // FIXME: substitute with
+                                    // blueprint.secondaryColor,
+                    ));
+                });
+                // Needed for asynchronous update of vm.events
+                $scope.$digest();
+            });
+        });
     };
     
     // Update the list of calendars displayed within the sidebar
@@ -161,14 +184,14 @@ angular
     
     // Hide/Show a calendar's events
     vm.toggleCalendar = function (id) {
-        	if (vm.checkedCalendars[id]) {
-        		vm.shownCalendars.push(id);
-        	} else {
-        		vm.shownCalendars = vm.shownCalendars.filter(function (element) {
-        			return element != id;
-        		});
-        	}
-        	vm.updateEventList();
+        if (vm.checkedCalendars[id]) {
+            vm.shownCalendars.push(id);
+        } else {
+            vm.shownCalendars = vm.shownCalendars.filter(function (element) {
+                return element != id;
+            });
+        }
+        vm.updateEventList();
     };
     
     // Update event list when
@@ -185,78 +208,134 @@ angular
      * JSON_getMyEventsInPeriod
      */
     vm.JSON_getMyEventsInPeriod = function (calendar_id, start, end, callback) {
-    	$.ajax({
-    		type: "POST",
-    		url: "JSON_getMyEventsInPeriod/" + calendar_id,
-    		data: {
-    			start: moment(start).format("YYYY-MM-DD HH:mm:ss"),
-    			end: moment(end).format("YYYY-MM-DD HH:mm:ss"),
-    		},
-    		success: function (response) {
-    			callback(response);
-    		},
-    	});
+        $.ajax({
+            type: "POST",
+            url: "JSON_getMyEventsInPeriod/" + calendar_id,
+            data: {
+                start: moment(start).format("YYYY-MM-DD HH:mm:ss"),
+                end: moment(end).format("YYYY-MM-DD HH:mm:ss"),
+            },
+            success: function (response) {
+                callback(response);
+            },
+        });
     };
     
     /*
      * JSON_getAllMyCalendars
      */
     vm.JSON_getAllMyCalendars = function (callback) {
-    	$.ajax({
-    		type: "POST",
-    		url: "JSON_getAllMyCalendars",
-    		success: function (response) {
-    			callback(response);
-    		},
-    	});
+        $.ajax({
+            type: "POST",
+            url: "JSON_getAllMyCalendars",
+            success: function (response) {
+                callback(response);
+            },
+        });
+    };
+    
+    /*
+     * JSON_getMyAlarms
+     * TODO: test me
+     */
+    vm.JSON_getMyAlarms = function (callback) {
+        $.ajax({
+            type: "POST",
+            url: "JSON_getMyAlarms",
+            success: function (response) {
+                callback(response);
+            },
+        });  
+    };
+    
+    /*
+     * JSON_getAlarmForAnOccurrence
+     * TODO: test me
+     */
+    vm.JSON_getAlarmForAnOccurrence = function (occurrence_id, callback) {
+        $.ajax({
+            type: "POST",
+            url: "JSON_getAlarmForAnOccurrence/" + occurrence_id,
+            success: function (response) {
+                callback(resposne);
+            },
+        });
+    };
+    
+    /*
+     * JSON_getMyNotifications
+     * TODO: test me
+     */
+    vm.JSON_getMyNotifications = function (callback) {
+        $.ajax({
+            type: "POST",
+            url: "JSON_getMyNotifications",
+            success: function (response) {
+                callback(response);
+            },
+        });
+    };
+    
+    /*
+     * JSON_getMyInvitations
+     * TODO: test me
+     */
+    vm.JSON_getMyInvitations = function (callback) {
+        $.ajax({
+            type: "POST",
+            url: "JSON_getMyInvitations",
+            success: function (response) {
+                callback(response);
+            },
+        });
     };
     
     /*
      * insertNewEvent
      */
     vm.insertNewEvent = function (calendar_id, title, description, 
-    		startsAt, endsAt, primaryColor, secondaryColor) {
-        	$.ajax({
-        		type: "POST",
-        		url: "insertNewEvent/" + calendar_id,
-        		data: {
-        			title: title,
-        			description: description,
-        			startTime: startsAt,
-        			endTime: endsAt,
-        			c1: primaryColor,
-        			c2: secondaryColor,
-        		},
-        		success: function (response) {
-        			if (response != -1) {
-        				vm.updateEventList();
-        			}
-        		},
-        	});
+            startsAt, endsAt, primaryColor, secondaryColor) {
+        $.ajax({
+            type: "POST",
+            url: "insertNewEvent/" + calendar_id,
+            data: {
+                title: title,
+                description: description,
+                startTime: startsAt,
+                endTime: endsAt,
+                c1: primaryColor,
+                c2: secondaryColor,
+            },
+            success: function (response) {
+                if (response != -1) {
+                    vm.updateEventList();
+                }
+            },
+        });
     };
     
     /*
      * updateEvent
      */
     vm.updateEvent = function (id, title, description, 
-    		startsAt, endsAt, primaryColor, secondaryColor) {
-        	$.ajax({
-        		type: "POST",
-        		url: "updateEvent/" + id,
-        		data: {
-        			title: title,
-        			description: description,
-        			startTime: startsAt,
-        			endTime: endsAt,
-        			c1: primaryColor,
-        			c2: secondaryColor,
-        		},
-        		success: function (response) {
-        			if (response == "YES") {
-        				vm.updateEventList();
-        			}
-        		},
-        	});
+            startsAt, endsAt, primaryColor, secondaryColor) {
+        $.ajax({
+            type: "POST",
+            url: "updateEvent/" + id,
+            data: {
+                title: title,
+                description: description,
+                startTime: startsAt,
+                endTime: endsAt,
+                c1: primaryColor,
+                c2: secondaryColor,
+            },
+            success: function (response) {
+                if (response == "YES") {
+                    vm.updateEventList();
+                }
+            },
+        });
     };
     
     /*
@@ -276,37 +355,75 @@ angular
     
     /*
      * insertNewMemo
+     * TODO: test me
      */
-    vm.insertNewMemo = function ( /* ... */ ) {
+    vm.insertNewMemo = function (title, description, date, color) {
         $.ajax({
-            
+            type: "POST",
+            url: "insertNewMemo",
+            data: {
+                title: title,
+                description: description,
+                data: date,
+                c1: color,
+            },
+            success: function () {
+                // TODO
+            },
         });
     };
     
     /*
      * updateMemo
+     * TODO: test me
      */
-    vm.updateMemo = function ( /* ... */ ) {
-        // TODO
+    vm.updateMemo = function (memo_id, title, description, date, color) {
+        $.ajax({
+            type: "POST",
+            url: "updateMemo/" + memo_id,
+            data: {
+                title: title,
+                description: description,
+                data: date,
+                c1: color,
+            },
+            success: function () {
+                // TODO
+            },
+        });
+    };
+    
+    /*
+     * deleteMemoById
+     * TODO: test me
+     */
+    vm.deleteMemoById = function ( /* ... */ ) {
+        $.ajax({
+            type: "POST",
+            url: "deleteMemo/" + memo_id,
+            success: function () {
+                // TODO
+            },
+        });
     };
     
     /*
      * insertNewCalendar
      */
     vm.insertNewCalendar = function (title, description) {
-    	$.ajax({
-    	   type: "POST",
-    	   url: "insertNewCalendar",
-    	   data: {
-    	       title: title,
-    	       description, description,
-    	   },
-    	   success: function (response) {
-    	       if (response != -1) {
-    	           vm.updateCalendarList();
-    	       }
-    	   },
-    	});
+        $.ajax({
+           type: "POST",
+           url: "insertNewCalendar",
+           data: {
+               title: title,
+               description, description,
+           },
+           success: function (response) {
+               if (response != -1) {
+                   vm.updateCalendarList();
+               }
+           },
+        });
     };
     
     /*
@@ -343,6 +460,37 @@ angular
             },
         });
     };
+    
+    /*
+     * addAlarm
+     * TODO: test me
+     */
+    vm.addAlarm = function (occurrence_id, minutes) {
+        $.ajax({
+            type: "POST",
+            url: "addAlarm/" + occurrence_id,
+            data: {
+                minutes: minutes,
+            },
+            success: function (response) {
+                // TODO
+            },
+        });
+    };
+    
+    /*
+     * updateAlarm
+     */
+    vm.updateAlarm = function (/* ... */) {
+        // TODO
+    }
+    
+    /*
+     * deleteAlarm
+     */
+    vm.deleteAlarm = function (/* ... */) {
+        // TODO
+    }
     
     /*
      * updateUser
@@ -550,7 +698,6 @@ angular
 		vm.vtrCell.push(cell);
 		console.log(vm.vtrCell.length);
 		console.log(vm.vtrCell[length - 1]);
-
 	};
 
 	// MANAGE EVENT
@@ -685,4 +832,12 @@ angular
 		vm.events.push(vm.tmpMemo);
 		document.getElementById('modal-wrapper8').style.display = 'none';
 	}
+
+	// ----------- //
+	// -- DEBUG -- //
+	// ----------- //
+	
+    vm.fn = function () {
+        console.log(JSON.stringify(vm.events, null, 4));
+    };
 });

@@ -1,6 +1,5 @@
 package it.unical.googlecalendar.dao;
 
-import java.awt.Color;
 import java.util.Date;
 import java.util.List;
 
@@ -11,20 +10,21 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import it.unical.googlecalendar.model.Memo;
+import it.unical.googlecalendar.model.Alarm;
+import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 
 @Repository
-public class MemoDAO {
+public class AlarmDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	public MemoDAO() {
+	public AlarmDAO() {
 
 	}
 
-	public boolean save(Memo Memo) {
+	public boolean save(Alarm Alarm) {
 
 		Session session = sessionFactory.openSession();
 		boolean result = false;
@@ -33,7 +33,7 @@ public class MemoDAO {
 
 		try {
 			tx = session.beginTransaction();
-			session.save(Memo);
+			session.save(Alarm);
 			tx.commit();
 			result = true;
 
@@ -48,42 +48,52 @@ public class MemoDAO {
 
 	}
 
-	public List<Memo> getAllMemos() {
+	public List<Alarm> getAllAlarms() {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		List<Memo> result = session.createNativeQuery("SELECT * FROM Memo", Memo.class).list();
+		List<Alarm> result = session.createNativeQuery("SELECT * FROM Alarm", Alarm.class).list();
 
 		session.close();
 		return result;
 
 	}
 
-	public List<Memo> getMemoByUserId(int user_id) {
+	public List<Alarm> getAlarmsByUserId(int user_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		List<Memo> result = session.createQuery("SELECT m FROM Memo m where m.user.id= :user_id")
+		List<Alarm> result = session.createQuery("SELECT m FROM Alarm m where m.user.id= :user_id")
 				.setParameter("user_id", user_id).getResultList();
 
-		session.close();
-		return result;
+		
+			return result;
+		
+	}
+	
+	public Alarm getAlarmsByOccurrenceIdAndUserId(int user_id,int occurrence_id) {
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Alarm result = (Alarm) session.createQuery("SELECT a FROM Alarm a where a.user.id= :user_id and a.occurrence.id= :occurrence_id")
+				.setParameter("user_id", user_id).setParameter("alarm_id", occurrence_id).uniqueResult();
+
+		
+			return result;
+		
+
 	}
 
-	public boolean updateMemoById(Memo m, int creator, String title, Date date, String description, String color1
+	public boolean updateAlarmById(Alarm m,int alarm
 			) {
 		Session session = sessionFactory.openSession();
 		boolean result = false;
 		Transaction tx = null;
 
-		if (m.getUser().getId()==creator) {
 			try {
 				tx = session.beginTransaction();
-				m.setTitle(title);
-				m.setCreationDate(date);
-				m.setDescription(description);
-				m.setPrimaryColor(color1);
-				session.update(m);
+                m.setAlarm(alarm);
+                session.update(m);
 				tx.commit();
 				result = true;
 
@@ -92,19 +102,19 @@ public class MemoDAO {
 				tx.rollback();
 				result = false;
 			}
-		}
+		
 
 		session.close();
 		return result;
 
 	}
 
-	public boolean deleteMemoById(Memo m, User u) {
+	public boolean deleteAlarmById(Alarm m,User u) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		boolean result = false;
-
-		if (m.getUser().equals(u)) {
+		
+				
 			try {
 				tx = session.beginTransaction();
 
@@ -112,7 +122,7 @@ public class MemoDAO {
 				session.flush();
 
 				tx.commit();
-				u.getMemos().remove(m);
+				u.getAlarms().remove(m);
 				result = true;
 
 			} catch (Exception e) {
@@ -120,15 +130,15 @@ public class MemoDAO {
 				result = false;
 				tx.rollback();
 			}
-		}
+		
 
 		session.close();
 		return result;
 	}
 
-	public int insertNewMemo(User u, String title, Date data, String description, String c1) {
+	public int insertNewAlarm(User u, Occurrence o,int a) {
 		Session session = sessionFactory.openSession();
-		Memo m = new Memo(u, title, data, description,c1);
+		Alarm m = new Alarm(u,o, a);
 		int result =-1;
 		Transaction tx = null;
 
@@ -147,11 +157,11 @@ public class MemoDAO {
 		return result;
 	}
 
-	public Memo getMemoById(int memo_id) {
+	public Alarm getAlarmById(int Alarm_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		Memo result = session.get(Memo.class,memo_id);
+		Alarm result = session.get(Alarm.class,Alarm_id);
 
 		session.close();
 		return result;
