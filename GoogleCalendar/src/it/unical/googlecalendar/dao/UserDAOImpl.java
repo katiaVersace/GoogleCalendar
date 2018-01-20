@@ -166,6 +166,20 @@ return result;
 		return result;
 		
 	}
+	@Override
+	public User getUserByEmail(String email){
+		Session session = sessionFactory.openSession();
+		//sql query
+				User result;
+				result=(User) session.createQuery("SELECT u FROM User u WHERE u.email = :user_email").setParameter("user_email", email).uniqueResult();
+				 
+
+
+		session.close();
+		return result;
+		
+	}
+	
 	
 	
 	

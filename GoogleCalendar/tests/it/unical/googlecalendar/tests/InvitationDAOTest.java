@@ -91,13 +91,18 @@ public class InvitationDAOTest {
 //				System.out.println(no.getDescription());
 //			}
 			//ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId()).isEmpty();
-		
+//		 System.out.println("Associazioni");
+//		 List <Users_Calendars>ass= ucdao.getAllAssociation();
+//		 for(Users_Calendars u:ass){
+//			 System.out.println(u.getUser().getUsername()+" "+u.getCalendarName());
+//		 }
+//		
 		String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(),c.getId());
 
-		if(privilegiDiMario==null)System.out.println("Privilegi null");
+		
 		
 //	System.out.println("Privilegi di mario "+privilegiDiMario);
-	Assert.assertTrue(privilegiDiMario!=null);
+	Assert.assertTrue(privilegiDiMario.equals("ADMIN"));
 	//		System.out.println("inviti di mario dopo che accetti: "+mario.receivedInvitations.size());
 //		 for(Invitation in:mario.receivedInvitations){
 //				 System.out.println("Invitok: "+in.getSenderId()+in.getReceiver().getUsername()+" + "+in.getPrivilege());

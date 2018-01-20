@@ -47,9 +47,10 @@ public class AppConfiguration implements WebMvcConfigurer {
 	}
 
 	private Properties getHibernateProperties() {
-
+	
 		Properties prop = new Properties();
-		prop.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+		prop.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+		prop.put("hibernate.connection.driver_class","com.mysql.jdbc.Driver");
 		prop.put("hibernate.show_sql", false);
 		prop.put("hibernate.format_sql", true);
 		prop.put("hibernate.hbm2ddl.auto", "create");
@@ -59,10 +60,10 @@ public class AppConfiguration implements WebMvcConfigurer {
 	@Bean
 	public DataSource getDataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName("org.h2.Driver");
-		dataSource.setUrl("jdbc:h2:mem:MyDB");
-		dataSource.setUsername("sa");
-		dataSource.setPassword("sa");
+		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+		dataSource.setUrl("jdbc:mysql://localhost:3306/calendar");
+		dataSource.setUsername("root");
+		dataSource.setPassword("root");
 		return dataSource;
 	}
 

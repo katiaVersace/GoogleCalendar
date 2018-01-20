@@ -35,7 +35,7 @@ public class Calendar {
 	@Expose
 	private String description;
 
-	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE)
 	private List<Occurrence> occurrences = new ArrayList<Occurrence>();
 
 	// User che condividono questo calendario

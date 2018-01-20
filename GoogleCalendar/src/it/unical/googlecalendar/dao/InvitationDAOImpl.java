@@ -78,11 +78,12 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 	}
 	
-	public User getSenderOfInvitationById(int invitation_id) {
+	public int getSenderOfInvitationById(int invitation_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		User result = (User) session.createQuery("SELECT u FROM Invitation i, User u WHERE u.id=i.senderId and i.id= :invitation_id").setParameter("invitation_id", invitation_id).uniqueResult();
+
+		int result =  (int) session.createQuery("SELECT i.senderId FROM Invitation i  WHERE i.id= :invitation_id").setParameter("invitation_id", invitation_id).uniqueResult();
 
 		session.close();
 		return result;
@@ -152,8 +153,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 		
 		if (myPrivilege != null)// signofica che non ho ricevuto inviti da
 								// accettare per questo calendario quindi esco
-		{
-			List<Invitation> invitationToDelete = getInvitationsByCalendarAndReceiver(u.getId(), c.getId());
+		{	List<Invitation> invitationToDelete = getInvitationsByCalendarAndReceiver(u.getId(), c.getId());
 			Transaction tx = null;
 			try {
 				tx = session.beginTransaction();
@@ -161,15 +161,14 @@ public class InvitationDAOImpl implements InvitationDAO {
 				// creo un'associazione tra l'utente e il calendario ed elimino
 				
 				Users_Calendars association = new Users_Calendars(u, c, myPrivilege, Color.CYAN, c.getTitle());
-				
-				
+			
 				for (Invitation inv : invitationToDelete) {
-					User sender=getSenderOfInvitationById(inv.getId());
+					User sender=session.get(User.class,getSenderOfInvitationById(inv.getId()));
 					Notification acceptNotification=new Notification(sender,u.getUsername()+" accepted your invitation to calendar: "+c.getTitle());
 					session.delete(inv);
-					
 					session.update(sender);
 				}
+				
 				session.update(c);
 				session.update(u);
 				
@@ -187,7 +186,6 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 		
 		session.close();
-		
 		return result;
 	}
 
