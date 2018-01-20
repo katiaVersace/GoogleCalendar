@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import javax.sound.midi.SysexMessage;
 
 import org.hibernate.Cache;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -237,13 +238,14 @@ public int insertNewEvent(Calendar ca, User u, String title, String description,
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		boolean result = false;
-		Calendar ca=session.get(Calendar.class, oc.getCalendar().getId());
-
+		Calendar ca=session.load(Calendar.class, oc.getCalendar().getId());
+		Hibernate.initialize(ca.getOccurrences());
 		// per controllare i privilegi devo prendermi l'associazione tra
 		// l'utente e il calendario dell'occurrence
 		Query query = session.createQuery(
-				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-		query.setParameter("calendar_id", oc.getCalendar().getId()).setParameter("user_id", u.getId());
+				"SELECT uc FROM Users_Calendars uc, Calendar c, Occurrence o"
+				+ " WHERE uc.calendar.id= c.id and uc.user.id= :user_id and c.id=o.calendar.id and o.id= :occurrence_id ");
+		query.setParameter("occurrence_id", oc.getId()).setParameter("user_id", u.getId());
 
 		List<Users_Calendars> resultsId = query.getResultList();
 		if (resultsId.size() != 0) {
@@ -261,13 +263,12 @@ public int insertNewEvent(Calendar ca, User u, String title, String description,
 							cache.evictAllRegions();
 						}
 						// END DEBUG
-					
-					
+						ca.getOccurrences().remove(oc);
+						
 					session.delete(oc);
 					session.flush();
 
 					tx.commit();
-					ca.getOccurrences().remove(oc);
 					result = true;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -284,8 +285,7 @@ public int insertNewEvent(Calendar ca, User u, String title, String description,
 	@Override
 	public boolean updateEventById(Occurrence v, String title,  String description, Date startTime,Date endTime,String c1, String c2,int user_id) {
 		Session session = sessionFactory.openSession();
-
-		boolean result = false;
+boolean result = false;
 
 		// l'utente e il calendario dell'occurrence
 		Query query = session.createQuery(
@@ -297,7 +297,6 @@ public int insertNewEvent(Calendar ca, User u, String title, String description,
 			Users_Calendars uc = resultsId.get(0);
 
 			if (uc.getPrivileges().equals("ADMIN") || uc.getPrivileges().equals("RW")) {
-
 				Transaction tx = null;
 				try {
 					tx = session.beginTransaction();
@@ -315,7 +314,6 @@ public int insertNewEvent(Calendar ca, User u, String title, String description,
 						cache.evictAllRegions();
 					}
 					// END DEBUG
-					
 					session.saveOrUpdate(v);
 					tx.commit();
 					result = true;
