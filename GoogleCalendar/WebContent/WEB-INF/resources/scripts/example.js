@@ -181,7 +181,9 @@ angular
     vm.updateCalendarListModal = function () {
         	var viewList = $("#calendarsListModal");
         	
-        	var string = "<div  class=\"btn-group\">\n"
+        	viewList.empty();
+            var string ='';	
+                string = "<div  class=\"btn-group\">\n"
                 +"<button type=\"button\" class=\"btn btn-primary dropdown-toggle\"" 
                 +  "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">"
                 +"<i style=\"font-size: 25px; color: white;\"" 
