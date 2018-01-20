@@ -61,15 +61,16 @@ angular
     };
     
     // Memo Constructor (deceives vm.events to think it is a regular event)
-    vm.Memo = function (id, title, description, color) {
+    vm.Memo = function (id, title, description, color, dateAdded) {
         var now = new Date();
         
         this.id = id;
         this.calendar = undefined; // FIXME: insert memo
         this.title = title;
         this.description = description;
-        this.startsAt = now;
-        this.endsAt = now;
+        this.startsAt = now; // graphical purposes only (renders it on the current day)
+        this.endsAt = now; // graphical purposes only (renders it on the current day)
+        this.dateAdded = now; // date this memo was added/saved on db
         this.color = {
             primary: color,
             secondary: color,

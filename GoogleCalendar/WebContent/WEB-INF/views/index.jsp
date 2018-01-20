@@ -30,6 +30,7 @@
   rel="stylesheet">
 
 <script src="resources/scripts/example.js"></script>
+<script src="resources/scripts/messages.js"></script>
 
 <!-- Bootstrap CSS CDN -->
 

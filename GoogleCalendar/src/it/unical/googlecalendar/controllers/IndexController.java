@@ -228,7 +228,7 @@ public class IndexController {
                 Integer.parseInt(calendar_id), start, end));
     }
 
-    // FIXME: signature name JSON_getMyEventsInPeriod -> JSON_getMyAlarms
+    // FIXME: signature name JSON_getMyEventsInPeriod -> JSON_getMyAlarms (?)
     @RequestMapping(value = "/JSON_getMyAlarms", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_getMyAlarms(HttpSession session) {
@@ -236,8 +236,13 @@ public class IndexController {
         return gson.toJson(dbService.getMyAlarms((Integer) session.getAttribute("user_id")));
     }
     
-    // TODO: fare funzione JSON_getMyMemos
+    /*
+     * TODO: fare funzione JSON_getMyMemos
+     */
 
+    /*
+     * JSON_getAlarmForAnOccurrence
+     */
     @RequestMapping(value = "/JSON_getAlarmForOccurrence/{occurrence_id}", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_getAlarmForAnOccurrence(HttpSession session,
@@ -247,6 +252,9 @@ public class IndexController {
                 Integer.parseInt(occurrence_id)));
     }
 
+    /*
+     * JSON_getMyNotifications
+     */
     @RequestMapping(value = "/JSON_getMyNotifications", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_getMyNotifications(HttpSession session) {
@@ -254,6 +262,9 @@ public class IndexController {
         return gson.toJson(dbService.getMyNotifications((Integer) session.getAttribute("user_id")));
     }
 
+    /*
+     * JSON_getMyInvitations
+     */
     @RequestMapping(value = "/JSON_getMyInvitations", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_getMyInvitations(HttpSession session) {
