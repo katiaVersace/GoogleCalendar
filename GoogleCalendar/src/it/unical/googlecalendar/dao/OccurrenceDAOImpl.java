@@ -252,6 +252,15 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 				try {
 					tx = session.beginTransaction();
 
+					    // DEBUG
+						session.clear();
+						Cache cache = sessionFactory.getCache();
+						if (cache != null) {
+							cache.evictAllRegions();
+						}
+						// END DEBUG
+					
+					
 					session.delete(oc);
 					session.flush();
 
