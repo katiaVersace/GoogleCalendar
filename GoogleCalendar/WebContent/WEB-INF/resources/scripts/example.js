@@ -6,7 +6,7 @@ var imported = document.createElement('script');
 imported.src = 'resources/scripts/openModal.js';
 document.head.appendChild(imported);
 var imported2 = document.createElement('script');
-imported2.src = 'resources/scripts/clocks.js';
+imported2.src = 'resources/scripts/dropDownMenu.js';
 document.head.appendChild(imported2);
 
 hoverCell = function(date, date1, cell) {
@@ -40,6 +40,7 @@ angular
     // Events to be displayed
     vm.events = [];
     
+           
     // Calendars whose events are currently shown, by id
     vm.shownCalendars = [];
     
@@ -47,22 +48,26 @@ angular
     // Only used in conjunction with shownCalendars
     vm.checkedCalendars = [];
     
+    vm.calendarsArray = [];
+    
     vm.cellIsOpen = true;
     
     // List of glyphs shown after entries in a day's event list,
     // with behavior
-    var actions = [{
+    var actions = [ {
         label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
         onClick : function(args) {
             vm.clickUpdateEvent(args.calendarEvent);
         }
-      }, {
-        label: '<i class=\'glyphicon glyphicon-remove\'></i>',
-        onClick: function (args) {
-            // TODO: delete occurrence
-      },
-    }];
-    
+    }, {
+        label : '<i class=\'glyphicon glyphicon-remove\'></i>',
+        onClick : function(args) {
+            alert("delete");
+            alert(args.calendarEvent.id);
+            vm.deleteOccurrence(args.calendarEvent.id);
+        },
+    } ];
+        
     // --------------------------- //
     // -- MERGE MARIO MARCO [1] -- //
     // --------------------------- //
@@ -70,11 +75,11 @@ angular
     vm.vtrCell = [];
     // event for modal
     vm.temp = undefined;
+    
     // clicked cell
     vm.lastCellClicked = undefined;
-    vm.contId = 0;
+   
     // temp event to update
-    vm.tmpEvt = undefined;
     vm.tmpMemo = undefined;
     vm.memo = undefined;
     
@@ -163,36 +168,114 @@ angular
     
     // Update the list of calendars displayed within the sidebar
     vm.updateCalendarList = function () {
-            var viewList = $("#calendarsList");
-            vm.JSON_getAllMyCalendars(function (calendars) {
-                viewList.empty();
-                JSON.parse(calendars).forEach(function (calendar) {
-                    viewList.append(
-                     $compile(
-                          "<li id=\"cal_entry_" + calendar.id + "\">\n"
-                        + "  <label>\n"
-                        + "    <input\n"
-                        + "      type=\"checkbox\"\n"
-                        + "      name=\"" + calendar.id + "\"\n"
-                        + "      value=\"" + calendar.title + "\"\n"
-                        + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
-                        + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
-                        + "    <label for=\"" + calendar.id + ">" + calendar.title + "</label>\n"
-                        + "    <label>\n"
-                        + "      <i\n"
-                        + "        class=\"glyphicon glyphicon-cog\"\n"
-                        + "        onclick=\"manageCalendar('${cal.title}','${cal.id}')\"\n"
-                        + "        style=\"margin-left: 80%;\">\n"
-                        + "      </i>"
-                        + "    </label>\n"
-                        + "  </label>\n"
-                        + "</li>\n"
-                     )($scope)
-                    );
-                });
+        var viewList = $("#calendarsList");
+        vm.calendarsArray = [];
+        vm.JSON_getAllMyCalendars(function (calendars) {
+            viewList.empty();
+            JSON.parse(calendars).forEach(function (calendar) {
+                vm.calendarsArray.push(calendar);
+                var x = calendar.title;
+                var title = x.replace(/'/g,"\\'");;
+                viewList.append(
+                 $compile(
+                      "<li id=\"cal_entry_" + calendar.id + "\">\n"
+                    + "  <label>\n"
+                    + "    <input\n"
+                    + "      type=\"checkbox\"\n"
+                    + "      id= \"" + calendar.id + "\"\n"
+                    + "      name=\"" + calendar.id + "\"\n"
+                    + "      value=\"" + calendar.title + "\"\n"
+                    + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
+                    + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
+                    + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
+                    + " </label>\n"
+                    + " <label>\n" 
+                    + "      <i\n"
+                    + "        class=\"glyphicon glyphicon-cog\"\n"
+                    + "        ng-click=\"vm.updateCalendarView('"+title+"','"+calendar.id+"')\"\n"
+                    + "        style=\"margin-left: 80%;\">\n"
+                    + "      </i>\n"
+                    + "    </label>\n"
+                    + "</li>\n"
+                 )($scope)
+                );
+                
             });
+            vm.updateCalendarListModal();   
+        });
+     };
+    
+    
+    
+    // Update the list of calendars displayed within the Modal
+    vm.updateCalendarListModal = function () {
+            var viewList = $("#calendarsListModal");
+            
+            viewList.empty();
+            var string =''; 
+                string = "<div  class=\"btn-group\">\n"
+                +"<button type=\"button\" class=\"btn btn-primary dropdown-toggle\"" 
+                +  "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">"
+                +"<i style=\"font-size: 25px; color: white;\"" 
+                +  "class=\"glyphicon glyphicon-list-alt\"></i> <span class=\"caret\"></span>"
+                +"</button>"
+                +"<h4 id=\"ChoiceCalendar\" style=\"color: white; padding-left:120px;\"></h4>"
+                +"<ul class=\"dropdown-menu\">";
+            
+            for(i = 0;i< vm.calendarsArray.length;i++) {
+                
+                var title = vm.calendarsArray[i].title;
+                var id = vm.calendarsArray[i].id;
+                
+                var x = title;
+                title = x.replace(/'/g,"\\'");
+                alert(title);
+             
+                
+                string+="<li><a href=\"javascript:void(0)\" onclick=\"setCalendar('"+title+"','"+id+"')\"" +
+                    " class = \"calendars\" data-id=\"" + id+ "\">" +vm.calendarsArray[i].title+"</a></li>";
+                }
+            viewList.append(string);        
     };
     
+
+    
+    vm.insertNewCalendarView = function () {
+   
+       var title = document.getElementById("nameCal").value;
+       var description = document.getElementById("descrCalendar").value;
+       vm.insertNewCalendar(title, description)
+       document.getElementById('modal-wrapper1').style.display = 'none';
+       document.getElementById("nameCal").value = '';
+       document.getElementById("descrCalendar").value = ''
+       
+    
+    };
+
+    
+    vm.updateCalendarView = function (a,b) {
+            alert(a);
+            alert(b);
+            // TO DO open modal update Calendar
+    };
+    
+    
+    vm.updateUserInformation = function() {
+        
+        var name = document.getElementById("nameUser").value;
+        var oldP = document.getElementById("oldP").value;
+        var newP = document.getElementById("newP").value;
+        
+        // TO DO controllo username empty string
+        document.getElementById('usernameHome').innerHTML = name;
+        
+        vm.updateUser(name,newP);
+        
+        document.getElementById('modal-wrapper2').style.display = 'none';
+        
+        
+    };
+        
     // Hide/Show a calendar's events
     vm.toggleCalendar = function (id) {
         if (vm.checkedCalendars[id]) {
@@ -216,7 +299,7 @@ angular
     // -------------------------- //
     
     /*
-     * JSON_getMyEventsInPeriod
+     * JSON_getMyEventsInPeriod    
      */
     vm.JSON_getMyEventsInPeriod = function (calendar_id, start, end, callback) {
         $.ajax({
@@ -352,7 +435,7 @@ angular
     /*
      * deleteOccurenceId
      */
-    vm.deleteOccurrence = function (id) {
+    vm.deleteOccurrence = function (id) {  // done
         $.ajax({
             type: "POST",
             url: "deleteOccurrence/" + id,
@@ -556,28 +639,27 @@ angular
     // --------------------------- //
 
     vm.clickUpdateEvent = function(event) {
-            if (!event.memo) {
-                vm.temp = {
-                    title : event.title,
-                    id : event.id,
-                    memo : false,
-                    descr : event.descr,
-                    clock : event.clock, // TODO: fix clock on DB
-                    startsAt : event.startsAt,
-                    endsAt : event.endsAt,
-                    color : {
-                        primary : event.color.primary,
-                        secondary : event.color.secondary,
-                    },
-                    draggable : false,
-                    resizable : false,
-                    actions : actions
-                };
-        
-                vm.tmpEvt = event;
-                
-                updateClock(vm.temp.clock);
-                // document.getElementById("TourId").value = vm.temp.clock;
+        if (!event.memo) {
+            vm.temp = {
+                title : event.title,
+                id : event.id,
+                memo : false,
+                description : event.description,
+                clock : event.clock, // TODO: fix clock on DB
+                startsAt : event.startsAt,
+                endsAt : event.endsAt,
+                color : {
+                    primary : event.color.primary,
+                    secondary : event.color.secondary,
+                },
+                draggable : false,
+                resizable : false,
+                actions : actions
+            };
+
+            updateClock(vm.temp.clock);
+            // document.getElementById("TourId").value =
+            // vm.temp.clock;
             modal(6);
         } else {
             var str = event.title;
@@ -586,7 +668,7 @@ angular
                 title : res,
                 id : event.id,
                 memo : true,
-                descr : event.descr,
+                description : event.description,
                 startsAt : moment(),
                 color : {
                     primary : event.color.primary,
@@ -610,9 +692,9 @@ angular
         vm.lastDateClicked = endDate;
         vm.temp = {
             title : 'New event',
-            id : vm.contId,
+            id : '',
             memo : false,
-            descr : '',
+            description : '',
             clock : 'none',
             startsAt : startDate,
             endsAt : endDate,
@@ -628,21 +710,21 @@ angular
 
     };
 
-    vm.timespanClicked = function(date, cell) { 
+    vm.timespanClicked = function(date, cell) {
         vm.firstDateClicked = date;
         vm.lastDateClicked = date;
-    
+
         if (vm.lastCellClicked != undefined) {
             vm.lastCellClicked.cssClass = '.clear-cell';
         }
-    
+
         hoverCell(vm.firstDateClicked, vm.lastDateClicked, cell);
         vm.lastCellClicked = cell;
-    
+
         vm.temp = {
-            id : vm.contId,
+            id : '',
             title : 'New event',
-            descr : '',
+            description : '',
             memo : false,
             clock : 'none',
             startsAt : vm.firstDateClicked,
@@ -656,7 +738,7 @@ angular
             actions : actions
         };
         document.getElementById('btn-add').disabled = false;
-    
+
         if (vm.calendarView === 'month') {
             if ((vm.cellIsOpen && moment(date).startOf('day')
                     .isSame(moment(vm.viewDate).startOf('day')))
@@ -693,69 +775,53 @@ angular
         modal(5);
     };
 
-    vm.addEvent = function() {
+    // MANAGE EVENT
+    vm.openEventModal = function() {
+        modal(5);
+    };
 
-        // var value =
-        // document.getElementById("descEvent").value;
-        // vm.temp.descr = value;
 
+    // add event press button action
+    vm.addEventView = function() {
+
+        var idCalendar = document.getElementById("choiceId").value;
+
+        // ///////////// TO DO /////////////////// ADD ATTR in
+        // INSERTNEWEVENT
         vm.temp.clock = document.getElementById("TourId").value;
-        
-        // TODO: remove
-        vm.events.push(vm.temp);
-        vm.contId++;
 
-        document.getElementById('btn-add').disabled = true;
+        console.log("event inserted => " + idCalendar + " "
+                + vm.temp.title + " " + vm.temp.description
+                + " " + vm.temp.startsAt + " " + vm.temp.endsAt
+                + " " + vm.temp.color.primary + " "
+                + vm.temp.color.secondary);
 
-        // contenuto del modale evento
-        // var id = document.querySelector('input[name =
-        // "rr"]:checked').value;
-        // var title = document.getElementById('titl').value;
-        // var colP = document.getElementById('colP').value;
-        // var colS = document.getElementById('colS').value;
-        // var dataStart =
-        // document.getElementById('dataStart').value;
-        // var timeStart =
-        // document.getElementById('timeStart').value ;
-        // var dataEnd =
-        // document.getElementById('dataEnd').value;
-        // var timeEnd =
-        // document.getElementById('timeEnd').value;
-        // alert(vm.temp.id);
-        resetClock();
-        document.getElementById('modal-wrapper5').style.display = 'none';
+        if (idCalendar != undefined) {
+            vm.insertNewEvent(idCalendar, vm.temp.title,
+                    vm.temp.description, vm.temp.startsAt,
+                    vm.temp.endsAt, vm.temp.color.primary,
+                    vm.temp.color.secondary);
+
+            document.getElementById('btn-add').disabled = true;
+
+            resetClock();
+            document.getElementById('modal-wrapper5').style.display = 'none';
+
+        } else {
+            alert("please choose a calendar");
+        }
     }
 
-    vm.updateEvents = function() {
-        
-        var index = vm.events.indexOf(vm.tmpEvt);
-        if (index > -1) {
-            // TODO: remove
-            vm.events.splice(index, 1);
-        }
+    // update event press button action
+    vm.updateEventView = function() {
 
-        //vm.events[index].title = vm.temp.title
-        vm.tmpEvt = {
-            title : vm.temp.title,
-            id : vm.temp.id,
-            memo : false,
-            descr : vm.temp.descr,
-            startsAt : vm.temp.startsAt,
-            endsAt : vm.temp.endsAt,
-            color : {
-                primary : vm.temp.color.primary,
-                secondary : vm.temp.color.secondary,
-            },
-            draggable : false,
-            resizable : false,
-            actions : actions
-        };
+        var idCalendar = document.getElementById("choiceId").value;
 
-        
-        vm.tmpEvt.clock = document.getElementById('TourId2').value;
-        // TODO: remove
-        vm.events.push(vm.tmpEvt);
-        
+        vm.updateEvent(vm.temp.id, vm.temp.title,
+                vm.temp.description, vm.temp.startsAt,
+                vm.temp.endsAt, vm.temp.color.primary,
+                vm.temp.color.secondary);
+
         resetClock();
         document.getElementById('modal-wrapper6').style.display = 'none';
 
@@ -767,7 +833,7 @@ angular
 
         vm.memo = {
             title : 'New Memo',
-            id : vm.contId,
+            id : '',
             startsAt : moment(),
             color : {
                 primary : "#123456",
@@ -780,43 +846,30 @@ angular
 
     };
 
-    // questa funzione non servira' piu' perche' facciamo l'update direttamente dal database
-    vm.addMemo = function() {
+    // add memo press button action
+    vm.addMemoView = function() {
+
+        // use tmp.memo variables
 
         vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
                 + vm.memo.title;
-        // TODO: remove
-        vm.events.push(vm.memo);
-        vm.contId++;
+        // TO DO
+        // vm.insertNewMemo(....);
+
         document.getElementById('modal-wrapper7').style.display = 'none';
 
     }
 
-    vm.updateMemo = function() {
-        var index = vm.events.indexOf(vm.tmpMemo);
-        if (index > -1) {
-            // TODO: remove
-            vm.events.splice(index, 1);
-        }
+    // update memo press button action
+    vm.updateMemoView = function() {
+
+        // use tmp.memo variables
 
         vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
                 + vm.memo.title;
-        vm.tmpMemo = {
-            title : vm.memo.title,
-            id : vm.memo.id,
-            descr : vm.memo.descr,
-            startsAt : moment(),
-            color : {
-                primary : vm.memo.color.primary,
-            },
-            draggable : false,
-            resizable : false,
-            memo : true,
-            actions : actions
-        };
+        // TO DO
+        // vm.updateMemo(...);
 
-        // TODO: remove
-        vm.events.push(vm.tmpMemo);
         document.getElementById('modal-wrapper8').style.display = 'none';
     }
     

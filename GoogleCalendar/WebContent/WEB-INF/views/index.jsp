@@ -42,7 +42,7 @@
 <script src="resources/scripts/messages.js"></script>
 
 <script src="resources/scripts/openModal.js"></script>
-<script src="resources/scripts/clocks.js"></script>
+<script src="resources/scripts/dropDownMenu.js"></script>
 
 <style type="text/css">
 .clicked-cell {
@@ -134,14 +134,6 @@
         <div class="container-fluid">
 
           <div class="navbar-header">
-            <button
-              type="button"
-              id="sidebarCollapse"
-              class="btn btn-info navbar-btn"
-              style="background: #3c92db;">
-              <i class="glyphicon glyphicon-align-left"></i> <span>Toggle
-                Sidebar</span>
-            </button>
           </div>
 
           <div class="navbar-header">
@@ -157,7 +149,7 @@
             class="collapse navbar-collapse"
             id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-              <li><a
+              <li><a id = "usernameHome"
                 href="#"
                 style="color: #337ab7; font-size: 20px;">${username}</a></li>
               <li><a href="#"><i class="glyphicon glyphicon-bell"></i></a></li>
@@ -214,7 +206,7 @@
                     <!-- DEBUG BUTTON -->
                     <button
                       class="btn btn-primary"
-                      ng-click='vm.fn()'>DEBUG_1</button>
+                      ng-click='vm.generatePrivilageActions()'>DEBUG_1</button>
                     <!-- /DEBUG BUTTON -->
 
                   </div>
@@ -270,9 +262,9 @@
               <br>
 
               <!-- <div class="alert alert-info">
-     Select range on a day on the view.
-     <strong ng-show="vm.lastDateClicked" >You selected on this day: from {{ vm.firstDateClicked | date:'medium' }} to {{ vm.lastDateClicked | date:'medium' }}</strong>
- </div> -->
+     			Select range on a day on the view.
+    			 <strong ng-show="vm.lastDateClicked" >You selected on this day: from {{ vm.firstDateClicked | date:'medium' }} to {{ vm.lastDateClicked | date:'medium' }}</strong>
+ 			</div> -->
               <mwl-calendar
                 events="vm.events"
                 view="vm.calendarView"
@@ -332,21 +324,19 @@
             type="text"
             placeholder="Name"
             name="uname"
-            id="nameCal"> <input
-            type="text"
-            placeholder="Color"
-            name="psw"
-            id="colCal">
+            id="nameCal"
+            >
+            
           <textarea
             rows="4"
-            placeholder="Description"
-            id="desc"></textarea>
+            placeholder="DescrCalendar"
+            id="descrCalendar"></textarea>
           <div style="text-align: center;">
             <button
               type="button"
               id="newCalendar"
               class="btn btn-info navbar-btn"
-              onclick="addCalendar()"
+              ng-click="vm.insertNewCalendarView()"
               style="background: #42A5F5">
               <span><strong>Create New Calendar</strong></span>
             </button>
@@ -383,7 +373,7 @@
             type="text"
             placeholder="Name"
             name="uname"
-            id="naM"> <input
+            id="nameUser"> <input
             type="password"
             placeholder="Old Password"
             id="oldP"> <input
@@ -395,7 +385,7 @@
               type="button"
               id="newCalendar1"
               class="btn btn-info navbar-btn"
-              onclick="updateInfo()"
+              ng-click="vm.updateUserInformation()"
               style="background: #42A5F5;">
               <span><strong>Update Your Profile</strong></span>
             </button>
@@ -582,26 +572,11 @@
           </div>
 
           <div>
-            <fieldset>
-              <form
-                id="form-btn"
-                style="position: relative; text-align: center;">
-                <c:forEach
-                  items="${calendars}"
-                  var="cal">
-                  <li style="list-style-type: none;"><input
-                    type="radio"
-                    id="${cal.id}+1"
-                    name="rr"
-                    value="${cal.id}"
-                    ng-model="vm.checkedCalendars['${cal.id}']"
-                    ng-change="vm.toggleCalendar('${cal.id}')" /> <label
-                    for="${cal.id}+1"><span></span> ${cal.title}</label></li>
-                </c:forEach>
-              </form>
+            <form>
+            <fieldset id="calendarsListModal" ">
             </fieldset>
-
-            <h3 style="text-align: center; color: white; padding-top: 10px;">Add
+            <label id ="choiceId" style="visibility: hidden;"></label>
+           <h3 style="text-align: center; color: white; padding-top: 10px;">Add
               Event</h3>
 
             <div id="event_tmp">
@@ -697,7 +672,7 @@
               <button
                 type="button"
                 id="addEvnt"
-                ng-click="vm.addEvent()"
+                ng-click="vm.addEventView()"
                 class="btn btn-info navbar-btn"
                 style="background: #42A5F5">
                 <span><strong>Add </strong></span>
@@ -729,12 +704,28 @@
             onclick="document.getElementById('modal-wrapper6').style.display='none'"
             class="close"
             title="Close PopUp">&times;</span>
-        </div>
+       
+
+            <h3 style="text-align: center; color: white; padding-top: 30px;">Update
+              Event</h3>
+             <a
+            href="#"
+            class="avatar"><i
+            style= "text-align:center; font-size: 45px; color: white;"
+            class="glyphicon glyphicon-pencil"></i></a>
+ 			</div>
 
         <div
           class="modal-content"
           style="width: 90%;">
 
+ 		 <div>
+
+              
+           
+              	<div
+            class="btn-group"
+            style="float: right;">
           <button
             type="button"
             class="btn btn-primary dropdown-toggle"
@@ -779,11 +770,13 @@
               class="clocks"
               data-id="none">none</a></li>
           </div>
-
-          <div>
-
-            <h3 style="text-align: center; color: white; padding-top: 10px;">Update
-              Event</h3>
+          </div>
+              
+              
+              
+           
+            
+              
 
             <div id="event_tmp">
               <table class="table table-bordered">
@@ -873,16 +866,20 @@
                 placeholder="Description"
                 id="descEvent"
                 ng-model="vm.temp.descr"></textarea>
+              
+              
+           
+              
               <!-- TASTO CHE STA NEL MODAL -->
               <button
                 type="button"
                 id="upEvent"
-                ng-click="vm.updateEvents()"
+                ng-click="vm.updateEventView()"
                 class="btn btn-info navbar-btn"
                 style="background: #42A5F5">
                 <span><strong>Update Event</strong></span>
 
-              </button -->
+              </button> 
             </div>
           </div>
 
@@ -957,7 +954,7 @@
               type="button"
               id="newCalendar"
               class="btn btn-info navbar-btn"
-              ng-click="vm.addMemo()"
+              ng-click="vm.addMemoView()"
               style="background: #42A5F5">
               <span><strong>Add</strong></span>
             </button>
@@ -1028,7 +1025,7 @@
               type="button"
               id="newCalendar"
               class="btn btn-info navbar-btn"
-              ng-click="vm.updateMemo()"
+              ng-click="vm.updateMemoView()"
               style="background: #42A5F5">
               <span><strong>Add</strong></span>
             </button>
@@ -1039,19 +1036,15 @@
   </div>
 
   <!-- ADD CALENDAR Madal(1)-->
-  <script type="text/javascript">
+<!--   <script type="text/javascript">
             var addCalendar = function() {
                 //alert("chiamata f add");
-                var name = document.getElementById("nameCal").value;
-                var oP = document.getElementById("colCal").value;
-                var nP = document.getElementById("desc").value;
-
-                document.getElementById('modal-wrapper1').style.display = 'none';
+                
             }
-        </script>
+        </script> -->
 
 
-  <!-- UPDATE PROFILE Madal(2)-->
+<!--   <!-- UPDATE PROFILE Madal(2)
   <script type="text/javascript">
             var updateInfo = function() {
                 //alert(chiamata funzione update profile);
@@ -1061,7 +1054,7 @@
 
                 document.getElementById('modal-wrapper2').style.display = 'none';
             }
-        </script>
+        </script> -->
 
 
   <!-- CALENDAR SETTINGS Madal(4)-->
