@@ -1,3 +1,7 @@
+// --------------------------- //
+// -- MERGE MARIO MARCO [0] -- //
+// --------------------------- //
+
 var imported = document.createElement('script');
 imported.src = 'resources/scripts/openModal.js';
 document.head.appendChild(imported);
@@ -10,6 +14,10 @@ hoverCell = function(date, date1, cell) {
         cell.cssClass = 'clicked-cell';
     }
 };
+
+// --------------------------//
+// -- ANGULARJS CONTROLLER --//
+// --------------------------//
 
 angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
 angular
