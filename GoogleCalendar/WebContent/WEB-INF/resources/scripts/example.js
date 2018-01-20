@@ -11,6 +11,10 @@ hoverCell = function(date, date1, cell) {
     }
 };
 
+
+
+
+
 angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
 angular
   .module('mwl.calendar.docs')
@@ -33,6 +37,8 @@ angular
     vm.events = [];
     
     
+    var actions = [{}];
+    
        
     // Calendars whose events are currently shown, by id
     vm.shownCalendars = [];
@@ -45,24 +51,20 @@ angular
     
     vm.cellIsOpen = true;
     
+  
+    
     // List of glyphs shown after entries in a day's event list,
     // with behavior
-    var actions = [{
-        label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
-        onClick : function(args) {
-            vm.clickUpdateEvent(args.calendarEvent);
-        }
-      }, {
-        label: '<i class=\'glyphicon glyphicon-remove\'></i>',
-        onClick: function (args) {
-            // TODO: delete occurrence
-      },
-    }];
+    
+   
     
     // ---- MERGE MARIO MARCO
     vm.vtrCell = [];
     // event for modal
     vm.temp = undefined;
+    // temp calendarName
+    vm.tempCalendarName = undefined;
+    
     // clicked cell
     vm.lastCellClicked = undefined;
     vm.contId = 0;
@@ -139,7 +141,9 @@ angular
         		viewList.empty();
         		JSON.parse(calendars).forEach(function (calendar) {
         			vm.calendarsArray.push(calendar);
-        			viewList.append(
+        			var x = calendar.title;
+            		var title = x.replace(/'/g,"\\'");;
+           			viewList.append(
                      $compile(
                           "<li id=\"cal_entry_" + calendar.id + "\">\n"
                         + "  <label>\n"
@@ -155,7 +159,7 @@ angular
                         + "<label>\n" 
                         + "      <i\n"
                         + "        class=\"glyphicon glyphicon-cog\"\n"
-                        + "        onclick=\"manageCalendar('${cal.title}','${cal.id}')\"\n"
+                        + "        ng-click=\"vm.updateCalendarView('"+title+"','"+calendar.id+"')\"\n"
                         + "        style=\"margin-left: 80%;\">\n"
                         + "      </i>\n"
                         + "    </label>\n"
@@ -200,6 +204,45 @@ angular
            	viewList.append(string);      	
     };
     
+
+    
+    vm.insertNewCalendarView = function () {
+   
+       var title = document.getElementById("nameCal").value;
+       var description = document.getElementById("descrCalendar").value;
+       vm.insertNewCalendar(title, description)
+       document.getElementById('modal-wrapper1').style.display = 'none';
+       document.getElementById("nameCal").value = '';
+       document.getElementById("descrCalendar").value = ''
+       
+    
+    };
+
+    
+    vm.updateCalendarView = function (a,b) {
+    		alert(a);
+    		alert(b);
+    		// TO DO open modal update Calendar
+    };
+    
+    
+    vm.updateUserInformation = function() {
+    	
+    	var name = document.getElementById("nameUser").value;
+        var oldP = document.getElementById("oldP").value;
+        var newP = document.getElementById("newP").value;
+    	
+        // TO DO controllo username empty string
+        document.getElementById('usernameHome').innerHTML = name;
+    	
+        vm.updateUser(name,newP);
+        
+        document.getElementById('modal-wrapper2').style.display = 'none';
+    	
+    	
+    };
+    
+    
     
     // Hide/Show a calendar's events
     vm.toggleCalendar = function (id) {
@@ -224,9 +267,9 @@ angular
     // -------------------------- //
     
     /*
-     * JSON_getMyEventsInPeriod
+     * JSON_getMyEventsInPeriod    
      */
-    vm.JSON_getMyEventsInPeriod = function (calendar_id, start, end, callback) {
+    vm.JSON_getMyEventsInPeriod = function (calendar_id, start, end, callback) { // done
     	$.ajax({
     		type: "POST",
     		url: "JSON_getMyEventsInPeriod/" + calendar_id,
@@ -243,7 +286,7 @@ angular
     /*
      * JSON_getAllMyCalendars
      */
-    vm.JSON_getAllMyCalendars = function (callback) {
+    vm.JSON_getAllMyCalendars = function (callback) { // done
     	$.ajax({
     		type: "POST",
     		url: "JSON_getAllMyCalendars",
@@ -257,7 +300,7 @@ angular
      * insertNewEvent
      */
     vm.insertNewEvent = function (calendar_id, title, description, 
-    		startsAt, endsAt, primaryColor, secondaryColor) {
+    		startsAt, endsAt, primaryColor, secondaryColor) {      // done
         	$.ajax({
         		type: "POST",
         		url: "insertNewEvent/" + calendar_id,
@@ -281,7 +324,7 @@ angular
      * updateEvent
      */
     vm.updateEvent = function (id, title, description, 
-    		startsAt, endsAt, primaryColor, secondaryColor) {
+    		startsAt, endsAt, primaryColor, secondaryColor) {  // done
         	$.ajax({
         		type: "POST",
         		url: "updateEvent/" + id,
@@ -304,7 +347,7 @@ angular
     /*
      * deleteOccurenceId
      */
-    vm.deleteOccurrence = function (id) {
+    vm.deleteOccurrence = function (id) {  // done
         $.ajax({
             type: "POST",
             url: "deleteOccurrence/" + id,
@@ -335,7 +378,7 @@ angular
     /*
      * insertNewCalendar
      */
-    vm.insertNewCalendar = function (title, description) {
+    vm.insertNewCalendar = function (title, description) {   //done
     	$.ajax({
     	   type: "POST",
     	   url: "insertNewCalendar",
@@ -602,12 +645,19 @@ angular
 
 	vm.addEvent = function() {
 
+		
+
+		
+		vm.temp.clock = document.getElementById("TourId").value;
+
+		//function (calendar_id, title, description, startsAt, endsAt, primaryColor, secondaryColor)
+		
+		
 		// var value =
 		// document.getElementById("descEvent").value;
 		// vm.temp.descr = value;
 
-		vm.temp.clock = document.getElementById("TourId").value;
-		
+		//v.insertNewEvent();
 		// TODO: remove
 		vm.events.push(vm.temp);
 		vm.contId++;
@@ -725,5 +775,6 @@ angular
 		// TODO: remove
 		vm.events.push(vm.tmpMemo);
 		document.getElementById('modal-wrapper8').style.display = 'none';
-	}
+	}	
+
 });

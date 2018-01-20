@@ -33,5 +33,8 @@ function setCalendar(calendar,id){
 	alert(id);
 	
 	document.getElementById('ChoiceCalendar').innerHTML = calendar;
-	document.getElementById('choicheId').value = id;
+	document.getElementById('choiceId').value = id;
+	
+	
+	
 }

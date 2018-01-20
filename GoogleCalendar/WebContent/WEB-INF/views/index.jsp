@@ -146,7 +146,7 @@
             class="collapse navbar-collapse"
             id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-              <li><a
+              <li><a id = "usernameHome"
                 href="#"
                 style="color: #337ab7; font-size: 20px;">${username}</a></li>
               <li><a href="#"><i class="glyphicon glyphicon-bell"></i></a></li>
@@ -203,7 +203,7 @@
                     <!-- DEBUG BUTTON -->
                     <button
                       class="btn btn-primary"
-                      ng-click='vm.fn()'>DEBUG_1</button>
+                      ng-click='vm.generatePrivilageActions()'>DEBUG_1</button>
                     <!-- /DEBUG BUTTON -->
 
                   </div>
@@ -321,21 +321,19 @@
             type="text"
             placeholder="Name"
             name="uname"
-            id="nameCal"> <input
-            type="text"
-            placeholder="Color"
-            name="psw"
-            id="colCal">
+            id="nameCal"
+            >
+            
           <textarea
             rows="4"
-            placeholder="Description"
-            id="desc"></textarea>
+            placeholder="DescrCalendar"
+            id="descrCalendar"></textarea>
           <div style="text-align: center;">
             <button
               type="button"
               id="newCalendar"
               class="btn btn-info navbar-btn"
-              onclick="addCalendar()"
+              ng-click="vm.insertNewCalendarView()"
               style="background: #42A5F5">
               <span><strong>Create New Calendar</strong></span>
             </button>
@@ -372,7 +370,7 @@
             type="text"
             placeholder="Name"
             name="uname"
-            id="naM"> <input
+            id="nameUser"> <input
             type="password"
             placeholder="Old Password"
             id="oldP"> <input
@@ -384,7 +382,7 @@
               type="button"
               id="newCalendar1"
               class="btn btn-info navbar-btn"
-              onclick="updateInfo()"
+              ng-click="vm.updateUserInformation()"
               style="background: #42A5F5;">
               <span><strong>Update Your Profile</strong></span>
             </button>
@@ -574,7 +572,7 @@
             <form>
             <fieldset id="calendarsListModal" ">
             </fieldset>
-            <label id ="choicheId" style="visibility: hidden;"></label>
+            <label id ="choiceId" style="visibility: hidden;"></label>
            <h3 style="text-align: center; color: white; padding-top: 10px;">Add
               Event</h3>
 
@@ -1035,19 +1033,15 @@
   </div>
 
   <!-- ADD CALENDAR Madal(1)-->
-  <script type="text/javascript">
+<!--   <script type="text/javascript">
             var addCalendar = function() {
                 //alert("chiamata f add");
-                var name = document.getElementById("nameCal").value;
-                var oP = document.getElementById("colCal").value;
-                var nP = document.getElementById("desc").value;
-
-                document.getElementById('modal-wrapper1').style.display = 'none';
+                
             }
-        </script>
+        </script> -->
 
 
-  <!-- UPDATE PROFILE Madal(2)-->
+<!--   <!-- UPDATE PROFILE Madal(2)
   <script type="text/javascript">
             var updateInfo = function() {
                 //alert(chiamata funzione update profile);
@@ -1057,7 +1051,7 @@
 
                 document.getElementById('modal-wrapper2').style.display = 'none';
             }
-        </script>
+        </script> -->
 
 
   <!-- CALENDAR SETTINGS Madal(4)-->
