@@ -231,8 +231,6 @@ public class IndexController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(dbService.getMyAlarms((Integer) session.getAttribute("user_id")));
     }
-    
-  
 
     /*
      * JSON_getAlarmForAnOccurrence
@@ -265,7 +263,7 @@ public class IndexController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(dbService.getMyInvitation((Integer) session.getAttribute("user_id")));
     }
-   
+
     /*
      * JSON_getMyMemos
      */
@@ -275,9 +273,4 @@ public class IndexController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(dbService.getMyMemos((Integer) session.getAttribute("user_id")));
     }
-    
-    
-    
-    
-    
 }
