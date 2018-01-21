@@ -129,7 +129,7 @@
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
-							<li><a href="#" style="color: #337ab7; font-size: 20px;">${username}</a></li>
+							<li><a id="usernameHome" href="#" style="color: #337ab7; font-size: 20px;">${username}</a></li>
 							<div class="btn-group">
 								<a id="notificationDropDown" href="#"
 									ng-click="vm.updateNotificationsView()" type="button"
@@ -540,7 +540,7 @@
 		</div>
 	</div>
 
-	<!-- UPDATE EVENT-->
+
 	<div id="modal-wrapper6" class="modal" style="width: 100%; left: 0%;">
 		<div>
 			<form class="modal-content animate" action="/action_page.php">
@@ -559,10 +559,7 @@
 
 				<div class="modal-content" style="width: 90%;">
 
-
 					<div>
-
-
 
 						<div class="btn-group" style="float: right;">
 							<button type="button" class="btn btn-primary dropdown-toggle"
@@ -585,9 +582,7 @@
 									class="clocks" data-id="30">30 min first</a></li>
 								<li><a href="javascript:void(0)" onclick="updateClock(-1)"
 									class="clocks" data-id="none">none</a></li>
-
 							</div>
-
 						</div>
 
 						<div id="event_tmp">
@@ -602,325 +597,229 @@
 									</tr>
 								</thead>
 
-
-
-
-								<!-- TASTO CHE STA NEL MODAL -->
-								<button type="button" id="upEvent"
-									ng-click="vm.updateEventView()" class="btn btn-info navbar-btn"
-									style="background: #42A5F5">
-									<span><strong>Update Event</strong></span>
-
-									<div class="btn-group" style="float: right;">
-										<button type="button" class="btn btn-primary dropdown-toggle"
-											data-toggle="dropdown" aria-haspopup="true"
-											aria-expanded="false">
-											<i style="font-size: 25px; color: white;"
-												class="glyphicon glyphicon-time"></i> <span class="caret"></span>
-										</button>
-										<input type="text"
-											style="font-size: 15px; width: 80px; height: 40px;"
-											id="TourId2" class="form-control"></input>
-										<div class="dropdown-menu scrollable-menu" id="ulGenres">
-											<li><a href="javascript:void(0)"
-												onclick="updateClock(0)" class="clocks" data-id="0">At
-													event time</a></li>
-											<li><a href="javascript:void(0)"
-												onclick="updateClock(10)" class="clocks" data-id="10">10
-													min first</a></li>
-											<li><a href="javascript:void(0)"
-												onclick="updateClock(20)" class="clocks" data-id="20">20
-													min first</a></li>
-											<li><a href="javascript:void(0)"
-												onclick="updateClock(30)" class="clocks" data-id="30">30
-													min first</a></li>
-											<li><a href="javascript:void(0)"
-												onclick="updateClock(-1)" class="clocks" data-id="none">none</a></li>
-										</div>
-									</div>
-
-
-
-
-
-
-
-									<div id="event_tmp">
-										<table class="table table-bordered">
-											<thead>
-												<tr>
-													<th>Title</th>
-													<th>Primary color</th>
-													<th>Secondary color</th>
-													<th>Starts at</th>
-													<th>Ends at</th>
-												</tr>
-											</thead>
-
-											<tbody>
-												<td><input type="text" class="form-control"
-													ng-model="vm.temp.title"></td>
-												<td><input class="form-control" colorpicker type="text"
-													ng-model="vm.temp.color.primary"></td>
-												<td><input class="form-control" colorpicker type="text"
-													ng-model="vm.temp.color.secondary"></td>
-												<td>
-													<p class="input-group">
-														<input type="text" class="form-control" readonly
-															uib-datepicker-popup="dd MMMM yyyy"
-															ng-model="vm.temp.startsAt" is-open="vm.temp.startOpen"
-															close-text="Close"> <span class="input-group-btn">
-															<button type="button" class="btn btn-default"
-																ng-click="vm.toggle($event, 'startOpen', vm.temp)">
-																<i class="glyphicon glyphicon-calendar"></i>
-															</button>
-														</span>
-													</p>
-													<div uib-timepicker ng-model="vm.temp.startsAt"
-														hour-step="1" minute-step="15" show-meridian="false"></div>
-												</td>
-												<td>
-													<p class="input-group">
-														<input type="text" class="form-control" readonly
-															uib-datepicker-popup="dd MMMM yyyy"
-															ng-model="vm.temp.endsAt" is-open="vm.temp.endOpen"
-															close-text="Close"> <span class="input-group-btn">
-															<button type="button" class="btn btn-default"
-																ng-click="vm.toggle($event, 'endOpen', vm.temp)">
-																<i class="glyphicon glyphicon-calendar"></i>
-															</button>
-														</span>
-													</p>
-													<div uib-timepicker ng-model="vm.temp.endsAt"
-														is-open="vm.temp.endOpen" close-text="Close">
-														<span class="input-group-btn">
-															<button type="button" class="btn btn-default"
-																ng-click="vm.toggle($event, 'endOpen', vm.temp)">
-																<i class="glyphicon glyphicon-calendar"></i>
-															</button>
-														</span>
-														</p>
-														<div uib-timepicker ng-model="vm.temp.endsAt"
-															hour-step="1" minute-step="15" show-meridian="false"></div>
-												</td>
-											</tbody>
-										</table>
-									</div>
-									<div style="text-align: center;">
-										<textarea rows="2" placeholder="Description" id="descEvent"
-											ng-model="vm.temp.description"></textarea>
+								<tbody>
+									<td><input type="text" class="form-control"
+										ng-model="vm.temp.title"></td>
+									<td><input class="form-control" colorpicker type="text"
+										ng-model="vm.temp.color.primary"></td>
+									<td><input class="form-control" colorpicker type="text"
+										ng-model="vm.temp.color.secondary"></td>
+									<td>
+										<p class="input-group">
+											<input type="text" class="form-control" readonly
+												uib-datepicker-popup="dd MMMM yyyy"
+												ng-model="vm.temp.startsAt" is-open="vm.temp.startOpen"
+												close-text="Close"> <span class="input-group-btn">
+												<button type="button" class="btn btn-default"
+													ng-click="vm.toggle($event, 'startOpen', vm.temp)">
+													<i class="glyphicon glyphicon-calendar"></i>
+												</button>
+											</span>
+										</p>
+										<div uib-timepicker ng-model="vm.temp.startsAt" hour-step="1"
+											minute-step="15" show-meridian="false"></div>
+									</td>
+									<td>
+										<p class="input-group">
+											<input type="text" class="form-control" readonly
+												uib-datepicker-popup="dd MMMM yyyy"
+												ng-model="vm.temp.endsAt" is-open="vm.temp.endOpen"
+												close-text="Close"> <span class="input-group-btn">
+												<button type="button" class="btn btn-default"
+													ng-click="vm.toggle($event, 'endOpen', vm.temp)">
+													<i class="glyphicon glyphicon-calendar"></i>
+												</button>
+											</span>
+										</p>
+										<div uib-timepicker ng-model="vm.temp.endsAt" hour-step="1"
+											minute-step="15" show-meridian="false"></div>
+									</td>
+								</tbody>
+							</table>
+						</div>
+						<div style="text-align: center;">
+							<textarea rows="2" placeholder="Description" id="descEvent"
+								ng-model="vm.temp.description"></textarea>
 
 
 
 
-										<!-- TASTO CHE STA NEL MODAL -->
-										<button type="button" id="upEvent"
-											ng-click="vm.updateEventView()"
-											class="btn btn-info navbar-btn" style="background: #42A5F5">
-											<span><strong>Update Event</strong></span>
+							<!-- TASTO CHE STA NEL MODAL -->
+							<button type="button" id="upEvent"
+								ng-click="vm.updateEventView()" class="btn btn-info navbar-btn"
+								style="background: #42A5F5">
+								<span><strong>Update Event</strong></span>
 
+							</button>
+						</div>
+					</div>
 
-
-
-											<!-- TASTO CHE STA NEL MODAL -->
-											<button type="button" id="upEvent"
-												ng-click="vm.updateEventView()"
-												class="btn btn-info navbar-btn" style="background: #42A5F5">
-												<span><strong>Update Event</strong></span>
-
-											</button>
-									</div>
-									</div>
-
-									<!-- DELETEEEEE GRAPHIC EVENT
+					<!-- DELETEEEEE GRAPHIC EVENT
       				<button class="btn btn-danger" ng-click="vm.events.splice($index, 1)">Delete</button>
 					 <td>
 					</td> -->
 
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- MEMO -->
+	<div id="modal-wrapper7" class="modal">
+		<div>
+			<form class="modal-content animate" action="/action_page.php">
+				<div class="imgcontainer">
+					<span
+						onclick="document.getElementById('modal-wrapper7').style.display='none'"
+						class="close" title="Close PopUp">&times;</span>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Add
+						Meno</h1>
+					<a href="#" class="avatar"><i
+						style="font-size: 45px; color: white;"
+						class="glyphicon glyphicon-save-file"></i></a>
+				</div>
+
+				<div class="modal-content">
+					<div style="text-align: center;">
+
+
+						<div id="event_tmp">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Title</th>
+										<th>Primary color</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<div class="row">
+										<td><input type="text" class="form-control"
+											ng-model="vm.memo.title"></td>
+										<td><input class="form-control" colorpicker type="text"
+											ng-model="vm.memo.color.primary"></td>
 									</div>
-									</form>
+								</tbody>
+							</table>
+							<textarea rows="2" placeholder="Description" id="descMemo"
+								ng-model="vm.memo.description"></textarea>
+						</div>
+
+						<button type="button" id="newCalendar"
+							class="btn btn-info navbar-btn" ng-click="vm.addMemoView()"
+							style="background: #42A5F5">
+							<span><strong>Add</strong></span>
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!-- UPDATE MEMO -->
+	<div id="modal-wrapper8" class="modal">
+		<div>
+			<form class="modal-content animate" action="/action_page.php">
+				<div class="imgcontainer">
+					<span
+						onclick="document.getElementById('modal-wrapper8').style.display='none'"
+						class="close" title="Close PopUp">&times;</span>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Update
+						Meno</h1>
+					<a href="#" class="avatar"><i
+						style="font-size: 45px; color: white;"
+						class="glyphicon glyphicon-save-file"></i></a>
+				</div>
+
+				<div class="modal-content">
+
+					<div style="text-align: center;">
+
+
+						<div id="event_tmp">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Title</th>
+										<th>Primary color</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<div class="row">
+										<td><input type="text" class="form-control"
+											ng-model="vm.memo.title"></td>
+										<td><input class="form-control" colorpicker type="text"
+											ng-model="vm.memo.color.primary"></td>
 									</div>
-									</div>
+								</tbody>
+							</table>
+							<textarea rows="2" placeholder="Description" id="descMemo"
+								ng-model="vm.memo.description"></textarea>
+						</div>
+
+						<button type="button" id="newCalendar"
+							class="btn btn-info navbar-btn" ng-click="vm.updateMemoView()"
+							style="background: #42A5F5">
+							<span><strong>Add</strong></span>
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var openModalType2 = function() {
+			var name = document.getElementById("nameUser").value = '';
+			var oldP = document.getElementById("oldP").value = '';
+			var newP = document.getElementById("newP").value = '';
+			modal(2);
+		}
+	</script>
 
 
-									<!-- MEMO -->
-									<div id="modal-wrapper7" class="modal">
-										<div>
-											<form class="modal-content animate" action="/action_page.php">
-												<div class="imgcontainer">
-													<span
-														onclick="document.getElementById('modal-wrapper7').style.display='none'"
-														class="close" title="Close PopUp">&times;</span>
-													<h1
-														style="text-align: center; color: white; padding-top: 10px;">Add
-														Meno</h1>
-													<a href="#" class="avatar"><i
-														style="font-size: 45px; color: white;"
-														class="glyphicon glyphicon-save-file"></i></a>
-												</div>
+	<!-- CALENDAR SETTINGS Madal(4)-->
+	<script type="text/javascript">
+		var manageCalendar = function(a, b) {
+			//alert("chiamata funzione impostazion calendario");
+			modal(4);
+			document.getElementById("calendarNm").innerHTML = a + " settings";
 
-												<div class="modal-content">
-													<div style="text-align: center;">
+		}
+	</script>
 
+	<script type="text/javascript">
+		var closeMadal4 = function() {
+			//	alert("chiamata funzione impostazion calendario");
+			var a = document.getElementById("newNameCalndar").value;
 
-														<div id="event_tmp">
-															<table class="table table-bordered">
-																<thead>
-																	<tr>
-																		<th>Title</th>
-																		<th>Primary color</th>
-																	</tr>
-																</thead>
+			document.getElementById('modal-wrapper4').style.display = 'none';
 
-																<tbody>
-																	<div class="row">
-																		<td><input type="text" class="form-control"
-																			ng-model="vm.memo.title"></td>
-																		<td><input class="form-control" colorpicker
-																			type="text" ng-model="vm.memo.color.primary"></td>
-																	</div>
-																</tbody>
-															</table>
-															<textarea rows="2" placeholder="Description"
-																id="descMemo" ng-model="vm.memo.description"></textarea>
-														</div>
-
-														<button type="button" id="newCalendar"
-															class="btn btn-info navbar-btn"
-															ng-click="vm.addMemoView()" style="background: #42A5F5">
-															<span><strong>Add</strong></span>
-														</button>
-													</div>
-												</div>
-											</form>
-										</div>
-									</div>
-									<!-- UPDATE MEMO -->
-									<div id="modal-wrapper8" class="modal">
-										<div>
-											<form class="modal-content animate" action="/action_page.php">
-												<div class="imgcontainer">
-													<span
-														onclick="document.getElementById('modal-wrapper8').style.display='none'"
-														class="close" title="Close PopUp">&times;</span>
-													<h1
-														style="text-align: center; color: white; padding-top: 10px;">Update
-														Meno</h1>
-													<a href="#" class="avatar"><i
-														style="font-size: 45px; color: white;"
-														class="glyphicon glyphicon-save-file"></i></a>
-												</div>
-
-												<div class="modal-content">
-
-													<div style="text-align: center;">
+		}
+	</script>
 
 
-														<div id="event_tmp">
-															<table class="table table-bordered">
-																<thead>
-																	<tr>
-																		<th>Title</th>
-																		<th>Primary color</th>
-																	</tr>
-																</thead>
+	<!-- jQuery CDN -->
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+	<!-- Bootstrap Js CDN -->
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-																<tbody>
-																	<div class="row">
-																		<td><input type="text" class="form-control"
-																			ng-model="vm.memo.title"></td>
-																		<td><input class="form-control" colorpicker
-																			type="text" ng-model="vm.memo.color.primary"></td>
-																	</div>
-																</tbody>
-															</table>
-															<textarea rows="2" placeholder="Description"
-																id="descMemo" ng-model="vm.memo.description"></textarea>
-														</div>
+	<!--   ***************************************************************************************************************************** -->
 
-														<button type="button" id="newCalendar"
-															class="btn btn-info navbar-btn"
-															ng-click="vm.updateMemoView()"
-															style="background: #42A5F5">
-															<span><strong>Add</strong></span>
-														</button>
-													</div>
-												</div>
-											</form>
-										</div>
-									</div>
-
-									<script type="text/javascript">
-										var openModalType2 = function() {
-											var name = document
-													.getElementById("nameUser").value = '';
-											var oldP = document
-													.getElementById("oldP").value = '';
-											var newP = document
-													.getElementById("newP").value = '';
-											modal(2);
-										}
-									</script>
-
-
-									<!-- CALENDAR SETTINGS Madal(4)-->
-									<script type="text/javascript">
-										var manageCalendar = function(a, b) {
-											//alert("chiamata funzione impostazion calendario");
-											modal(4);
-											document
-													.getElementById("calendarNm").innerHTML = a
-													+ " settings";
-
-										}
-									</script>
-
-									<script type="text/javascript">
-										var closeMadal4 = function() {
-											//	alert("chiamata funzione impostazion calendario");
-											var a = document
-													.getElementById("newNameCalndar").value;
-
-											document
-													.getElementById('modal-wrapper4').style.display = 'none';
-
-										}
-									</script>
-
-
-									<!-- jQuery CDN -->
-									<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-									<!-- Bootstrap Js CDN -->
-									<script
-										src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-									<!--   ***************************************************************************************************************************** -->
-
-									<script
-										src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-									<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script> -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script> -->
 
 
 
-									<script type="text/javascript">
-										$(document)
-												.ready(
-														function() {
-															$(
-																	'#sidebarCollapse')
-																	.on(
-																			'click',
-																			function() {
-																				$(
-																						'#sidebar')
-																						.toggleClass(
-																								'active');
-																				$(
-																						this)
-																						.toggleClass(
-																								'active');
-																			});
-														});
-									</script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#sidebarCollapse').on('click', function() {
+				$('#sidebar').toggleClass('active');
+				$(this).toggleClass('active');
+			});
+		});
+	</script>
 </body>
 </html>

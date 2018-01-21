@@ -128,7 +128,8 @@ public class MemoDAO {
 
 	public int insertNewMemo(User u, String title, Date data, String description, String c1) {
 		Session session = sessionFactory.openSession();
-		Memo m = new Memo(u, title, data, description,c1);
+		User user = session.get(User.class,u.getId());
+		Memo m = new Memo(user, title, data, description,c1);
 		int result =-1;
 		Transaction tx = null;
 

@@ -78,9 +78,13 @@ angular
     }, {
         label : '<i class=\'glyphicon glyphicon-remove\'></i>',
         onClick : function(args) {
-         //   alert("delete");
-         // alert(args.calendarEvent.id);
+       
+
+           if(args.calendarEvent.memo){
+        	   vm.deleteMemoById(args.calendarEvent.id)
+           }else{
             vm.deleteOccurrence(args.calendarEvent.id);
+           }
         },
     } ];
         
@@ -195,6 +199,13 @@ angular
         vm.events = [];
 
         var boundaries = vm.getViewDateBoundaries();
+        
+        if(vm.memosToggled) {
+            vm.events = vm.events.concat(vm.memoList);
+
+        }
+        
+        if (!vm.shownCalendars.length) { $scope.$digest(); }
 
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
@@ -210,15 +221,13 @@ angular
                         blueprint.secondaryColor
                     ));
                 });
-                
-                if (vm.memosToggled) {
-                    vm.events = vm.events.concat(vm.memoList);
-                }
-                
+             
                 // Needed for asynchronous update of vm.events
                 $scope.$digest();
             });
         });
+        
+        
     };
     
     // Update the list of calendars displayed within the sidebar
@@ -265,7 +274,7 @@ angular
     
     vm.updateMemoList = function () {
         vm.memoList = [];
-        
+       // alert("sono in upd memo list");
         var str = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>';
         
         vm.JSON_getMyMemos(function (memos) {
@@ -405,21 +414,13 @@ angular
     }
     
     
-    vm.updateUserInformation = function() {
-        
+  	vm.updateUserInformation = function() {
         var name = document.getElementById("nameUser").value;
         var oldP = document.getElementById("oldP").value;
         var newP = document.getElementById("newP").value;
-        
-        // TO DO controllo username empty string
-        document.getElementById('usernameHome').innerHTML = name;
-        
-        vm.updateUser(name,newP);
-        
+    
+        vm.updateUser(name,oldP,newP);
         document.getElementById('modal-wrapper2').style.display = 'none';
-        
-        console.log("update user with name  => "+name);
-        
     };
         
     // Hide/Show a calendar's events
@@ -643,6 +644,8 @@ angular
                 c1: color,
             },
             success: function (response) {
+             // alert("successo insert memo db");
+
                 vm.updateMemoList();
             },
         });
@@ -767,21 +770,21 @@ angular
     /*
 	 * updateUser
 	 */
-    vm.updateUser = function (username, password) {
+    vm.updateUser = function (username, oldPassword , password) {
         $.ajax({
             type: "POST",
             url: "updateUser",
             data: {
                 username: username,
+                oldPassword : oldPassword,
                 password: password,
             },
             success: function (response) {
-                // FIXME: graphical representations of the username
-                // inside the page need to be updated. IndexController
-                // should expose a function for retrieving the current
-                // username, to be used at page initialization and after
-                // a successful call to vm.updateUser
-            },
+            		if(response == "User update successfully" || response == "Username changed successfully")
+                        document.getElementById('usernameHome').innerHTML = username;
+
+                	alert(response);
+             },
         });
     };
     
@@ -1118,15 +1121,11 @@ angular
     	
     	var now = new Date();
     	
-    	alert("ciao");
-
-        vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
-                + vm.memo.title;
-        // TO DO
-        // vm.insertNewMemo(....);
+   
+ 
         vm.insertNewMemo(vm.memo.title, vm.memo.description, now , vm.memo.color.primary);
         
-        console.log(vm.memo.title+ vm.memo.description+ now+ vm.memo.color.primary)
+        console.log("insert new MEMO => "+vm.memo.title+ " " + vm.memo.description+" " +now+" " +vm.memo.color.primary);
 
         document.getElementById('modal-wrapper7').style.display = 'none';
 
@@ -1134,13 +1133,14 @@ angular
 
     // update memo press button action
     vm.updateMemoView = function() {
-
-        // use tmp.memo variables
-
-        vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
-                + vm.memo.title;
-        // TO DO
-        // vm.updateMemo(...);
+    		
+    	// use tmp.memo variables
+    	
+    	var now = new Date();
+ 
+        vm.updateMemo(vm.memo.id, vm.memo.title, vm.memo.description, now, vm.memo.color.primary);
+        
+        console.log("update  MEMO => "+vm.memo.id+" "+vm.memo.title+ " " + vm.memo.description+" " +now+" " +vm.memo.color.primary)
 
         document.getElementById('modal-wrapper8').style.display = 'none';
     }
