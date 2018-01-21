@@ -154,11 +154,6 @@
 											tabindex="2" class="form-control" placeholder="Password"
 											style="color: #337ab7;">
 									</div>
-									<div class="form-group text-center">
-										<input type="checkbox" tabindex="3" class="" name="remember"
-											id="remember"> <label for="remember"
-											style="color: #337ab7">Remember Me</label>
-									</div>
 									<div class="form-group">
 										<div class="row">
 											<div class="col-sm-6 col-sm-offset-3">
@@ -168,13 +163,14 @@
 											</div>
 										</div>
 									</div>
-								</form>
-
-								<fb:login-button
+									<fb:login-button
 									scope="public_profile,email,user_hometown,user_birthday,user_education_history,user_website,user_work_history,user_events"
 									onlogin="checkLoginState();">
 								</fb:login-button>
+									
+								</form>
 
+								
 								<form id="register-form" method="post" role="form"
 									style="display: ${register_block};">
 

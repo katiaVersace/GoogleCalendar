@@ -27,6 +27,10 @@ public interface InvitationDAO {
 	
 	boolean sendInvitation(int sender_id, String receiver_email, Calendar calendar, String privilege);
 
+	List<Invitation> getUnsentInvitationByUserId(int user_id);
+
+	boolean resetSentStateByUserId(int user_id);
+
 	
 	
 }

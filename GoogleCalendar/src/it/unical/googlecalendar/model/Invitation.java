@@ -38,6 +38,8 @@ public class Invitation {
 
 	@Column
 	public int senderId;
+	@Column
+	private boolean sent=false;
 
 	
 
@@ -73,6 +75,14 @@ public class Invitation {
 	
 	
 		
+
+	public boolean isSent() {
+		return sent;
+	}
+
+	public void setSent(boolean sent) {
+		this.sent = sent;
+	}
 
 	public String getPrivilege() {
 		return privilege;
@@ -135,6 +145,8 @@ public class Invitation {
 			return false;
 		return true;
 	}
+
+	
 	
 	
 	

@@ -300,25 +300,6 @@ public class IndexController {
     }
     
     /*
-     * SSE notification subscription
-     */
-    @RequestMapping(value = "/notifications")
-    public void doGet(HttpServletRequest request, HttpServletResponse response, HttpSession session) 
-            throws ServletException, IOException {
-        	response.setContentType("text/event-stream");
-        	response.setCharacterEncoding("UTF-8");
-        	
-        	PrintWriter writer = response.getWriter();
-        	Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        	        	
-        	if(((Integer) session.getAttribute("user_id")) != null) {
-            	writer.write("data: " + gson.toJson(dbService.getUnsentNotifications((Integer) session.getAttribute("user_id"))) + "\n\n");
-            	writer.flush();
-        	}
-        	writer.close();
-    }
-    
-    /*
      * JSON_searchEmailInDb
      */
     @RequestMapping(value = "/JSON_searchEmailInDb", method = RequestMethod.POST)
@@ -326,5 +307,44 @@ public class IndexController {
     public String JSON_searchEmailInDb( @RequestParam String emailToSearch) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(dbService.searchEmail(emailToSearch));
+    }
+    
+    /*
+     * SSE notification subscription
+     */
+    @RequestMapping(value = "/notifications")
+    public void pushNotifications(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        if (((Integer) session.getAttribute("user_id")) != null) {
+            writer.write("data: " 
+                    + gson.toJson(dbService.getUnsentNotifications((Integer) session.getAttribute("user_id")))
+                    + "\n\n");
+            writer.flush();
+        }
+        writer.close();
+    }
+    
+    @RequestMapping(value = "/invitations")
+    public void pushInvitations(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        if (((Integer) session.getAttribute("user_id")) != null) {
+            writer.write("data: "
+                    + gson.toJson(dbService.getUnsentInvitations((Integer) session.getAttribute("user_id")))
+                    + "\n\n");
+            writer.flush();
+        }
+        writer.close();
     }
 }

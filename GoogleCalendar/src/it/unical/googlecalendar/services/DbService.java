@@ -225,6 +225,10 @@ public class DbService {
 	public List<Notification> getUnsentNotifications(int user_id) {
 		return ndao.getUnsentNotificationByUserId(user_id);
 	}
+	
+	public List<Invitation> getUnsentInvitations(int user_id) {
+	return idao.getUnsentInvitationByUserId(user_id);
+	}
     
 	public List<Invitation> getMyInvitation(int user_id) {
 		return idao.getInvitationsByReceiverId(user_id);
@@ -238,7 +242,8 @@ public class DbService {
 
 
 	public boolean resetSentState(int user_id) {
-		return ndao.resetSentStateByUserId(user_id);
+		return ndao.resetSentStateByUserId(user_id) && idao.resetSentStateByUserId(user_id);
+		
 	}
 
 
@@ -251,6 +256,9 @@ public class DbService {
 	public List<String> searchEmail(String emailToSearch) {
 		return udao.searchEmail(emailToSearch);
 	}
+
+
+	
     
     
 	
