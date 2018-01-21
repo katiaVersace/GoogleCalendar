@@ -50,10 +50,10 @@ angular
     // Only used in conjunction with shownCalendars
     vm.checkedCalendars = [];
     
-    // Received notifications buffer
+    // Received notifications buffer (move in session)
     vm.notifications = [];
     
-    // Received invitations buffer
+    // Received invitations buffer (move in session)
     vm.invitations = [];
     
     // Cell state, used by the view
@@ -159,6 +159,8 @@ angular
             }            
             return 0;
         });
+        
+        return messages;
     };
     
     // Delete an answered invitation from buffer
@@ -661,7 +663,7 @@ angular
             url: "deleteNotifications",
             success: function (response) {
                 if (response == "YES") {
-                    vm.notifies = [];
+                    vm.notifications = [];
                 }
             },
         });
@@ -691,7 +693,7 @@ angular
     // --------- //
     
     vm.SSENotificationSubscription = function () {
-        var eventSource = new EventSource("notifies");
+        var eventSource = new EventSource("notifications");
         
         eventSource.onmessage = function (event) {
             var received = JSON.parse(event.data);

@@ -299,9 +299,9 @@ public class IndexController {
     }
     
     /*
-     * SSE messages subscription
+     * SSE notification subscription
      */
-    @RequestMapping(value = "/notifies")
+    @RequestMapping(value = "/notifications")
     public void doGet(HttpServletRequest request, HttpServletResponse response, HttpSession session) 
             throws ServletException, IOException {
         	response.setContentType("text/event-stream");
