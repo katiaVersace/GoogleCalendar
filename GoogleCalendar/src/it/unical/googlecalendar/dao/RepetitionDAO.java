@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -149,7 +150,7 @@ public class RepetitionDAO {
 	}
 
 	
-	public int insertNewRepetition(Occurrence o,int nR, String type, int user_id) {
+	public int insertNewRepetition(Occurrence o,int nR, String type, int user_id, Date st, Date et) {
 		Session session = sessionFactory.openSession();
 		int result =-1;
 		
@@ -162,7 +163,7 @@ public class RepetitionDAO {
 			Users_Calendars uc = resultsId.get(0);
 
 			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
-				Repetition m = new Repetition(o,nR, type);
+				Repetition m = new Repetition(o,nR, type, st, et);
 		Transaction tx = null;
 
 		try {

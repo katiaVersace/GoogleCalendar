@@ -3,7 +3,9 @@ package it.unical.googlecalendar.dao;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Query;
 import javax.sound.midi.SysexMessage;
@@ -160,7 +162,17 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			query.setParameter("startPeriod", format.format(startPeriod));
 			query.setParameter("endPeriod", format.format(endPeriod));
 			
-			return query.getResultList();
+			List<Occurrence> res1=query.getResultList();
+			
+			
+			Query queryR = session.createQuery("SELECT o FROM Occurrence o JOIN o.repetition orep WHERE orep.endTime>= :start").setParameter("start",start);
+			List<Occurrence> res2=queryR.getResultList();
+			res1.addAll(res2);
+			Set<Occurrence>s1=new HashSet<>();
+			s1.addAll(res1);
+			res1.clear();
+			res1.addAll(s1);
+			return res1;
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

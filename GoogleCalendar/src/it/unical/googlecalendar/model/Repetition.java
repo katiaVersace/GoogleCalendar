@@ -53,22 +53,40 @@ public class Repetition  {
 	
 	@Column
 	@Expose
-	private String endTime;
+	private Date endTime;
 	
 	
 	public Repetition(){
 		super();
 	}
 	
-	public Repetition (Occurrence o, int numR, String rType){
+	public Repetition (Occurrence o, int numR, String rType, Date st, Date et){
 		this.numRepetition=numR;
 		this.repetitionType=rType;
 		this.occurrence=o;
+		this.startTime=st;
+		this.endTime=et;
 		//o.getRepetitions().add(this);
 		o.setRepetition(this);
 		
 	}
 	
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
 	public List<EventException> getExceptions() {
 		return exceptions;
 	}
