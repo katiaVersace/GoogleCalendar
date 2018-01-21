@@ -32,12 +32,9 @@
 	rel="stylesheet">
 
 
-<!--   ***************************************************************************************************************************** -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
 <script src="resources/scripts/example.js"></script>
-
 <script src="resources/scripts/openModal.js"></script>
 <script src="resources/scripts/dropDownMenu.js"></script>
 
@@ -92,14 +89,8 @@
 
 				<li><a onclick="modal('1')"> <i
 						class="glyphicon glyphicon-plus"></i> Add New Calendar
-				</a> <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">
-						<i class="glyphicon glyphicon-calendar"></i> Default Calendar
-				</a>
-					<ul class="collapse list-unstyled" id="pageSubmenu">
-						<li><a href="#">Festività in Italia</a></li>
-						<!--  <li><a href="#">Page 2</a></li>
-                            <li><a href="#">Page 3</a></li> -->
-					</ul></li>
+				</a> 
+				</li>
 
 				<li><a onclick="openModalType2()"> <i
 						class="glyphicon glyphicon-user"></i> Update profile
@@ -130,16 +121,16 @@
 						id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
 							<li><a id="usernameHome" href="#" style="color: #337ab7; font-size: 20px;">${username}</a></li>
-							<div class="btn-group">
+							<li>
 								<a id="notificationDropDown" href="#"
-									ng-click="vm.updateNotificationsView()" type="button"
-									class="btn btn-primary dropdown-toggle" data-toggle="null"
-									aria-haspopup="true" aria-expanded="false"> <i
-									class="glyphicon glyphicon-bell"></i> <span class="caret"></span>
+									ng-click="vm.updateNotificationsView()" 
+									 data-toggle="null"
+									aria-haspopup="true" > <i id = "notif"
+									class="glyphicon glyphicon-bell" style="font-size: 20px; color:'#9E9E9E';" ></i> <span class="caret"></span>
 								</a>
 								<div class="dropdown-menu scrollable-menu" id="ulNotifications"></div>
-							</div>
-
+							
+							</li>
 							<li>
 								<form action="logout">
 									<div class="navbar-header">
@@ -149,7 +140,6 @@
 										</button>
 									</div>
 								</form>
-
 							</li>
 							<!-- <li><a href="#">Page</a></li>-->
 						</ul>
@@ -197,9 +187,8 @@
 									<div class="btn-group">
 
 										<button class="btn btn-primary pull-right" id="buttonShowMemo"
-											ng-click="vm.toggleMemos()">Show Memo</button>
-										<!-- <i style="font-size: 16px; color: white;"class="glyphicon glyphicon-save-file"></i> Add event
-                       -->
+											ng-click="vm.toggleMemos()" style="margin-left: 3px;">Show Memo</button>
+										<!-- <i style="font-size: 16px; color: white;"class="glyphicon glyphicon-save-file"></i> Add event -->
 										<button id="btn-add" class="btn btn-primary pull-right"
 											ng-click="vm.openEventModal()" disabled="disabled">
 											<i style="font-size: 16px; color: white;"
@@ -723,8 +712,7 @@
 					<span
 						onclick="document.getElementById('modal-wrapper8').style.display='none'"
 						class="close" title="Close PopUp">&times;</span>
-					<h1 style="text-align: center; color: white; padding-top: 10px;">Update
-						Meno</h1>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Update Meno</h1>
 					<a href="#" class="avatar"><i
 						style="font-size: 45px; color: white;"
 						class="glyphicon glyphicon-save-file"></i></a>

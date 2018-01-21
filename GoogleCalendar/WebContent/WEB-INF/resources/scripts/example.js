@@ -331,7 +331,8 @@ angular
     // add notifications to dropdown menu
     vm.updateNotificationsView = function () { 
         var viewList = $("#ulNotifications");
-            
+        document.getElementById('notif').style.color = '#9E9E9E';
+        
         // fill graphic vector with notifications and invitations
         vm.notificationsView = vm.arrangeMessages();
             
@@ -367,7 +368,7 @@ angular
             
         viewList.append(string);        
         vm.deleteNotifications();
-    };
+      };
 
     
     vm.insertNewCalendarView = function () {
@@ -439,8 +440,15 @@ angular
     vm.toggleMemos = function () {
         if (vm.memosToggled) {
             vm.purgeMemos();
-        } else {
+            document.getElementById('buttonShowMemo').innerHTML = 'Show Memo'; 
+            document.getElementById('buttonShowMemo').style.backgroundColor = "#337ab7";
+        } 
+        else 
+        {
+            document.getElementById('buttonShowMemo').innerHTML = 'Hide Memo';            
+            document.getElementById('buttonShowMemo').style.backgroundColor = "#039BE5";
             vm.updateMemoList();
+            
         }
         
         vm.memosToggled = !vm.memosToggled;
@@ -862,7 +870,7 @@ angular
             if (received.length) {
                 vm.notifications = vm.notifications.concat(received.slice());
                 
-                // TODO btn notif red
+                document.getElementById('notif').style.color = '#F44336';
             }
         };
     };
@@ -876,9 +884,8 @@ angular
             if (received.length) {
                 vm.invitations = vm.invitations.concat(received.slice());
                 
-                // TODO btn notif red
-
-            }
+                document.getElementById('notif').style.color = '#F44336';
+             }
         };
     };
     
