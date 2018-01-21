@@ -630,7 +630,7 @@ angular
     /*
      * deleteMemoById
      */
-    vm.deleteMemoById = function ( /* ... */ ) {
+    vm.deleteMemoById = function (memo_id) {
         $.ajax({
             type: "POST",
             url: "deleteMemo/" + memo_id,
