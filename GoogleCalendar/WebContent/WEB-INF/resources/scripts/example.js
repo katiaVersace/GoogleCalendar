@@ -317,7 +317,6 @@ angular
 
     
     vm.insertNewCalendarView = function () {
-   
        var title = document.getElementById("nameCal").value;
        var description = document.getElementById("descrCalendar").value;
        vm.insertNewCalendar(title, description);

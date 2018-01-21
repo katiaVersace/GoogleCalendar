@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.hibernate.Cache;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -60,7 +62,7 @@ public class NotificationDAO {
 
 	}
 
-	//Questa qui � la funzione che il server SSE invoca per vedere quali sono le notifiche da inviare
+	//Questa qui � la funzione che il server SSE invoca per vedere quali sono le notifiche da inviare
 	public List<Notification> getUnsentNotificationByUserId(int user_id) {
 		Session session = sessionFactory.openSession();
 
@@ -126,29 +128,33 @@ public class NotificationDAO {
 	}
 
 
-	public boolean deleteNotifications(User u) {
+	public boolean deleteNotifications(User u1) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		boolean result = false;
 
+		// ciao bernà, non ci dire niente,
+		// è che così finalmente va
+		User u = session.get(User.class, u1.getId());
 	
-			try {
-				tx = session.beginTransaction();
+		try {
+			tx = session.beginTransaction();
 
-				Query query = session
-						.createQuery("DELETE FROM Notification n WHERE n.user.id= :user_id");
-				query.setParameter("user_id",u.getId());
-				 query.executeUpdate();
+			Query query = session
+					.createQuery("DELETE FROM Notification n WHERE n.user.id= :user_id");
+			query.setParameter("user_id",u.getId());
+			query.executeUpdate();
 
-				tx.commit();
-				u.getNotifications().clear();
-				result = true;
+			tx.commit();
+			Hibernate.initialize(u.getNotifications());
+			u.getNotifications().clear();
+			result = true;
 
-			} catch (Exception e) {
-				e.printStackTrace();
-				result = false;
-				tx.rollback();
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+			tx.rollback();
+		}
 		
 
 		session.close();
