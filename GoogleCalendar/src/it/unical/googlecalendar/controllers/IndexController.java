@@ -316,4 +316,12 @@ public class IndexController {
         	}
         	writer.close();
     }
+    
+    //TODO: giuseppe aggiungi questo metodo
+    @RequestMapping(value = "/JSON_searchEmailInDb", method = RequestMethod.POST)
+    @ResponseBody
+    public String JSON_searchEmailInDb( @RequestParam String emailToSearch) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(dbService.searchEmail(emailToSearch));
+    }
 }
