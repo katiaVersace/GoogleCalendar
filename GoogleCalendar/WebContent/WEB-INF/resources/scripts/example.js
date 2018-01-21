@@ -40,7 +40,9 @@ angular
     // Events to be displayed
     vm.events = [];
     
-           
+    // Calendars currently associated with the user
+    vm.calendarsArray = [];
+
     // Calendars whose events are currently shown, by id
     vm.shownCalendars = [];
     
@@ -48,8 +50,13 @@ angular
     // Only used in conjunction with shownCalendars
     vm.checkedCalendars = [];
     
-    vm.calendarsArray = [];
+    // Received notifications buffer
+    vm.notifications = [];
     
+    // Received invitations buffer
+    vm.invitations = [];
+    
+    // Cell state, used by the view
     vm.cellIsOpen = true;
     
     // List of glyphs shown after entries in a day's event list,
@@ -127,11 +134,38 @@ angular
         this.actions = actions;
     };
     
+    // 
     vm.getViewDateBoundaries = function () {        
         return {
             start: moment(vm.viewDate).startOf(vm.calendarView).toDate(),
             end: moment(vm.viewDate).endOf(vm.calendarView).toDate(),
         };
+    };
+    
+    // To be called before rendering received messages
+    vm.arrangeMessages = function () {
+        // BEWARE: shallow copies, remember in case of troubles
+        var messages = vm.notifications.concat(vm.invitations);
+        
+        messages.sort(function (first, second) {
+            var ts_first = moment(first.timestamp);
+            var ts_second = moment(second.timestamp);
+            
+            if (ts_first < ts_second) {
+                return -1;
+            }
+            if (ts_first > ts_second) {
+                return 1;
+            }            
+            return 0;
+        });
+    };
+    
+    // Delete an answered invitation from buffer
+    vm.discardInvitation = function (id) {
+        vm.invitations.filter(function (item) {
+            return item.id != id;
+        });
     };
     
     // ------------------- //
@@ -154,10 +188,8 @@ angular
                         blueprint.description,
                         new Date(blueprint.startTime),
                         new Date(blueprint.endTime),
-                        "#555555", // FIXME: substitute with
-                                    // blueprint.primaryColor,
-                        "#aaaaaa" // FIXME: substitute with
-                                    // blueprint.secondaryColor,
+                        blueprint.primaryColor,
+                        blueprint.secondaryColor
                     ));
                 });
                 // Needed for asynchronous update of vm.events
@@ -432,7 +464,7 @@ angular
     /*
      * deleteOccurenceId
      */
-    vm.deleteOccurrence = function (id) {  // done
+    vm.deleteOccurrence = function (id) {
         $.ajax({
             type: "POST",
             url: "deleteOccurrence/" + id,
@@ -616,11 +648,71 @@ angular
                 privilege: privileges,
             },
             success: function (response) {
-                if (reponse == "YES") {
+                if (response == "YES") {
                     // TODO
                 }
             },
         });
+    };
+    
+    vm.deleteNotifications = function () {
+        $.ajax({
+            type: "POST",
+            url: "deleteNotifications",
+            success: function (response) {
+                if (response == "YES") {
+                    vm.notifies = [];
+                }
+            },
+        });
+    };
+    
+    vm.answerInvitation = function (id, answer) {
+        $.ajax({
+            type: "POST",
+            url: "answerNotification",
+            data: {
+                answer: answer ? "accept" : "decline",
+            },
+            success: function (response) {
+                if (response == "accepted") {
+                    vm.discardInvitation(id);
+                    vm.updateCalendarList();
+                } else if (response != "declined") {
+                    console.log("vm.answerInvitation unsuccessful");
+                    console.log(JSON.stringify(response, null, 4));
+                }
+            },
+        });
+    };
+    
+    // --------- //
+    // -- SSE -- //
+    // --------- //
+    
+    vm.SSENotificationSubscription = function () {
+        var eventSource = new EventSource("notifies");
+        
+        eventSource.onmessage = function (event) {
+            var received = JSON.parse(event.data);
+            
+            if (received.length) {
+                vm.notifies = vm.notifies.concat(received.slice());
+            }
+        };
+    };
+    
+    // FIXME: do this on IndexController
+    vm.SSEInvitationSubscription = function () {
+        var eventSource = new EventSource("invitations");
+        
+        eventSource.onmessage = function (event) {
+            var received = JSON.parse(event.data);
+            
+            if (received.length) {
+                vm.invitations = vm.invitations.concat(received.slice());
+            }
+        };
     };
     
     // ---------- //
@@ -628,7 +720,10 @@ angular
     // ---------- //
     
     (function () {
-        vm.updateCalendarList();        
+        vm.updateCalendarList();
+        vm.SSENotificationSubscription();
+        // FIXME: write interface on IndexController first
+        // vm.SSEInvitationSubscription();
     })();
     
     // --------------------------- //

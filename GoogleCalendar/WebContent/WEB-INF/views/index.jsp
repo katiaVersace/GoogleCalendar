@@ -39,7 +39,7 @@
   rel="stylesheet">
 
 <script src="resources/scripts/example.js"></script>
-<script src="resources/scripts/messages.js"></script>
+<!--  <script src="resources/scripts/messages.js"></script> -->
 
 <script src="resources/scripts/openModal.js"></script>
 <script src="resources/scripts/dropDownMenu.js"></script>
