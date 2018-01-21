@@ -124,7 +124,7 @@ angular
         this.memo = false;
         this.actions = actions;
     };
-    
+  
     // Memo Constructor (deceives vm.events into thinking it's a regular event)
     vm.Memo = function (id, title, description, color, dateAdded) {
         var now = new Date();
@@ -147,6 +147,8 @@ angular
         this.memo = true;
         this.actions = actions;
     };
+    
+ 
     
     // 
     vm.getViewDateBoundaries = function () {        
@@ -210,7 +212,7 @@ angular
                 });
                 
                 if (vm.memosToggled) {
-                    vm.events = vm.events.concat(vm.memosList);
+                    vm.events = vm.events.concat(vm.memoList);
                 }
                 
                 // Needed for asynchronous update of vm.events
@@ -263,11 +265,14 @@ angular
     
     vm.updateMemoList = function () {
         vm.memoList = [];
+        
+        var str = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>';
+        
         vm.JSON_getMyMemos(function (memos) {
-            JSON.parse(memos).forEach(function (blueprint) {
+            JSON.parse(memos).forEach(function (blueprint) {          
                 vm.memoList.push(new vm.Memo(
                     blueprint.id,
-                    blueprint.title,
+                    str+blueprint.title,
                     blueprint.description,
                     blueprint.primaryColor,
                     blueprint.creationDate
@@ -1093,11 +1098,11 @@ angular
 
         vm.memo = {
             title : 'New Memo',
-            id : '',
             startsAt : moment(),
             color : {
                 primary : "#123456",
             },
+            description : '',
             draggable : false,
             resizable : false,
             memo : true,
@@ -1110,11 +1115,18 @@ angular
     vm.addMemoView = function() {
 
         // use tmp.memo variables
+    	
+    	var now = new Date();
+    	
+    	alert("ciao");
 
         vm.memo.title = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>'
                 + vm.memo.title;
         // TO DO
         // vm.insertNewMemo(....);
+        vm.insertNewMemo(vm.memo.title, vm.memo.description, now , vm.memo.color.primary);
+        
+        console.log(vm.memo.title+ vm.memo.description+ now+ vm.memo.color.primary)
 
         document.getElementById('modal-wrapper7').style.display = 'none';
 
