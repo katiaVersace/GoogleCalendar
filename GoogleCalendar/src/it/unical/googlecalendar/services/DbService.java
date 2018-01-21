@@ -188,10 +188,7 @@ public class DbService {
 	
 	public List<Occurrence> getMyEventsInPeriod(String email, int calendar_id, String start, String end) {
 		return odao.getOccurrenceByEmailInPeriod(email, calendar_id, start, end);
-	}
-
-
-	
+	}	
 
 	public boolean updateAlarm(int alarm_id, int minutes) {
 		Alarm a=adao.getAlarmById(alarm_id);
@@ -256,10 +253,4 @@ public class DbService {
 	public List<String> searchEmail(String emailToSearch) {
 		return udao.searchEmail(emailToSearch);
 	}
-
-
-	
-    
-    
-	
 }

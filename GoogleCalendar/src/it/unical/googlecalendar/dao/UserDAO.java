@@ -1,9 +1,7 @@
 package it.unical.googlecalendar.dao;
 
-import java.util.Collection;
 import java.util.List;
 
-import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.User;
 
 
@@ -24,8 +22,4 @@ public interface UserDAO {
 	User getUserByEmail(String email);
 
 	List<String> searchEmail(String email);
-
-	
-	
-	
 }

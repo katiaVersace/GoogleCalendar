@@ -9,13 +9,13 @@
 
 <html data-ng-app="mwl.calendar.docs">
 <head>
+
 <meta
   name="viewport"
   content="width=device-width, initial-scale=1.0">
 <meta
   http-equiv="X-UA-Compatible"
   content="IE=edge">
-  
 
 <script
   type="text/javascript"
@@ -132,8 +132,7 @@
       <nav class="navbar navbar-default">
         <div class="container-fluid">
 
-          <div class="navbar-header">
-          </div>
+          <div class="navbar-header"></div>
 
           <div class="navbar-header">
             <button
@@ -148,10 +147,52 @@
             class="collapse navbar-collapse"
             id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-              <li><a id = "usernameHome"
+              <li><a
                 href="#"
                 style="color: #337ab7; font-size: 20px;">${username}</a></li>
-              <li><a href="#"><i class="glyphicon glyphicon-bell"></i></a></li>
+              <div class="btn-group">
+                <a
+                  id="notificationDropDown"
+                  href="#"
+                  ng-click="vm.updateNotificationsView()"
+                  type="button"
+                  class="btn btn-primary dropdown-toggle"
+                  data-toggle="null"
+                  aria-haspopup="true"
+                  aria-expanded="false"> <i class="glyphicon glyphicon-bell"></i>
+                  <span class="caret"></span>
+                </a>
+                <div
+                  class="dropdown-menu scrollable-menu"
+                  id="ulNotifications"></div>
+              </div>
+
+
+
+              <!-- <div class="btn-group" style="float: right;">
+								<button type="button" class="btn btn-primary dropdown-toggle"
+									data-toggle="dropdown" aria-haspopup="true"
+									aria-expanded="false">
+									<i style="font-size: 25px; color: white;"
+										class="glyphicon glyphicon-bell"></i> <span class="caret"></span>
+								</button>
+								<input type="text"
+									style="font-size: 15px; width: 80px; height: 40px;" id="TourId"
+									value="none" class="form-control"></input>
+								<div class="dropdown-menu scrollable-menu" id="ulGenres">
+									<li><a href="javascript:void(0)" onclick="addClock(0)"
+										class="clocks" data-id="0">At event time</a></li>
+									<li><a href="javascript:void(0)" onclick="addClock(10)"
+										class="clocks" data-id="10">10 min first</a></li>
+									<li><a href="javascript:void(0)" onclick="addClock(20)"
+										class="clocks" data-id="20">20 min first</a></li>
+									<li><a href="javascript:void(0)" onclick="addClock(30)"
+										class="clocks" data-id="30">30 min first</a></li>
+									<li><a href="javascript:void(0)" onclick="addClock(-1)"
+										class="clocks" data-id="none">none</a></li>
+								</div>
+							</div> -->
+
               <li>
                 <form action="logout">
                   <div class="navbar-header">
@@ -203,11 +244,9 @@
                       ng-click="vm.viewModifierBehavior()">Next</button>
 
                     <!-- DEBUG BUTTON -->
-                    <!--
                     <button
                       class="btn btn-primary"
-                      ng-click='vm.generatePrivilageActions()'>DEBUG_1</button>
-                    -->
+                      ng-click='vm.fn()'>DEBUG_1</button>
                     <!-- /DEBUG BUTTON -->
 
                   </div>
@@ -325,9 +364,8 @@
             type="text"
             placeholder="Name"
             name="uname"
-            id="nameCal"
-            >
-            
+            id="nameCal">
+
           <textarea
             rows="4"
             placeholder="DescrCalendar"
@@ -574,112 +612,113 @@
 
           <div>
             <form>
-            <fieldset id="calendarsListModal" ">
-            </fieldset>
-            <label id ="choiceId" style="visibility: hidden;"></label>
-           <h3 style="text-align: center; color: white; padding-top: 10px;">Add
-              Event</h3>
+              <fieldset id="calendarsListModal""></fieldset>
+              <label
+                id="choiceId"
+                style="visibility: hidden;"></label>
+              <h3 style="text-align: center; color: white; padding-top: 10px;">Add
+                Event</h3>
 
-            <div id="event_tmp">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Primary color</th>
-                    <th>Secondary color</th>
-                    <th>Starts at</th>
-                    <th>Ends at</th>
-                  </tr>
-                </thead>
+              <div id="event_tmp">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Primary color</th>
+                      <th>Secondary color</th>
+                      <th>Starts at</th>
+                      <th>Ends at</th>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  <td><input
-                    type="text"
-                    class="form-control"
-                    ng-model="vm.temp.title"></td>
-                  <td><input
-                    class="form-control"
-                    colorpicker
-                    type="text"
-                    ng-model="vm.temp.color.primary"></td>
-                  <td><input
-                    class="form-control"
-                    colorpicker
-                    type="text"
-                    ng-model="vm.temp.color.secondary"></td>
-                  <td>
-                    <p class="input-group">
-                      <input
-                        type="text"
-                        class="form-control"
-                        readonly
-                        uib-datepicker-popup="dd MMMM yyyy"
+                  <tbody>
+                    <td><input
+                      type="text"
+                      class="form-control"
+                      ng-model="vm.temp.title"></td>
+                    <td><input
+                      class="form-control"
+                      colorpicker
+                      type="text"
+                      ng-model="vm.temp.color.primary"></td>
+                    <td><input
+                      class="form-control"
+                      colorpicker
+                      type="text"
+                      ng-model="vm.temp.color.secondary"></td>
+                    <td>
+                      <p class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          readonly
+                          uib-datepicker-popup="dd MMMM yyyy"
+                          ng-model="vm.temp.startsAt"
+                          is-open="vm.temp.startOpen"
+                          close-text="Close"> <span
+                          class="input-group-btn">
+                          <button
+                            type="button"
+                            class="btn btn-default"
+                            ng-click="vm.toggle($event, 'startOpen', vm.temp)">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                          </button>
+                        </span>
+                      </p>
+                      <div
+                        uib-timepicker
                         ng-model="vm.temp.startsAt"
-                        is-open="vm.temp.startOpen"
-                        close-text="Close"> <span
-                        class="input-group-btn">
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          ng-click="vm.toggle($event, 'startOpen', vm.temp)">
-                          <i class="glyphicon glyphicon-calendar"></i>
-                        </button>
-                      </span>
-                    </p>
-                    <div
-                      uib-timepicker
-                      ng-model="vm.temp.startsAt"
-                      hour-step="1"
-                      minute-step="15"
-                      show-meridian="false"></div>
-                  </td>
-                  <td>
-                    <p class="input-group">
-                      <input
-                        type="text"
-                        class="form-control"
-                        readonly
-                        uib-datepicker-popup="dd MMMM yyyy"
+                        hour-step="1"
+                        minute-step="15"
+                        show-meridian="false"></div>
+                    </td>
+                    <td>
+                      <p class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          readonly
+                          uib-datepicker-popup="dd MMMM yyyy"
+                          ng-model="vm.temp.endsAt"
+                          is-open="vm.temp.endOpen"
+                          close-text="Close"> <span
+                          class="input-group-btn">
+                          <button
+                            type="button"
+                            class="btn btn-default"
+                            ng-click="vm.toggle($event, 'endOpen', vm.temp)">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                          </button>
+                        </span>
+                      </p>
+                      <div
+                        uib-timepicker
                         ng-model="vm.temp.endsAt"
-                        is-open="vm.temp.endOpen"
-                        close-text="Close"> <span
-                        class="input-group-btn">
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          ng-click="vm.toggle($event, 'endOpen', vm.temp)">
-                          <i class="glyphicon glyphicon-calendar"></i>
-                        </button>
-                      </span>
-                    </p>
-                    <div
-                      uib-timepicker
-                      ng-model="vm.temp.endsAt"
-                      hour-step="1"
-                      minute-step="15"
-                      show-meridian="false"></div>
-                  </td>
-                </tbody>
-              </table>
-            </div>
-            <div style="text-align: center;">
+                        hour-step="1"
+                        minute-step="15"
+                        show-meridian="false"></div>
+                    </td>
+                  </tbody>
+                </table>
+              </div>
+              <div style="text-align: center;">
 
-              <textarea
-                rows="2"
-                placeholder="Description"
-                id="descEvent"
-                ng-model="vm.temp.descr"></textarea>
+                <textarea
+                  rows="2"
+                  placeholder="Description"
+                  id="descEvent"
+                  ng-model="vm.temp.descr"></textarea>
 
-              <button
-                type="button"
-                id="addEvnt"
-                ng-click="vm.addEventView()"
-                class="btn btn-info navbar-btn"
-                style="background: #42A5F5">
-                <span><strong>Add </strong></span>
-              </button>
+                <button
+                  type="button"
+                  id="addEvnt"
+                  ng-click="vm.addEventView()"
+                  class="btn btn-info navbar-btn"
+                  style="background: #42A5F5">
+                  <span><strong>Add </strong></span>
+                </button>
 
-            </div>
+              </div>
           </div>
 
           <!-- DELETEEEEE GRAPHIC EVENT
@@ -705,183 +744,269 @@
             onclick="document.getElementById('modal-wrapper6').style.display='none'"
             class="close"
             title="Close PopUp">&times;</span>
-       
 
-            <h3 style="text-align: center; color: white; padding-top: 30px;">Update
-              Event</h3>
-             <a
+
+          <h3 style="text-align: center; color: white; padding-top: 30px;">Update
+            Event</h3>
+          <a
             href="#"
             class="avatar"><i
-            style= "text-align:center; font-size: 45px; color: white;"
+            style="text-align: center; font-size: 45px; color: white;"
             class="glyphicon glyphicon-pencil"></i></a>
- 			</div>
+        </div>
 
         <div
           class="modal-content"
           style="width: 90%;">
 
- 		 <div>
+          <div>
 
-              
-           
-              	<div
-            class="btn-group"
-            style="float: right;">
-          <button
-            type="button"
-            class="btn btn-primary dropdown-toggle"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false">
-            <i
-              style="font-size: 25px; color: white;"
-              class="glyphicon glyphicon-time"></i> <span class="caret"></span>
-          </button>
-          <input
-            type="text"
-            style="font-size: 15px; width: 80px; height: 40px;"
-            id="TourId2"
-            class="form-control"></input>
-          <div
-            class="dropdown-menu scrollable-menu"
-            id="ulGenres">
-            <li><a
-              href="javascript:void(0)"
-              onclick="updateClock(0)"
-              class="clocks"
-              data-id="0">At event time</a></li>
-            <li><a
-              href="javascript:void(0)"
-              onclick="updateClock(10)"
-              class="clocks"
-              data-id="10">10 min first</a></li>
-            <li><a
-              href="javascript:void(0)"
-              onclick="updateClock(20)"
-              class="clocks"
-              data-id="20">20 min first</a></li>
-            <li><a
-              href="javascript:void(0)"
-              onclick="updateClock(30)"
-              class="clocks"
-              data-id="30">30 min first</a></li>
-            <li><a
-              href="javascript:void(0)"
-              onclick="updateClock(-1)"
-              class="clocks"
-              data-id="none">none</a></li>
+
+            <tbody>
+              <td><input
+                type="text"
+                class="form-control"
+                ng-model="vm.temp.title"></td>
+              <td><input
+                class="form-control"
+                colorpicker
+                type="text"
+                ng-model="vm.temp.color.primary"></td>
+              <td><input
+                class="form-control"
+                colorpicker
+                type="text"
+                ng-model="vm.temp.color.secondary"></td>
+              <td>
+                <p class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    readonly
+                    uib-datepicker-popup="dd MMMM yyyy"
+                    ng-model="vm.temp.startsAt"
+                    is-open="vm.temp.startOpen"
+                    close-text="Close"> <span class="input-group-btn">
+                    <button
+                      type="button"
+                      class="btn btn-default"
+                      ng-click="vm.toggle($event, 'startOpen', vm.temp)">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                  </span>
+                </p>
+                <div
+                  uib-timepicker
+                  ng-model="vm.temp.startsAt"
+                  hour-step="1"
+                  minute-step="15"
+                  show-meridian="false"></div>
+              </td>
+              <td>
+                <p class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    readonly
+                    uib-datepicker-popup="dd MMMM yyyy"
+                    ng-model="vm.temp.endsAt"
+                    is-open="vm.temp.endOpen"
+                    close-text="Close"> <span class="input-group-btn">
+                    <button
+                      type="button"
+                      class="btn btn-default"
+                      ng-click="vm.toggle($event, 'endOpen', vm.temp)">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                  </span>
+                </p>
+                <div
+                  uib-timepicker
+                  ng-model="vm.temp.endsAt"
+                  hour-step="1"
+                  minute-step="15"
+                  show-meridian="false"></div>
+              </td>
+            </tbody>
+            </table>
           </div>
-          </div>
-              
-              
-              
-           
-            
-              
+          <div style="text-align: center;">
+            <textarea
+              rows="2"
+              placeholder="Description"
+              id="descEvent"
+              ng-model="vm.temp.descr"></textarea>
 
-            <div id="event_tmp">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Primary color</th>
-                    <th>Secondary color</th>
-                    <th>Starts at</th>
-                    <th>Ends at</th>
-                  </tr>
-                </thead>
 
-                <tbody>
-                  <td><input
-                    type="text"
-                    class="form-control"
-                    ng-model="vm.temp.title"></td>
-                  <td><input
-                    class="form-control"
-                    colorpicker
-                    type="text"
-                    ng-model="vm.temp.color.primary"></td>
-                  <td><input
-                    class="form-control"
-                    colorpicker
-                    type="text"
-                    ng-model="vm.temp.color.secondary"></td>
-                  <td>
-                    <p class="input-group">
-                      <input
-                        type="text"
-                        class="form-control"
-                        readonly
-                        uib-datepicker-popup="dd MMMM yyyy"
+
+
+            <!-- TASTO CHE STA NEL MODAL -->
+            <button
+              type="button"
+              id="upEvent"
+              ng-click="vm.updateEventView()"
+              class="btn btn-info navbar-btn"
+              style="background: #42A5F5">
+              <span><strong>Update Event</strong></span>
+
+              <div
+                class="btn-group"
+                style="float: right;">
+                <button
+                  type="button"
+                  class="btn btn-primary dropdown-toggle"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+                  <i
+                    style="font-size: 25px; color: white;"
+                    class="glyphicon glyphicon-time"></i> <span class="caret"></span>
+                </button>
+                <input
+                  type="text"
+                  style="font-size: 15px; width: 80px; height: 40px;"
+                  id="TourId2"
+                  class="form-control"></input>
+                <div
+                  class="dropdown-menu scrollable-menu"
+                  id="ulGenres">
+                  <li><a
+                    href="javascript:void(0)"
+                    onclick="updateClock(0)"
+                    class="clocks"
+                    data-id="0">At event time</a></li>
+                  <li><a
+                    href="javascript:void(0)"
+                    onclick="updateClock(10)"
+                    class="clocks"
+                    data-id="10">10 min first</a></li>
+                  <li><a
+                    href="javascript:void(0)"
+                    onclick="updateClock(20)"
+                    class="clocks"
+                    data-id="20">20 min first</a></li>
+                  <li><a
+                    href="javascript:void(0)"
+                    onclick="updateClock(30)"
+                    class="clocks"
+                    data-id="30">30 min first</a></li>
+                  <li><a
+                    href="javascript:void(0)"
+                    onclick="updateClock(-1)"
+                    class="clocks"
+                    data-id="none">none</a></li>
+                </div>
+              </div>
+
+
+
+
+
+
+
+              <div id="event_tmp">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Primary color</th>
+                      <th>Secondary color</th>
+                      <th>Starts at</th>
+                      <th>Ends at</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <td><input
+                      type="text"
+                      class="form-control"
+                      ng-model="vm.temp.title"></td>
+                    <td><input
+                      class="form-control"
+                      colorpicker
+                      type="text"
+                      ng-model="vm.temp.color.primary"></td>
+                    <td><input
+                      class="form-control"
+                      colorpicker
+                      type="text"
+                      ng-model="vm.temp.color.secondary"></td>
+                    <td>
+                      <p class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          readonly
+                          uib-datepicker-popup="dd MMMM yyyy"
+                          ng-model="vm.temp.startsAt"
+                          is-open="vm.temp.startOpen"
+                          close-text="Close"> <span
+                          class="input-group-btn">
+                          <button
+                            type="button"
+                            class="btn btn-default"
+                            ng-click="vm.toggle($event, 'startOpen', vm.temp)">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                          </button>
+                        </span>
+                      </p>
+                      <div
+                        uib-timepicker
                         ng-model="vm.temp.startsAt"
-                        is-open="vm.temp.startOpen"
-                        close-text="Close"> <span
-                        class="input-group-btn">
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          ng-click="vm.toggle($event, 'startOpen', vm.temp)">
-                          <i class="glyphicon glyphicon-calendar"></i>
-                        </button>
-                      </span>
-                    </p>
-                    <div
-                      uib-timepicker
-                      ng-model="vm.temp.startsAt"
-                      hour-step="1"
-                      minute-step="15"
-                      show-meridian="false"></div>
-                  </td>
-                  <td>
-                    <p class="input-group">
-                      <input
-                        type="text"
-                        class="form-control"
-                        readonly
-                        uib-datepicker-popup="dd MMMM yyyy"
+                        hour-step="1"
+                        minute-step="15"
+                        show-meridian="false"></div>
+                    </td>
+                    <td>
+                      <p class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          readonly
+                          uib-datepicker-popup="dd MMMM yyyy"
+                          ng-model="vm.temp.endsAt"
+                          is-open="vm.temp.endOpen"
+                          close-text="Close"> <span
+                          class="input-group-btn">
+                          <button
+                            type="button"
+                            class="btn btn-default"
+                            ng-click="vm.toggle($event, 'endOpen', vm.temp)">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                          </button>
+                        </span>
+                      </p>
+                      <div
+                        uib-timepicker
                         ng-model="vm.temp.endsAt"
-                        is-open="vm.temp.endOpen"
-                        close-text="Close"> <span
-                        class="input-group-btn">
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          ng-click="vm.toggle($event, 'endOpen', vm.temp)">
-                          <i class="glyphicon glyphicon-calendar"></i>
-                        </button>
-                      </span>
-                    </p>
-                    <div
-                      uib-timepicker
-                      ng-model="vm.temp.endsAt"
-                      hour-step="1"
-                      minute-step="15"
-                      show-meridian="false"></div>
-                  </td>
-                </tbody>
-              </table>
-            </div>
-            <div style="text-align: center;">
-              <textarea
-                rows="2"
-                placeholder="Description"
-                id="descEvent"
-                ng-model="vm.temp.descr"></textarea>
-              
-              
-           
-              
-              <!-- TASTO CHE STA NEL MODAL -->
-              <button
-                type="button"
-                id="upEvent"
-                ng-click="vm.updateEventView()"
-                class="btn btn-info navbar-btn"
-                style="background: #42A5F5">
-                <span><strong>Update Event</strong></span>
+                        hour-step="1"
+                        minute-step="15"
+                        show-meridian="false"></div>
+                    </td>
+                  </tbody>
+                </table>
+              </div>
+              <div style="text-align: center;">
+                <textarea
+                  rows="2"
+                  placeholder="Description"
+                  id="descEvent"
+                  ng-model="vm.temp.descr"></textarea>
 
-              </button> 
-            </div>
+
+
+
+                <!-- TASTO CHE STA NEL MODAL -->
+                <button
+                  type="button"
+                  id="upEvent"
+                  ng-click="vm.updateEventView()"
+                  class="btn btn-info navbar-btn"
+                  style="background: #42A5F5">
+                  <span><strong>Update Event</strong></span>
+
+                </button>
+              </div>
           </div>
 
           <!-- DELETEEEEE GRAPHIC EVENT
@@ -964,7 +1089,6 @@
       </form>
     </div>
   </div>
-
   <!-- UPDATE MEMO -->
   <div
     id="modal-wrapper8"
@@ -1037,7 +1161,7 @@
   </div>
 
   <!-- ADD CALENDAR Madal(1)-->
-<!--   <script type="text/javascript">
+  <!--   <script type="text/javascript">
             var addCalendar = function() {
                 //alert("chiamata f add");
                 
@@ -1045,7 +1169,7 @@
         </script> -->
 
 
-<!--   <!-- UPDATE PROFILE Madal(2)
+  <!--   <!-- UPDATE PROFILE Madal(2)
   <script type="text/javascript">
             var updateInfo = function() {
                 //alert(chiamata funzione update profile);
@@ -1060,24 +1184,23 @@
 
   <!-- CALENDAR SETTINGS Madal(4)-->
   <script type="text/javascript">
-            var manageCalendar = function(a, b) {
-                //alert("chiamata funzione impostazion calendario");
-                modal(4);
-                document.getElementById("calendarNm").innerHTML = a
-                        + " settings";
+		var manageCalendar = function(a, b) {
+			//alert("chiamata funzione impostazion calendario");
+			modal(4);
+			document.getElementById("calendarNm").innerHTML = a + " settings";
 
-            }
-        </script>
+		}
+	</script>
 
   <script type="text/javascript">
-            var closeMadal4 = function() {
-                //	alert("chiamata funzione impostazion calendario");
-                var a = document.getElementById("newNameCalndar").value;
+		var closeMadal4 = function() {
+			//	alert("chiamata funzione impostazion calendario");
+			var a = document.getElementById("newNameCalndar").value;
 
-                document.getElementById('modal-wrapper4').style.display = 'none';
+			document.getElementById('modal-wrapper4').style.display = 'none';
 
-            }
-        </script>
+		}
+	</script>
 
   <!-- jQuery CDN -->
   <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
@@ -1085,12 +1208,12 @@
   <script
     src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script type="text/javascript">
-            $(document).ready(function() {
-                $('#sidebarCollapse').on('click', function() {
-                    $('#sidebar').toggleClass('active');
-                    $(this).toggleClass('active');
-                });
-            });
-        </script>
+		$(document).ready(function() {
+			$('#sidebarCollapse').on('click', function() {
+				$('#sidebar').toggleClass('active');
+				$(this).toggleClass('active');
+			});
+		});
+	</script>
 </body>
 </html>
