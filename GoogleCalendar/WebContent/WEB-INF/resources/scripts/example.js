@@ -64,6 +64,10 @@ angular
     // Cell state, used by the view
     vm.cellIsOpen = true;
     
+    // calendar for modal
+    vm.calendarToUpd = undefined;
+    
+    
     // List of glyphs shown after entries in a day's event list,
     // with behavior
     var actions = [ {
@@ -74,8 +78,8 @@ angular
     }, {
         label : '<i class=\'glyphicon glyphicon-remove\'></i>',
         onClick : function(args) {
-            alert("delete");
-            alert(args.calendarEvent.id);
+         //   alert("delete");
+         // alert(args.calendarEvent.id);
             vm.deleteOccurrence(args.calendarEvent.id);
         },
     } ];
@@ -241,7 +245,7 @@ angular
                         + " <label>\n" 
                         + "      <i\n"
                         + "        class=\"glyphicon glyphicon-cog\"\n"
-                        + "        ng-click=\"vm.openCalendarView('"+title+"','"+calendar.id+"')\"\n"
+                        + "        ng-click=\"vm.openCalendarView('"+title+"','"+calendar.id+"','"+calendar.description+"')\"\n"
                         + "        style=\"margin-left: 80%;\">\n"
                         + "      </i>\n"
                         + "    </label>\n"
@@ -297,7 +301,7 @@ angular
             
             var x = title;
             title = x.replace(/'/g,"\\'");
-            alert(title);
+           // alert(title);
          
             
             string+="<li><a href=\"javascript:void(0)\" onclick=\"setCalendar('"+title+"','"+id+"')\"" +
@@ -349,8 +353,13 @@ angular
 
     
     vm.insertNewCalendarView = function () {
+    	
+    	
        var title = document.getElementById("nameCal").value;
        var description = document.getElementById("descrCalendar").value;
+       
+       console.log("insert new calenadar with title descr => "+title+" , "+description);
+       
        vm.insertNewCalendar(title, description);
        document.getElementById('modal-wrapper1').style.display = 'none';
        document.getElementById("nameCal").value = '';
@@ -358,15 +367,32 @@ angular
     };
 
     
-    vm.openCalendarView = function (title,id) {
+    vm.openCalendarView = function (title,id,description) {
         // TO DO open modal update Calendar
     	document.getElementById("calendarNm").innerHTML = title;
-    	document.getElementById("calendarID").setAttribute(id);
+    	
+    	vm.calendarToUpd = {
+    		id : id,
+    		title: title,
+    		description : description
+    	}
+     
     	modal(4);
     };
     
     vm.updateCalendarView = function(title,description){
+    	 
+    	console.log("update calendar with id,title,descr=> "+vm.calendarToUpd.id, vm.calendarToUpd.title, vm.calendarToUpd.description);
     	
+    	vm.updateCalendar(vm.calendarToUpd.id, vm.calendarToUpd.title, vm.calendarToUpd.description);
+    	
+    	document.getElementById('modal-wrapper4').style.display = 'none';
+    }
+    
+  	vm.deleteCalendarView = function(){
+    	
+    	console.log("Delete calendar with id => "+vm.calendarToUpd.id)
+    	vm.disconnectFromCalendar(vm.calendarToUpd.id);
     }
     
     
@@ -383,6 +409,7 @@ angular
         
         document.getElementById('modal-wrapper2').style.display = 'none';
         
+        console.log("update user with name  => "+name);
         
     };
         
@@ -1010,11 +1037,7 @@ angular
         // INSERTNEWEVENT
         vm.temp.clock = document.getElementById("TourId").value;
 
-        console.log("event inserted => " + idCalendar + " "
-                + vm.temp.title + " " + vm.temp.description
-                + " " + vm.temp.startsAt + " " + vm.temp.endsAt
-                + " " + vm.temp.color.primary + " "
-                + vm.temp.color.secondary);
+ 
 
         if (idCalendar != undefined) {
             vm.insertNewEvent(idCalendar, vm.temp.title,
@@ -1026,6 +1049,13 @@ angular
 
             resetClock();
             document.getElementById('modal-wrapper5').style.display = 'none';
+            
+            console.log("insert new event with (idC, title, descr, start, end , primcol , secondcol)");
+            console.log(idCalendar + " "
+                    + vm.temp.title + " " + vm.temp.description
+                    + " " + vm.temp.startsAt + " " + vm.temp.endsAt
+                    + " " + vm.temp.color.primary + " "
+                    + vm.temp.color.secondary);
 
         } else {
             alert("please choose a calendar");
@@ -1041,6 +1071,12 @@ angular
                 vm.temp.description, vm.temp.startsAt,
                 vm.temp.endsAt, vm.temp.color.primary,
                 vm.temp.color.secondary);
+        
+        console.log("update event with id "+vm.temp.id+" title, descr, start, end , primcol , secondcol");
+        console.log(vm.temp.title + " " + vm.temp.description
+                + " " + vm.temp.startsAt + " " + vm.temp.endsAt
+                + " " + vm.temp.color.primary + " "
+                + vm.temp.color.secondary);
 
         resetClock();
         document.getElementById('modal-wrapper6').style.display = 'none';

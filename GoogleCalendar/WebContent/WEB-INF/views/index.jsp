@@ -490,7 +490,14 @@
             type="text"
             placeholder="Change Calendar Name"
             name="uname"
-            id="calendarID">
+            ng-model="vm.calendarToUpd.title"
+            id="newNameCalndar">
+            
+            <textarea
+            rows="4"
+            placeholder="DescrCalendar"
+            id="descrCalendarUpd"
+            ng-model = "vm.calendarToUpd.description"></textarea>
           
           <div
             class="btn-group"
@@ -553,7 +560,7 @@
               type="button"
               id="btn-upCalendar"
               class="btn btn-info navbar-btn"
-              onclick="vm.updateCalendarView()"
+              ng-click="vm.updateCalendarView()"
               style="background: #42A5F5;">
               <span><strong>Update Calendar</strong></span>
             </button>
