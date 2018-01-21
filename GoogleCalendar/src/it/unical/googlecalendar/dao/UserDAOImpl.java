@@ -15,14 +15,12 @@ import it.unical.googlecalendar.dao.UserDAO;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.User;
 
-
 @Repository
 public class UserDAOImpl implements UserDAO {
 
-
-@Autowired	
+	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	public UserDAOImpl() {
 
 	}
@@ -31,7 +29,7 @@ public class UserDAOImpl implements UserDAO {
 	public boolean save(User user) {
 
 		Session session = sessionFactory.openSession();
-		boolean result=false;
+		boolean result = false;
 
 		Transaction tx = null;
 
@@ -39,12 +37,12 @@ public class UserDAOImpl implements UserDAO {
 			tx = session.beginTransaction();
 			session.save(user);
 			tx.commit();
-			result=true;
+			result = true;
 
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			tx.rollback();
-			result=false;
+			result = false;
 		}
 
 		session.close();
@@ -52,89 +50,123 @@ public class UserDAOImpl implements UserDAO {
 
 	}
 
+	@Override
 	public List<User> getAllUsers() {
 		Session session = sessionFactory.openSession();
 
-		//sql query
+		// sql query
 		List<User> result = session.createNativeQuery("SELECT * FROM user", User.class).list();
 
 		session.close();
 		return result;
 
 	}
-	
-	public boolean existsUser(String email, String password) {
+
+	@Override
+	public String existsUser(String email, String password) {
+		Session session = sessionFactory.openSession();
+		
+		// se la password non è null stai facendo un normale login
+		// sql query
+		User result;
+		Query q = session
+				.createQuery("SELECT u FROM User u WHERE u.email = :user_email");
+		q.setParameter("user_email", email);
+		result = (User) q.getSingleResult();
+
+		
+		if (result!=null)
+			{
+			if(result.getPassword()==null)//TODO: ti sei sempre loggato con fb quindi comunicare all utente di entrare cn fb e cambiare la password
+			{	session.close();
+			 return "SETPASSWORD";
+			 }
+			
+			else	if(result.getPassword().equals(password))
+			{
+				session.close();
+				return "TRUE";
+				}
+		}
+			return "FALSE"; //utente non registrato
+		
+		}
+
+	@Override
+	public boolean existsUserFB(String email) {
 		Session session = sessionFactory.openSession();
 
-		//sql query
+		// sql query
 		List<User> result;
-		Query q= session.createQuery("SELECT u FROM User u WHERE u.email = :user_email and u.password = :user_password");
-		q.setParameter("user_email", email).setParameter("user_password", password);
-		result=q.getResultList();
+		Query q = session.createQuery("SELECT u FROM User u WHERE u.email = :user_email");
+		q.setParameter("user_email", email);
+		result = q.getResultList();
 
 		session.close();
-		if (result.size()==0)
-		return false;
-		else return true;
-	
+		if (result.size() == 0)
+			return false;
+		else
+			return true;
+
 	}
 
-	public String getUsernameByEmail(String email){
+	public String getUsernameByEmail(String email) {
 		Session session = sessionFactory.openSession();
 
-		//sql query
-		List<String>result = session.createQuery("SELECT u.username FROM User u where u.email= :user_email").setParameter("user_email",email).getResultList();
+		// sql query
+		List<String> result = session.createQuery("SELECT u.username FROM User u where u.email= :user_email")
+				.setParameter("user_email", email).getResultList();
 
 		session.close();
-		if( result.size()>0)
-		return result.get(0);
-		else return null;
-		
+		if (result.size() > 0)
+			return result.get(0);
+		else
+			return null;
+
 	}
 
 	public int getIdByEmail(String email) {
 		Session session = sessionFactory.openSession();
 
-		//sql query
-		List<Integer>result = session.createQuery("SELECT u.id FROM User u where u.email= :user_email").setParameter("user_email",email).getResultList();
+		// sql query
+		List<Integer> result = session.createQuery("SELECT u.id FROM User u where u.email= :user_email")
+				.setParameter("user_email", email).getResultList();
 
 		session.close();
-		if(result.size()>0)
-		return result.get(0);
+		if (result.size() > 0)
+			return result.get(0);
 		return -1;
 	}
 
 	@Override
 	public boolean updateUserById(User u, String username, String password) {
 		Session session = sessionFactory.openSession();
-		
-		
-		boolean result=false;
-				Transaction tx = null;
 
-				try {
-					
-					tx = session.beginTransaction();
-					u.setUsername(username);
-					u.setPassword(password);
-					session.update(u);
-					tx.commit();
-					result=true;
-					
+		boolean result = false;
+		Transaction tx = null;
 
-				} catch (Exception e) {
-					result=false;
-					tx.rollback();
-				}
+		try {
 
-				session.close();
-return result;
+			tx = session.beginTransaction();
+			u.setUsername(username);
+			u.setPassword(password);
+			session.update(u);
+			tx.commit();
+			result = true;
+
+		} catch (Exception e) {
+			result = false;
+			tx.rollback();
+		}
+
+		session.close();
+		return result;
 	}
 
 	@Override
 	public boolean update(User user) {
 		Session session = sessionFactory.openSession();
-		boolean result=false;
+		boolean result = false;
 
 		Transaction tx = null;
 
@@ -142,56 +174,54 @@ return result;
 			tx = session.beginTransaction();
 			session.update(user);
 			tx.commit();
-			result=true;
+			result = true;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-			result=false;
+			result = false;
 		}
 
 		session.close();
 		return result;
-		
+
 	}
-	
+
 	@Override
-	public User getUserById(int u_id){
+	public User getUserById(int u_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		User result = session.get(User.class,u_id);
+		User result = session.get(User.class, u_id);
 
 		session.close();
 		return result;
-		
+
 	}
+
 	@Override
-	public User getUserByEmail(String email){
+	public User getUserByEmail(String email) {
 		Session session = sessionFactory.openSession();
-		//sql query
-				User result;
-				result=(User) session.createQuery("SELECT u FROM User u WHERE u.email = :user_email").setParameter("user_email", email).uniqueResult();
-				 
-
+		// sql query
+		User result;
+		result = (User) session.createQuery("SELECT u FROM User u WHERE u.email = :user_email")
+				.setParameter("user_email", email).uniqueResult();
 
 		session.close();
 		return result;
-		
+
 	}
-	
+
 	@Override
-	public List<String> searchEmail(String email){
+	public List<String> searchEmail(String email) {
 		Session session = sessionFactory.openSession();
-		//sql query
-				
-			List<String> result= session.createQuery("SELECT u.email FROM User u WHERE u.email like :user_email").setParameter("user_email", "%"+email+"%").getResultList();
-				 
+		// sql query
+
+		List<String> result = session.createQuery("SELECT u.email FROM User u WHERE u.email like :user_email")
+				.setParameter("user_email", "%" + email + "%").getResultList();
+
 		session.close();
 		return result;
 	}
-	
-	
-	
-	
+
 }

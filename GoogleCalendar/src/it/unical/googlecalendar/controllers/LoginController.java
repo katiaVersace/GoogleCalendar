@@ -33,13 +33,20 @@ public class LoginController {
 	public String loginAttempt(@RequestParam String email, @RequestParam String password, Model model,
 			HttpSession session) {
 
-		if (loginService.loginAttempt(email, password)) {
+		if (loginService.loginAttempt(email, password).equals("TRUE")) {
 			session.setAttribute("email", email);
 			session.setAttribute("username", loginService.getUsername(email));
 			session.setAttribute("user_id", loginService.getId(email));
+			
 			return "redirect:/index";
 		}
-
+		else if(loginService.loginAttempt(email, password).equals("SETPASSWORD"))
+		{System.out.println("Vai a loggarti cn fb e cambia la password");
+			model.addAttribute("SETPASSWORD", true);
+			loginService.showLoginForm(model);
+			return "login";
+		}
+		model.addAttribute("SETPASSWORD", false);
 		loginService.showLoginForm(model);
 		return "login";
 	}
@@ -64,6 +71,7 @@ public class LoginController {
 
 	}
 
+	
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
 		loginService.showLoginForm(model);
@@ -74,13 +82,20 @@ public class LoginController {
 	@RequestMapping("getFBData")
 	@ResponseBody
 	public String fbDataRequest(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
+		String emailFB = request.getParameter("email");
+		if (!loginService.existsUser(emailFB)) { 
 
-		String name = request.getParameter("name");
-		String email = request.getParameter("email");
-
-		session.setAttribute("username", name);
-		session.setAttribute("email", email);
-
+		if(	loginService.creaUtenteFB(emailFB, request.getParameter("name"))){
+			session.setAttribute("username", request.getParameter("name"));
+			session.setAttribute("email",emailFB);
+			session.setAttribute("user_id",loginService.getId(emailFB));
+			return "index";
+		}
+		else return "login";
+		}
+		session.setAttribute("username", loginService.getUsername(emailFB));
+		session.setAttribute("user_id", loginService.getId(emailFB));
+		session.setAttribute("email", emailFB);
 
 		return "index";
 
