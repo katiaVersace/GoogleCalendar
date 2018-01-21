@@ -40,6 +40,9 @@ angular
     // Events to be displayed
     vm.events = [];
     
+    // Memo storage, shown when memosToggled is true
+    vm.memoList = [];
+    
     // Calendars currently associated with the user
     vm.calendarsArray = [];
 
@@ -49,6 +52,9 @@ angular
     // Calendars currently checked on the sidebar, by id
     // Only used in conjunction with shownCalendars
     vm.checkedCalendars = [];
+    
+    // When false, memos are not shown
+    vm.memosToggled = false;
     
     // Received notifications buffer
     vm.notifications = [];
@@ -197,6 +203,11 @@ angular
                         blueprint.secondaryColor
                     ));
                 });
+                
+                if (memosToggled) {
+                    vm.events = vm.events.concat(memosList);
+                }
+                
                 // Needed for asynchronous update of vm.events
                 $scope.$digest();
             });
@@ -241,7 +252,27 @@ angular
         });
      };
     
+    vm.updateMemoList = function () {
+        vm.memoList = [];
+        vm.JSON_getMyMemos(function (memos) {
+            JSON.parse(memos).foreach(function (blueprint) {
+                vm.memoList.push(new vm.Memo(
+                    blueprint.id,
+                    blueprint.title,
+                    blueprint.description,
+                    blueprint.primaryColor,
+                    blueprint.creationDate
+                ));
+            });
+            vm.updateEventList();
+        });
+    };
     
+    vm.purgeMemos = function () {
+        vm.events = vm.events.filter(function (item) {
+            return item.memo == false;
+        });
+    };
     
     // Update the list of calendars displayed within the Modal
     vm.updateCalendarListModal = function () {
@@ -359,6 +390,17 @@ angular
         vm.updateEventList();
     };
     
+    // Hide/Show memos
+    vm.toggleMemos = function () {
+        if (memosToggled) {
+            vm.purgeMemos();
+        } else {
+            vm.updateMemoList();
+        }
+        
+        memosToggled = !memosToggled;
+    };
+    
     // Update event list when
     vm.viewModifierBehavior = function () {
         vm.cellIsOpen = false;
@@ -393,6 +435,19 @@ angular
         $.ajax({
             type: "POST",
             url: "JSON_getAllMyCalendars",
+            success: function (response) {
+                callback(response);
+            },
+        });
+    };
+    
+    /*
+     * JSON_getMyMemos
+     */
+    vm.JSON_getMyMemos = function (callback) {
+        $.ajax({
+            type: "POST",
+            url: "JSON_getMyMemos",
             success: function (response) {
                 callback(response);
             },
@@ -536,7 +591,6 @@ angular
     
     /*
      * insertNewMemo
-     * TODO: test me
      */
     vm.insertNewMemo = function (title, description, date, color) {
         $.ajax({
@@ -548,15 +602,14 @@ angular
                 data: date,
                 c1: color,
             },
-            success: function () {
-                // TODO
+            success: function (response) {
+                vm.updateMemoList();
             },
         });
     };
     
     /*
      * updateMemo
-     * TODO: test me
      */
     vm.updateMemo = function (memo_id, title, description, date, color) {
         $.ajax({
@@ -568,22 +621,21 @@ angular
                 data: date,
                 c1: color,
             },
-            success: function () {
-                // TODO
+            success: function (response) {
+                vm.updateMemoList();
             },
         });
     };
     
     /*
      * deleteMemoById
-     * TODO: test me
      */
     vm.deleteMemoById = function ( /* ... */ ) {
         $.ajax({
             type: "POST",
             url: "deleteMemo/" + memo_id,
-            success: function () {
-                // TODO
+            success: function (response) {
+                vm.updateMemoList();
             },
         });
     };
