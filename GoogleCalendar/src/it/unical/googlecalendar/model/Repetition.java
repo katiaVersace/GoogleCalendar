@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,7 @@ import javax.persistence.UniqueConstraint;
 import com.google.gson.annotations.Expose;
 
 @Entity
+@Embeddable
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"repetition_id"})})
 public class Repetition  {
 	
@@ -45,6 +47,13 @@ public class Repetition  {
 	@JoinColumn(name = "exception_id",nullable = false)
 	private List<EventException> exceptions;
 
+	@Column
+	@Expose
+	private Date startTime;
+	
+	@Column
+	@Expose
+	private String endTime;
 	
 	
 	public Repetition(){
