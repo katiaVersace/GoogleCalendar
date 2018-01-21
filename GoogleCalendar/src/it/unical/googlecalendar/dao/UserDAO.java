@@ -21,6 +21,8 @@ public interface UserDAO {
 
 	User getUserById(int u_id);
 
+	List<String> searchEmail(String email);
+
 	
 	
 	

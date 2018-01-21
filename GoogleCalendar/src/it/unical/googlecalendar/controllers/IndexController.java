@@ -1,9 +1,8 @@
 package it.unical.googlecalendar.controllers;
 
 
-import java.awt.Color;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import it.unical.googlecalendar.services.DbService;
 
@@ -203,4 +200,31 @@ public class IndexController {
 		return gson.toJson(dbService.getMyEventsInPeriod((String) session.getAttribute("email"),
 				Integer.parseInt(calendar_id), start, end));
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+     @RequestMapping(value = "/searchEmail", method = RequestMethod.GET)
+    @ResponseBody
+    public List getEmailUsers( @RequestParam("term") String emailToSearch) {
+    	 
+    	 List result = dbService.searchEmail(emailToSearch);
+         return result;
+    }
+    
+    
 }

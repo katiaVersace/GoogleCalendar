@@ -177,4 +177,33 @@ public class DbService {
 	public List<Occurrence> getMyEventsInPeriod(String email, int calendar_id, String start, String end) {
 		return odao.getOccurrenceByEmailInPeriod(email, calendar_id, start, end);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	public List<String> searchEmail(String emailToSearch) {
+		return udao.searchEmail(emailToSearch);
+	}
+    
+
+
+
+
+
+
+
 }

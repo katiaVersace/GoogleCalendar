@@ -112,8 +112,8 @@
 						<ul class="nav navbar-nav navbar-right">
 							<li><a href="#" style="color: #337ab7; font-size: 20px;">${username}</a></li>
 							  <div class="btn-group">
-								<a href="#" ng-click="vm.updateNotifications()" type="button" class="btn btn-primary dropdown-toggle"
-									data-toggle="dropdown" aria-haspopup="true"
+								<a id="notificationDropDown"href="#" ng-click="vm.updateNotificationsView()" type="button" class="btn btn-primary dropdown-toggle"
+									data-toggle="null" aria-haspopup="true"
 									aria-expanded="false">
 									<i class="glyphicon glyphicon-bell"></i>
 									<span class="caret"></span>
