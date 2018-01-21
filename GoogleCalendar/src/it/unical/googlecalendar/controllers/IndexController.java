@@ -174,6 +174,8 @@ public class IndexController {
         return dbService.sendInvitation((Integer) session.getAttribute("user_id"), receiver_email,
                 Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
     }
+    
+    //TODO answer invitation
 
     /*
      * deleteMemoById
@@ -311,9 +313,7 @@ public class IndexController {
     	Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     	
     	if(((Integer) session.getAttribute("user_id")) != null) {
-    		String toSend = gson.toJson("data: " + dbService.getUnsentNotifications((Integer) session.getAttribute("user_id"))) + "\n\n";
-    		System.out.println(toSend);
-        	writer.write(toSend);
+        	writer.write("data: " + gson.toJson(dbService.getUnsentNotifications((Integer) session.getAttribute("user_id"))) + "\n\n");
         	writer.flush();
     	}
     	writer.close();
