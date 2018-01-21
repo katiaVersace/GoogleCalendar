@@ -105,30 +105,48 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public boolean updateUserById(User u, String username, String password) {
+	public String updateUserById(User u, String username, String oldPassword, String newPassword) {
 		Session session = sessionFactory.openSession();
-		
-		
-		boolean result=false;
-				Transaction tx = null;
-
-				try {
+				
+				String oldPssDb = u.getPassword();
+				
+				String  result="";
+				Transaction tx = null;	
 					
+				try {
+					if(oldPassword.equals(oldPssDb) &&  !newPassword.isEmpty() && !username.isEmpty()){			
 					tx = session.beginTransaction();
 					u.setUsername(username);
-					u.setPassword(password);
+					u.setPassword(newPassword);
 					session.update(u);
 					tx.commit();
-					result=true;
+					result="User update successfully";
+					}
+					else if(oldPassword.isEmpty() && !username.isEmpty()){
+						tx = session.beginTransaction();
+						u.setUsername(username);
+						session.update(u);
+						tx.commit();
+						result = "Username changed successfully";	
+					}
+					else if(username.isEmpty() && oldPassword.equals(oldPssDb)){
+						tx = session.beginTransaction();
+						u.setPassword(newPassword);
+						session.update(u);
+						tx.commit();
+						result = "Password changed successfully";	
+					}
+					else{
+					result = "Old Password not mach"; 
+					}
 					
-
+					
 				} catch (Exception e) {
-					result=false;
+					result="Error";
 					tx.rollback();
 				}
-
 				session.close();
-return result;
+				return result;
 	}
 
 	@Override
@@ -161,7 +179,7 @@ return result;
 
 		// sql query
 		User result = session.get(User.class,u_id);
-
+			
 		session.close();
 		return result;
 		
@@ -181,6 +199,7 @@ return result;
 		
 	}
 	
+
 	@Override
 	public List<String> searchEmail(String email){
 		Session session = sessionFactory.openSession();
@@ -194,3 +213,4 @@ return result;
 		return result;
 	}	
 }
+

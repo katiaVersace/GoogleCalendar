@@ -28,6 +28,9 @@
 <script src="https://unpkg.com/rrule@2"></script>
 <script src="https://unpkg.com/angular-bootstrap-colorpicker@3"></script>
 <script src="https://unpkg.com/angular-bootstrap-calendar"></script>
+
+
+
 <link
   href="https://unpkg.com/bootstrap@3/dist/css/bootstrap.css"
   rel="stylesheet">
@@ -38,10 +41,16 @@
   href="https://unpkg.com/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css"
   rel="stylesheet">
 
+
+<!--   ***************************************************************************************************************************** -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> 
+
 <script src="resources/scripts/example.js"></script>
 
 <script src="resources/scripts/openModal.js"></script>
 <script src="resources/scripts/dropDownMenu.js"></script>
+
+
 
 <style type="text/css">
 .clicked-cell {
@@ -70,6 +79,11 @@
   type="text/css"
   href="resources/css/popup.css">
 
+
+
+
+
+<link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
 </head>
 <body data-ng-controller="KitchenSinkCtrl as vm">
   <div class="wrapper">
@@ -113,7 +127,7 @@
                             <li><a href="#">Page 3</a></li> -->
           </ul></li>
 
-        <li><a onclick="modal('2')"> <i
+        <li><a onclick="openModalType2()"> <i
             class="glyphicon glyphicon-user"></i> Update profile
         </a></li>
         <li><a onclick="modal('3')"> <i
@@ -166,32 +180,6 @@
                   class="dropdown-menu scrollable-menu"
                   id="ulNotifications"></div>
               </div>
-
-
-
-              <!-- <div class="btn-group" style="float: right;">
-								<button type="button" class="btn btn-primary dropdown-toggle"
-									data-toggle="dropdown" aria-haspopup="true"
-									aria-expanded="false">
-									<i style="font-size: 25px; color: white;"
-										class="glyphicon glyphicon-bell"></i> <span class="caret"></span>
-								</button>
-								<input type="text"
-									style="font-size: 15px; width: 80px; height: 40px;" id="TourId"
-									value="none" class="form-control"></input>
-								<div class="dropdown-menu scrollable-menu" id="ulGenres">
-									<li><a href="javascript:void(0)" onclick="addClock(0)"
-										class="clocks" data-id="0">At event time</a></li>
-									<li><a href="javascript:void(0)" onclick="addClock(10)"
-										class="clocks" data-id="10">10 min first</a></li>
-									<li><a href="javascript:void(0)" onclick="addClock(20)"
-										class="clocks" data-id="20">20 min first</a></li>
-									<li><a href="javascript:void(0)" onclick="addClock(30)"
-										class="clocks" data-id="30">30 min first</a></li>
-									<li><a href="javascript:void(0)" onclick="addClock(-1)"
-										class="clocks" data-id="none">none</a></li>
-								</div>
-							</div> -->
 
               <li>
                 <form action="logout">
@@ -293,7 +281,6 @@
                       <i
                         style="font-size: 16px; color: white;"
                         class="glyphicon glyphicon-pushpin"></i> Add Memo
-                    </button>
 
                   </div>
                 </div>
@@ -501,12 +488,57 @@
         <div class="modal-content">
           <input
             type="text"
-            placeholder="Change Name"
+            placeholder="Change Calendar Name"
             name="uname"
             id="newNameCalndar">
-          <!--<input type="text" placeholder="Old Password" name="uname" >
-    				 <input type="password" placeholder="New Password" name="psw" >
-    				  -->
+          
+          <div
+            class="btn-group"
+            style="float: right;">
+            <button
+              type="button"   class="btn btn-primary dropdown-toggle"
+              data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <i
+                style="font-size: 25px; color: white;"
+                class="glyphicon glyphicon-equalizer"></i> <span class="caret"></span>
+            </button>
+            <input
+              type="text"
+              style="font-size: 15px; width: 150px; height: 40px;"
+              id="TourId3"
+              value="none"
+              class="form-control"></input>
+            <div
+              class="dropdown-menu scrollable-menu"
+              id="ulGenres">
+              <li><a
+                href="javascript:void(0)"
+                onclick="addPermission('Admin')"
+                class="clocks"
+                data-id="Admin">Admin</a></li>
+              <li><a
+                href="javascript:void(0)"
+                onclick="addPermission('Reader&Writer')"
+                class="clocks"
+                data-id="reader&writer">Reader&Writer</a></li>
+              <li><a
+                href="javascript:void(0)"
+                onclick="addPermission('Reader')"
+                class="clocks"
+                data-id="reader">Reader</a></li>
+               </div>
+          </div>
+          
+
+
+			<div class="row-fluid">
+       		<input ng-keyup="onKeyUP($event)" type="text" style="width: 40%; height: 90%;" id = "userChoice" placeholder="search user">
+       		<fieldset id="userListModal">
+      		</fieldset>  
+    		</div>
+		
+			 
           <div style="text-align: center;">
             <button
               type="button"
@@ -526,7 +558,7 @@
               <span><strong>Update Calendar</strong></span>
             </button>
           </div>
-        </div>
+        
       </form>
     </div>
   </div>
@@ -560,9 +592,7 @@
           style="width: 90%;">
 
 
-          <div
-            class="btn-group"
-            style="float: right;">
+          <div class="btn-group" style="float: right;">
             <button
               type="button"
               class="btn btn-primary dropdown-toggle"
@@ -703,11 +733,12 @@
               </div>
               <div style="text-align: center;">
 
-                <textarea
-                  rows="2"
-                  placeholder="Description"
-                  id="descEvent"
-                  ng-model="vm.temp.descr"></textarea>
+
+              <textarea
+                rows="2"
+                placeholder="Description"
+                id="descEvent"
+                ng-model="vm.temp.description"></textarea>
 
                 <button
                   type="button"
@@ -759,83 +790,73 @@
           class="modal-content"
           style="width: 90%;">
 
-          <div>
+
+       <div>
 
 
-            <tbody>
-              <td><input
-                type="text"
-                class="form-control"
-                ng-model="vm.temp.title"></td>
-              <td><input
-                class="form-control"
-                colorpicker
-                type="text"
-                ng-model="vm.temp.color.primary"></td>
-              <td><input
-                class="form-control"
-                colorpicker
-                type="text"
-                ng-model="vm.temp.color.secondary"></td>
-              <td>
-                <p class="input-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    readonly
-                    uib-datepicker-popup="dd MMMM yyyy"
-                    ng-model="vm.temp.startsAt"
-                    is-open="vm.temp.startOpen"
-                    close-text="Close"> <span class="input-group-btn">
-                    <button
-                      type="button"
-                      class="btn btn-default"
-                      ng-click="vm.toggle($event, 'startOpen', vm.temp)">
-                      <i class="glyphicon glyphicon-calendar"></i>
-                    </button>
-                  </span>
-                </p>
-                <div
-                  uib-timepicker
-                  ng-model="vm.temp.startsAt"
-                  hour-step="1"
-                  minute-step="15"
-                  show-meridian="false"></div>
-              </td>
-              <td>
-                <p class="input-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    readonly
-                    uib-datepicker-popup="dd MMMM yyyy"
-                    ng-model="vm.temp.endsAt"
-                    is-open="vm.temp.endOpen"
-                    close-text="Close"> <span class="input-group-btn">
-                    <button
-                      type="button"
-                      class="btn btn-default"
-                      ng-click="vm.toggle($event, 'endOpen', vm.temp)">
-                      <i class="glyphicon glyphicon-calendar"></i>
-                    </button>
-                  </span>
-                </p>
-                <div
-                  uib-timepicker
-                  ng-model="vm.temp.endsAt"
-                  hour-step="1"
-                  minute-step="15"
-                  show-meridian="false"></div>
-              </td>
-            </tbody>
-            </table>
+
+       	<div
+            class="btn-group"
+            style="float: right;">
+          <button
+            type="button"
+            class="btn btn-primary dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false">
+            <i
+              style="font-size: 25px; color: white;"
+              class="glyphicon glyphicon-time"></i> <span class="caret"></span>
+          </button>
+          <input
+            type="text"
+            style="font-size: 15px; width: 80px; height: 40px;"
+            id="TourId2"
+            class="form-control"></input>
+          <div
+            class="dropdown-menu scrollable-menu"
+            id="ulGenres">
+            <li><a
+              href="javascript:void(0)"
+              onclick="updateClock(0)"
+              class="clocks"
+              data-id="0">At event time</a></li>
+            <li><a
+              href="javascript:void(0)"
+              onclick="updateClock(10)"
+              class="clocks"
+              data-id="10">10 min first</a></li>
+            <li><a
+              href="javascript:void(0)"
+              onclick="updateClock(20)"
+              class="clocks"
+              data-id="20">20 min first</a></li>
+            <li><a
+              href="javascript:void(0)"
+              onclick="updateClock(30)"
+              class="clocks"
+              data-id="30">30 min first</a></li>
+            <li><a
+              href="javascript:void(0)"
+              onclick="updateClock(-1)"
+              class="clocks"
+              data-id="none">none</a></li>
+
           </div>
-          <div style="text-align: center;">
-            <textarea
-              rows="2"
-              placeholder="Description"
-              id="descEvent"
-              ng-model="vm.temp.descr"></textarea>
+
+          </div>
+              
+          <div id="event_tmp">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Primary color</th>
+                    <th>Secondary color</th>
+                    <th>Starts at</th>
+                    <th>Ends at</th>
+                  </tr>
+                </thead>
 
 
 
@@ -979,19 +1000,45 @@
                       <div
                         uib-timepicker
                         ng-model="vm.temp.endsAt"
-                        hour-step="1"
-                        minute-step="15"
-                        show-meridian="false"></div>
-                    </td>
-                  </tbody>
-                </table>
-              </div>
-              <div style="text-align: center;">
-                <textarea
-                  rows="2"
-                  placeholder="Description"
-                  id="descEvent"
-                  ng-model="vm.temp.descr"></textarea>
+                        is-open="vm.temp.endOpen"
+                        close-text="Close"> <span
+                        class="input-group-btn">
+                        <button
+                          type="button"
+                          class="btn btn-default"
+                          ng-click="vm.toggle($event, 'endOpen', vm.temp)">
+                          <i class="glyphicon glyphicon-calendar"></i>
+                        </button>
+                      </span>
+                    </p>
+                    <div
+                      uib-timepicker
+                      ng-model="vm.temp.endsAt"
+                      hour-step="1"
+                      minute-step="15"
+                      show-meridian="false"></div>
+                  </td>
+                </tbody>
+              </table>
+            </div>
+            <div style="text-align: center;">
+              <textarea
+                rows="2"
+                placeholder="Description"
+                id="descEvent"
+                ng-model="vm.temp.description"></textarea>
+              
+              
+           
+              
+              <!-- TASTO CHE STA NEL MODAL -->
+              <button
+                type="button"
+                id="upEvent"
+                ng-click="vm.updateEventView()"
+                class="btn btn-info navbar-btn"
+                style="background: #42A5F5">
+                <span><strong>Update Event</strong></span>
 
 
 
@@ -1073,7 +1120,7 @@
                 rows="2"
                 placeholder="Description"
                 id="descMemo"
-                ng-model="vm.memo.descr"></textarea>
+                ng-model="vm.memo.description"></textarea>
             </div>
 
             <button
@@ -1143,7 +1190,7 @@
                 rows="2"
                 placeholder="Description"
                 id="descMemo"
-                ng-model="vm.memo.descr"></textarea>
+                ng-model="vm.memo.description"></textarea>
             </div>
 
             <button
@@ -1160,26 +1207,14 @@
     </div>
   </div>
 
-  <!-- ADD CALENDAR Madal(1)-->
-  <!--   <script type="text/javascript">
-            var addCalendar = function() {
-                //alert("chiamata f add");
-                
-            }
-        </script> -->
-
-
-  <!--   <!-- UPDATE PROFILE Madal(2)
-  <script type="text/javascript">
-            var updateInfo = function() {
-                //alert(chiamata funzione update profile);
-                var name = document.getElementById("naM").value;
-                var oP = document.getElementById("oldP").value;
-                var nP = document.getElementById("newP").value;
-
-                document.getElementById('modal-wrapper2').style.display = 'none';
-            }
-        </script> -->
+ <script type="text/javascript">
+ var openModalType2 = function() {
+	  var name = document.getElementById("nameUser").value = '';
+      var oldP = document.getElementById("oldP").value = '';
+      var newP = document.getElementById("newP").value = '';
+	  modal(2);	
+ }
+</script> 
 
 
   <!-- CALENDAR SETTINGS Madal(4)-->
@@ -1199,21 +1234,32 @@
 
 			document.getElementById('modal-wrapper4').style.display = 'none';
 
-		}
-	</script>
 
-  <!-- jQuery CDN -->
+            }
+        </script>
+        
+
+ <!-- jQuery CDN -->
   <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-  <!-- Bootstrap Js CDN -->
+ <!-- Bootstrap Js CDN -->
   <script
     src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript">
-		$(document).ready(function() {
-			$('#sidebarCollapse').on('click', function() {
-				$('#sidebar').toggleClass('active');
-				$(this).toggleClass('active');
-			});
-		});
-	</script>
+
+<!--   ***************************************************************************************************************************** -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script> -->
+
+
+
+<script type="text/javascript">
+            $(document).ready(function() {
+                $('#sidebarCollapse').on('click', function() {
+                    $('#sidebar').toggleClass('active');
+                    $(this).toggleClass('active');
+                });
+            });
+</script>
+         
 </body>
 </html>

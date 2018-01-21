@@ -1,7 +1,6 @@
 // --------------------------- //
 // -- MERGE MARIO MARCO [0] -- //
 // --------------------------- //
-
 var imported = document.createElement('script');
 imported.src = 'resources/scripts/openModal.js';
 document.head.appendChild(imported);
@@ -204,8 +203,8 @@ angular
                     ));
                 });
                 
-                if (memosToggled) {
-                    vm.events = vm.events.concat(memosList);
+                if (vm.memosToggled) {
+                    vm.events = vm.events.concat(vm.memosList);
                 }
                 
                 // Needed for asynchronous update of vm.events
@@ -392,13 +391,13 @@ angular
     
     // Hide/Show memos
     vm.toggleMemos = function () {
-        if (memosToggled) {
+        if (vm.memosToggled) {
             vm.purgeMemos();
         } else {
             vm.updateMemoList();
         }
         
-        memosToggled = !memosToggled;
+        vm.memosToggled = !vm.memosToggled;
     };
     
     // Update event list when
@@ -1122,4 +1121,81 @@ angular
     // ----------- //
     
     vm.fn = function () { };
+    
+    
+//    
+// // ----------------------------- //
+//  //-- PROVA PER RICERCA UTENTI -- //
+//  //-------------------------------//
+//  $scope.onKeyUP = function ($event) {
+//  	vm.manageInputString();
+//   };
+//     
+//  vm.manageInputString = function(){
+//  	
+//  	var strCurrent = document.getElementById('userChoice').value; 
+//    	console.log(strCurrent);  	
+//
+//    	
+//  vm.searchEmailInDb(strCurrent, function (x) {
+//  		var resp = JSON.parse(x);
+//  		console.log(JSON.stringify(resp,null,4));
+//  	    
+//  		vm.populateListOfUsername(resp);
+//
+//
+//  });
+//  	
+//  };
+//
+//
+//  vm.populateListOfUsername = function (resp){
+//  	    	
+//  	 var viewList = $("#userListModal");
+//       var contRespUser = 0;
+//       viewList.empty();
+//       var string =''; 
+//           string = "<div  class=\"btn-group\" >\n"
+//           +"<button type=\"button\" class=\"btn btn-primary dropdown-toggle\"" 
+//           +  "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\" style=\"margin-top:3px;\">"
+//           +"<i style=\"font-size: 25px; color: white;\"" 
+//           +  "class=\"glyphicon glyphicon-search\"></i> <span class=\"caret\"></span>"
+//           +"</button>"
+//           +"<ul class=\"dropdown-menu\">";
+//       
+//      
+//           resp.forEach(function(element) {
+//          	if(contRespUser<=10){ 
+//   			console.log(element);
+//   			string+="<li><a href=\"javascript:void(0)\" onclick=\"setUser('"+element+"')\"" +
+//              " class = \"calendars\" data-id=\" \">" +element+"</a></li>";                       
+//          	}
+//          	contRespUser++;
+//           	});
+//
+//           
+//           
+//
+//
+//        viewList.append(string);  
+//
+//  }
+//
+//
+//
+//
+//  vm.searchEmailInDb = function (email,callback) {
+//      $.ajax({
+//          type: "POST",
+//          url: "JSON_searchEmailInDb",
+//          data: {
+//          	emailToSearch:email,
+//          },
+//          success: function (response) {
+//          	callback(response);
+//          },
+//      });
+//  };
+//         
+
 });
