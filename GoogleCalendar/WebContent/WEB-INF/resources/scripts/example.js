@@ -245,33 +245,33 @@ angular
     
     // Update the list of calendars displayed within the Modal
     vm.updateCalendarListModal = function () {
-            var viewList = $("#calendarsListModal");
+        var viewList = $("#calendarsListModal");
+        
+        viewList.empty();
+        var string =''; 
+            string = "<div  class=\"btn-group\">\n"
+            +"<button type=\"button\" class=\"btn btn-primary dropdown-toggle\"" 
+            +  "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">"
+            +"<i style=\"font-size: 25px; color: white;\"" 
+            +  "class=\"glyphicon glyphicon-list-alt\"></i> <span class=\"caret\"></span>"
+            +"</button>"
+            +"<h4 id=\"ChoiceCalendar\" style=\"color: white; padding-left:120px;\"></h4>"
+            +"<ul class=\"dropdown-menu\">";
+        
+        for(i = 0;i< vm.calendarsArray.length;i++) {
             
-            viewList.empty();
-            var string =''; 
-                string = "<div  class=\"btn-group\">\n"
-                +"<button type=\"button\" class=\"btn btn-primary dropdown-toggle\"" 
-                +  "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">"
-                +"<i style=\"font-size: 25px; color: white;\"" 
-                +  "class=\"glyphicon glyphicon-list-alt\"></i> <span class=\"caret\"></span>"
-                +"</button>"
-                +"<h4 id=\"ChoiceCalendar\" style=\"color: white; padding-left:120px;\"></h4>"
-                +"<ul class=\"dropdown-menu\">";
+            var title = vm.calendarsArray[i].title;
+            var id = vm.calendarsArray[i].id;
             
-            for(i = 0;i< vm.calendarsArray.length;i++) {
-                
-                var title = vm.calendarsArray[i].title;
-                var id = vm.calendarsArray[i].id;
-                
-                var x = title;
-                title = x.replace(/'/g,"\\'");
-                alert(title);
-             
-                
-                string+="<li><a href=\"javascript:void(0)\" onclick=\"setCalendar('"+title+"','"+id+"')\"" +
-                    " class = \"calendars\" data-id=\"" + id+ "\">" +vm.calendarsArray[i].title+"</a></li>";
-                }
-            viewList.append(string);        
+            var x = title;
+            title = x.replace(/'/g,"\\'");
+            alert(title);
+         
+            
+            string+="<li><a href=\"javascript:void(0)\" onclick=\"setCalendar('"+title+"','"+id+"')\"" +
+                " class = \"calendars\" data-id=\"" + id+ "\">" +vm.calendarsArray[i].title+"</a></li>";
+            }
+        viewList.append(string);        
     };
     
     // add notifications to dropdown menu
@@ -328,7 +328,7 @@ angular
 
     
     vm.updateCalendarView = function (a,b) {
-            // TO DO open modal update Calendar
+        // TO DO open modal update Calendar
     };
     
     
@@ -768,6 +768,8 @@ angular
             
             if (received.length) {
                 vm.notifications = vm.notifications.concat(received.slice());
+                
+                // TODO btn notif red
             }
         };
     };
@@ -780,6 +782,9 @@ angular
             
             if (received.length) {
                 vm.invitations = vm.invitations.concat(received.slice());
+                
+                // TODO btn notif red
+
             }
         };
     };
