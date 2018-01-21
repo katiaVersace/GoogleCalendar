@@ -271,7 +271,7 @@ public class IndexController {
     }
     
     /*
-     * L'utente notifica che ha letto le notifiche
+     * deleteNotifications
      */
     @RequestMapping(value = "/deleteNotifications", method = RequestMethod.POST)
     @ResponseBody
@@ -281,6 +281,7 @@ public class IndexController {
 
     /*
      * JSON_getMyInvitations
+     * FIXME: useless?
      */
     @RequestMapping(value = "/JSON_getMyInvitations", method = RequestMethod.POST)
     @ResponseBody
@@ -330,6 +331,9 @@ public class IndexController {
         writer.close();
     }
     
+    /*
+     * SSE invitations subscription
+     */
     @RequestMapping(value = "/invitations")
     public void pushInvitations(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {

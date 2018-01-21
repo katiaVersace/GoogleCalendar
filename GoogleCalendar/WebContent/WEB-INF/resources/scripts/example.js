@@ -728,7 +728,6 @@ angular
         };
     };
     
-    // FIXME: do this on IndexController
     vm.SSEInvitationSubscription = function () {
         var eventSource = new EventSource("invitations");
         
@@ -749,8 +748,7 @@ angular
         vm.updateCalendarList();
         vm.resetSentStateOnMessages();
         vm.SSENotificationSubscription();
-        // FIXME: write interface on IndexController first
-        // vm.SSEInvitationSubscription();
+        vm.SSEInvitationSubscription();
     })();
     
     // --------------------------- //
