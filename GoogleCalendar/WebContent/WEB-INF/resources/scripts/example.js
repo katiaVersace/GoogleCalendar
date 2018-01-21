@@ -368,6 +368,23 @@ angular
     };
     
     /*
+     * JSON_searchEmailInDb
+     * FIXME: Giuseppe controlla se vabene questa perchè l'ha scritta katia
+     */
+    vm.JSON_searchEmailInDb = function (email,callback) {
+        $.ajax({
+            type: "POST",
+            url: "JSON_searchEmailInDb",
+            data: {
+               email:email,
+            },
+            success: function (response) {
+            	   callback(response);                
+            },
+        });
+    };
+    
+    /*
      * JSON_getMyInvitations
      * TODO: test me
      */

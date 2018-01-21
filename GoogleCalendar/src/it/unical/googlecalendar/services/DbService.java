@@ -246,6 +246,11 @@ public class DbService {
 		User u=udao.getUserById(user);
 		return ndao.deleteNotifications(u);
 	}
+
+
+	public List<String> searchEmail(String emailToSearch) {
+		return udao.searchEmail(emailToSearch);
+	}
     
     
 	
