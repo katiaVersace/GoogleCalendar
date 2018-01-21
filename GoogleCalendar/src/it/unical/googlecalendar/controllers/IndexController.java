@@ -317,6 +317,25 @@ public class IndexController {
         	writer.close();
     }
     
+    /*
+     * SSE invitations subscription
+     */
+    @RequestMapping(value = "/invitations")
+    public void doGetInvitations(HttpServletRequest request, HttpServletResponse response, HttpSession session) 
+            throws ServletException, IOException {
+        	response.setContentType("text/event-stream");
+        	response.setCharacterEncoding("UTF-8");
+        	
+        	PrintWriter writer = response.getWriter();
+        	Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        	
+        	if(((Integer) session.getAttribute("user_id")) != null) {
+            	writer.write("data: " + gson.toJson(dbService.getUnsentInvitations((Integer) session.getAttribute("user_id"))) + "\n\n");
+            	writer.flush();
+        	}
+        	writer.close();
+    }
+    
     //TODO: giuseppe aggiungi questo metodo
     @RequestMapping(value = "/JSON_searchEmailInDb", method = RequestMethod.POST)
     @ResponseBody

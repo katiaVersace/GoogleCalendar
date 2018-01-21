@@ -11,6 +11,8 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.google.gson.JsonElement;
+
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Invitation;
 import it.unical.googlecalendar.model.Notification;
@@ -277,6 +279,71 @@ public class InvitationDAOImpl implements InvitationDAO {
 	public boolean changePrivilegeOfInvitation() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<Invitation> getUnsentInvitationByUserId(int user_id) {
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		List<Invitation> result = session.createQuery("SELECT i FROM Invitation i where i.receiver.id= :user_id and i.sent is false")
+				.setParameter("user_id", user_id).getResultList();
+		
+		Transaction tx = null;
+		
+//TODO se nn funziona pulire cache
+		try {
+			tx = session.beginTransaction();
+			
+			for(Invitation inv:result){
+				inv.setSent(true);
+				
+				session.update(inv);
+			}
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			// e.printStackTrace();
+			tx.rollback();
+			
+		}
+
+
+		session.close();
+		return result;
+
+	}
+
+	@Override
+	public boolean resetSentStateByUserId(int user_id) {
+		Session session = sessionFactory.openSession();
+		boolean result = false;
+
+		Transaction tx = null;
+		List<Invitation> n = session.createQuery("SELECT i FROM Invitation i where i.receiver.id= :user_id ")
+				.setParameter("user_id", user_id).getResultList();
+//TODO se nn funziona pulire cache
+		try {
+			tx = session.beginTransaction();
+			
+			for(Invitation inv:n){
+				inv.setSent(false);
+				
+				session.update(inv);
+			}
+			
+			tx.commit();
+			result = true;
+
+		} catch (Exception e) {
+			// e.printStackTrace();
+			tx.rollback();
+			result = false;
+		}
+
+		session.close();
+		return result;
 	}
 
 	
