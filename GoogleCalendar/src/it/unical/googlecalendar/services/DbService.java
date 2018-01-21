@@ -235,6 +235,10 @@ public class DbService {
 		User u=udao.getUserById(user_id);
 		return mdao.getMemoByUserId(user_id);
 	}
+	
+	public List<String> searchEmail(String emailToSearch) {
+		return udao.searchEmail(emailToSearch);
+	}
     
     
 	

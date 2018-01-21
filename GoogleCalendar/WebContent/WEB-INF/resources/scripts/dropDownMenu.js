@@ -14,6 +14,13 @@ function updateClock(x) {
 	}
 }
 
+function addPermission(x) {
+	
+		document.getElementById('TourId3').value = x;
+}
+
+
+
 function resetClock() {
 	document.getElementById('TourId').value = "none";
 
@@ -23,3 +30,9 @@ function setCalendar(calendar,id){
 	document.getElementById('ChoiceCalendar').innerHTML = calendar;
 	document.getElementById('choiceId').value = id;
 }
+
+function setUser(user){
+	alert(user);
+	document.getElementById('userChoice').value = user;
+}
+

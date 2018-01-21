@@ -20,6 +20,20 @@ td.fc-today {
 
 }
 
+
+#block_container
+{
+    text-align:center;
+}
+#bloc1
+{
+    float : right;
+}
+#bloc2
+{
+    float : left;
+}
+
 .cal-week-box-cell{
 	display: none;
 }

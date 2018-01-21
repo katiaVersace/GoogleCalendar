@@ -28,6 +28,9 @@
 <script src="https://unpkg.com/rrule@2"></script>
 <script src="https://unpkg.com/angular-bootstrap-colorpicker@3"></script>
 <script src="https://unpkg.com/angular-bootstrap-calendar"></script>
+
+
+
 <link
   href="https://unpkg.com/bootstrap@3/dist/css/bootstrap.css"
   rel="stylesheet">
@@ -38,11 +41,17 @@
   href="https://unpkg.com/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css"
   rel="stylesheet">
 
+
+<!--   ***************************************************************************************************************************** -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> 
+
 <script src="resources/scripts/example.js"></script>
 <script src="resources/scripts/messages.js"></script>
 
 <script src="resources/scripts/openModal.js"></script>
 <script src="resources/scripts/dropDownMenu.js"></script>
+
+
 
 <style type="text/css">
 .clicked-cell {
@@ -71,6 +80,11 @@
   type="text/css"
   href="resources/css/popup.css">
 
+
+
+
+
+<link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
 </head>
 <body data-ng-controller="KitchenSinkCtrl as vm">
   <div class="wrapper">
@@ -255,7 +269,7 @@
                       <i
                         style="font-size: 16px; color: white;"
                         class="glyphicon glyphicon-pushpin"></i> Add Memo
-a
+
                   </div>
                 </div>
               </div>
@@ -463,12 +477,57 @@ a
         <div class="modal-content">
           <input
             type="text"
-            placeholder="Change Name"
+            placeholder="Change Calendar Name"
             name="uname"
             id="newNameCalndar">
-          <!--<input type="text" placeholder="Old Password" name="uname" >
-    				 <input type="password" placeholder="New Password" name="psw" >
-    				  -->
+          
+          <div
+            class="btn-group"
+            style="float: right;">
+            <button
+              type="button"   class="btn btn-primary dropdown-toggle"
+              data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              <i
+                style="font-size: 25px; color: white;"
+                class="glyphicon glyphicon-equalizer"></i> <span class="caret"></span>
+            </button>
+            <input
+              type="text"
+              style="font-size: 15px; width: 150px; height: 40px;"
+              id="TourId3"
+              value="none"
+              class="form-control"></input>
+            <div
+              class="dropdown-menu scrollable-menu"
+              id="ulGenres">
+              <li><a
+                href="javascript:void(0)"
+                onclick="addPermission('Admin')"
+                class="clocks"
+                data-id="Admin">Admin</a></li>
+              <li><a
+                href="javascript:void(0)"
+                onclick="addPermission('Reader&Writer')"
+                class="clocks"
+                data-id="reader&writer">Reader&Writer</a></li>
+              <li><a
+                href="javascript:void(0)"
+                onclick="addPermission('Reader')"
+                class="clocks"
+                data-id="reader">Reader</a></li>
+               </div>
+          </div>
+          
+
+
+			<div class="row-fluid">
+       		<input ng-keyup="onKeyUP($event)" type="text" style="width: 40%; height: 90%;" id = "userChoice" placeholder="search user">
+       		<fieldset id="userListModal">
+      		</fieldset>  
+    		</div>
+		
+			 
           <div style="text-align: center;">
             <button
               type="button"
@@ -488,7 +547,7 @@ a
               <span><strong>Update Calendar</strong></span>
             </button>
           </div>
-        </div>
+        
       </form>
     </div>
   </div>
@@ -522,9 +581,7 @@ a
           style="width: 90%;">
 
 
-          <div
-            class="btn-group"
-            style="float: right;">
+          <div class="btn-group" style="float: right;">
             <button
               type="button"
               class="btn btn-primary dropdown-toggle"
@@ -1080,19 +1137,52 @@ a
 
             }
         </script>
+        
+ 
 
-  <!-- jQuery CDN -->
+ <!-- jQuery CDN -->
   <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-  <!-- Bootstrap Js CDN -->
+ <!-- Bootstrap Js CDN -->
   <script
     src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript">
+
+<!--   ***************************************************************************************************************************** -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script> -->
+
+
+
+<script type="text/javascript">
             $(document).ready(function() {
                 $('#sidebarCollapse').on('click', function() {
                     $('#sidebar').toggleClass('active');
                     $(this).toggleClass('active');
                 });
             });
-        </script>
+</script>
+      
+      
+<!-- <script type="text/javascript">
+function isCharacterKeyPress(evt) {
+	alert(String.fromCharCode(evt.keyCode));
+    
+	if (typeof evt.which == "undefined") {
+	    // This is IE, which only fires keypress events for printable keys
+        return true;
+    } else if (typeof evt.which == "number" && evt.which > 0) {
+        // In other browsers except old versions of WebKit, evt.which is
+        // only greater than zero if the keypress is a printable key.
+        // We need to filter out backspace and ctrl/alt/meta key combinations
+        return !evt.ctrlKey && !evt.metaKey && !evt.altKey && evt.which != 8;
+    }
+    return false;
+}
+</script>        
+   -->       
+
+        
+
+       
 </body>
 </html>

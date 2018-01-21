@@ -33,6 +33,7 @@ public class LoginService {
 		udao.save(new User("ciccio@c.it", "ciccio", "ciccio"));
 		udao.save(new User("pippo@p.it", "pippo", "pippo"));
 		udao.save(new User("k@h.it", "Katia", "1234"));
+		udao.save(new User("kikk@h.it", "Katia", "1234"));
 
 	}
 
