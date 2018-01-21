@@ -175,7 +175,16 @@ public class IndexController {
                 Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
     }
     
-    //TODO answer invitation
+    /*
+     * answerInvitation
+     */
+    @RequestMapping(value = "/answerInvitation/{invitation_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String answerInvitation(HttpSession session,@RequestParam String answer,
+            @PathVariable("invitation_id") String invitation_id) {
+        return dbService.answerInvitation(Integer.parseInt(invitation_id), (Integer) session.getAttribute("user_id"), answer);
+    }
+    
 
     /*
      * deleteMemoById
@@ -336,7 +345,9 @@ public class IndexController {
         	writer.close();
     }
     
-    //TODO: giuseppe aggiungi questo metodo
+    /*
+     * JSON_searchEmailInDb
+     */
     @RequestMapping(value = "/JSON_searchEmailInDb", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_searchEmailInDb( @RequestParam String emailToSearch) {

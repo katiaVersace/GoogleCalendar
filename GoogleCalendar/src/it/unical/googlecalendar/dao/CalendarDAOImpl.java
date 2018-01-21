@@ -105,9 +105,9 @@ private Users_CalendarsDAOImpl ucdao;
 		Query query = session
 				.createQuery("SELECT uc.privileges FROM Users_Calendars uc WHERE uc.calendar.id = :calendar and uc.user.id = :user");
 		query.setParameter("user", user_id).setParameter("calendar", calendar_id);
-		List<String> result = query.getResultList();
+		String result = (String) query.getSingleResult();
 		session.close();
-		return result.get(0);
+		return result;
 	}
 
 	@Override

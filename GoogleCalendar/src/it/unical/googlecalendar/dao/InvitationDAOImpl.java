@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -80,15 +81,15 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 	}
 	
-	public int getSenderOfInvitationById(int invitation_id) {
+	public List<Integer> getSendersOfInvitationById(int invitation_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
 
-		int result =  (int) session.createQuery("SELECT i.senderId FROM Invitation i  WHERE i.id= :invitation_id").setParameter("invitation_id", invitation_id).uniqueResult();
-
+		Invitation result =  session.get(Invitation.class, invitation_id);
+		Hibernate.initialize(result.getSendersId());
 		session.close();
-		return result;
+		return result.getSendersId();
 
 	}
 
@@ -96,7 +97,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 	
 	
 	
-	public List<Invitation> getInvitationsByCalendarAndReceiver(int receiver_id, int calendar_id) {
+	public Invitation getInvitationByCalendarAndReceiver(int receiver_id, int calendar_id) {
 		Session session = sessionFactory.openSession();
 
 		// sql query
@@ -104,7 +105,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 				"SELECT i FROM Invitation i WHERE i.receiver.id= :user_id and i.calendar.id= :calendar_id");
 		query1.setParameter("user_id", receiver_id).setParameter("calendar_id", calendar_id);
 
-		List<Invitation> result = query1.getResultList();
+		Invitation result = (Invitation) query1.getSingleResult();
 		session.close();
 		return result;
 
@@ -124,7 +125,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 	}
 
-	public String getPriviledgeForInvitationsByCalendarAndReceiver(int receiver_id, int calendar_id) {
+	public String getPriviledgeForInvitationByCalendarAndReceiver(int receiver_id, int calendar_id) {
 		Session session = sessionFactory.openSession();
 		String result = null;
 		// sql query
@@ -132,15 +133,8 @@ public class InvitationDAOImpl implements InvitationDAO {
 				"SELECT i.privilege FROM Invitation i WHERE i.receiver.id= :user_id and i.calendar.id= :calendar_id");
 		query1.setParameter("user_id", receiver_id).setParameter("calendar_id", calendar_id);
 
-		List<String> resultList = query1.getResultList();
-		if (resultList.size() > 0) {
-			if (resultList.contains("ADMIN"))
-				result = "ADMIN";
-			else if (resultList.contains("RW")) {
-				result = "RW";
-			} else
-				result = "R";
-		}
+		result = (String) query1.getSingleResult();
+		
 
 		session.close();
 		return result;
@@ -151,25 +145,29 @@ public class InvitationDAOImpl implements InvitationDAO {
 	public boolean acceptInvitation(User u,Calendar c) {
 		boolean result = false;
 		Session session = sessionFactory.openSession();
-		String myPrivilege = getPriviledgeForInvitationsByCalendarAndReceiver(u.getId(), c.getId());
-		
+		String myPrivilege = getPriviledgeForInvitationByCalendarAndReceiver(u.getId(), c.getId());
 		if (myPrivilege != null)// signofica che non ho ricevuto inviti da
 								// accettare per questo calendario quindi esco
-		{	List<Invitation> invitationToDelete = getInvitationsByCalendarAndReceiver(u.getId(), c.getId());
+		{	Invitation invitationToDelete = getInvitationByCalendarAndReceiver(u.getId(), c.getId());
 			Transaction tx = null;
 			try {
+				
 				tx = session.beginTransaction();
 
 				// creo un'associazione tra l'utente e il calendario ed elimino
 				
 				Users_Calendars association = new Users_Calendars(u, c, myPrivilege, Color.CYAN, c.getTitle());
-			
-				for (Invitation inv : invitationToDelete) {
-					User sender=session.get(User.class,getSenderOfInvitationById(inv.getId()));
+				List<Integer>sen=getSendersOfInvitationById(invitationToDelete.getId());
+				
+				for (Integer senderInv : sen) {
+					User sender=session.get(User.class,senderInv);
+					
 					Notification acceptNotification=new Notification(sender,u.getUsername()+" accepted your invitation to calendar: "+c.getTitle());
-					session.delete(inv);
+
 					session.update(sender);
+					
 				}
+				session.delete(invitationToDelete);
 				
 				session.update(c);
 				session.update(u);
@@ -179,7 +177,6 @@ public class InvitationDAOImpl implements InvitationDAO {
 				result = true;
 
 			} catch (Exception e) {
-				
 				result = false;
 				tx.rollback();
 			}
@@ -195,18 +192,17 @@ public class InvitationDAOImpl implements InvitationDAO {
 	public boolean declineInvitation(User u, Calendar c) {
 		boolean result = false;
 		Session session = sessionFactory.openSession();
-		List<Invitation> invitationToDelete = getInvitationsByCalendarAndReceiver(u.getId(),c.getId());
-		if (invitationToDelete.size() > 0) {
+		Invitation invitationToDelete = getInvitationByCalendarAndReceiver(u.getId(),c.getId());
+		if (invitationToDelete!=null) {
 			Transaction tx = null;
 			try {
 				
 
 				tx = session.beginTransaction();
-
-				for (Invitation inv : invitationToDelete) {
+		
 					
-					session.delete(inv);
-				}
+					session.delete(invitationToDelete);
+				
 				// session.saveOrUpdate(association);
 				session.update(c);
 				session.update(u);
@@ -244,7 +240,6 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 			List<Users_Calendars> resultsId = query.getResultList();
 			if (resultsId.size() != 0) {
-
 				Users_Calendars uc = resultsId.get(0);
 
 				if (uc.getPrivileges().equals("ADMIN")) {
@@ -252,16 +247,30 @@ public class InvitationDAOImpl implements InvitationDAO {
 					Transaction tx = null;
 
 					try {
-
-						Invitation i = new Invitation(sender_id,receiverId.get(0) , calendar, privilege);
+						Query queryExistsInvitation = session.createQuery(
+								"SELECT i FROM Invitation i WHERE i.calendar.id= :calendar_id and i.receiver.id= :user_id");
+						queryExistsInvitation.setParameter("calendar_id", calendar.getId()).setParameter("user_id", receiver_id);
 						tx = session.beginTransaction();
+						//System.out.println("1");
+						
+						Invitation i;
+						//System.out.println("Dovrei entrare nel try"+receiver_email);
+						try {
+							
+							i= (Invitation) queryExistsInvitation.getSingleResult();
+							i.getSendersId().add(sender_id);
+							i.setPrivilege(privilege);
+							session.update(i);
+						}
+						catch (Exception e) {
+						i = new Invitation(sender_id,receiverId.get(0) , calendar, privilege);
 						session.save(i);
 						
+						}
 						tx.commit();
 
 						result = true;
-
-					}
+}
 
 					catch (Exception e) {
 						tx.rollback();
@@ -275,11 +284,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 		return result;
 	}
 
-	@Override
-	public boolean changePrivilegeOfInvitation() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 	@Override
 	public List<Invitation> getUnsentInvitationByUserId(int user_id) {
@@ -346,6 +351,17 @@ public class InvitationDAOImpl implements InvitationDAO {
 		return result;
 	}
 
+	@Override
+	public Invitation getInvitationById(int u_id) {
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		Invitation result = session.get(Invitation.class, u_id);
+
+		session.close();
+		return result;
+
+	}
 	
 
 }
