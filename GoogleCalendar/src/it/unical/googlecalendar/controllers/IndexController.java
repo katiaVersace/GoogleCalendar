@@ -174,8 +174,6 @@ public class IndexController {
                 Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
     }
     
-    //TODO answer invitation
-
     /*
      * deleteMemoById
      */
@@ -265,8 +263,7 @@ public class IndexController {
     @RequestMapping(value = "/resetSentStateOnMessages", method = RequestMethod.POST)
     @ResponseBody
     public String resetSentStateByUserId(HttpSession session) {
-    	 return dbService.resetSentState((Integer) session.getAttribute("user_id")) ? "YES"  : "NO";
-        
+        return dbService.resetSentState((Integer) session.getAttribute("user_id")) ? "YES"  : "NO";
     }
     
     /*

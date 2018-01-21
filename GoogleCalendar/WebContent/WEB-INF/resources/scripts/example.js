@@ -275,59 +275,44 @@ angular
     };
     
     // add notifications to dropdown menu
-    vm.updateNotificationsView = function () {
-        
+    vm.updateNotificationsView = function () { 
+        var viewList = $("#ulNotifications");
             
-             
-            var viewList = $("#ulNotifications");
+        // fill graphic vector with notifications and invitations
+        vm.notificationsView = vm.arrangeMessages();
             
+        if(vm.notificationsView.length){
+            document.getElementById("notificationDropDown").setAttribute("data-toggle", "dropdown"); 
+        } else {
+            document.getElementById("notificationDropDown").setAttribute("data-toggle", "null"); 
+        }
             
-            // fill graphic vector with notifications and invitations
-            vm.notificationsView = vm.arrangeMessages();
+        console.log("dentro drop down notifications ( notificationsView.length ==> "+vm.notificationsView.length+")");
             
-            if(vm.notificationsView.length){
-                 document.getElementById("notificationDropDown").setAttribute("data-toggle", "dropdown"); 
-            }else{
-             document.getElementById("notificationDropDown").setAttribute("data-toggle", "null"); 
-            }
-            
-            console.log("dentro drop down notifications ( notificationsView.length ==> "+vm.notificationsView.length+")");
-            
-            viewList.empty();
-            var string =''; 
+        viewList.empty();
+        var string =''; 
 
-
-            for(i = vm.notificationsView.length-1; i>=0;i--) {
+        for(i = vm.notificationsView.length-1; i>=0;i--) {
+            var id = vm.notificationsView[i].id;
+            var description = vm.notificationsView[i].description;
+            var timestamp = vm.notificationsView[i].timestamp;
                 
-                    var id = vm.notificationsView[i].id;
-                    var description = vm.notificationsView[i].description;
-                    var timestamp = vm.notificationsView[i].timestamp;
-                    
-                    console.log(vm.notificationsView[i]);
-                    console.log("\n");
-                    
-                    var x = description;
-                    description = x.replace(/'/g,"\\'");
-                    
-                    if(!vm.notificationsView[i].hasOwnProperty('senderID')) {
-                        
-                     // this is a simple notification
-        
-                        string+="<li><a href=\"javascript:void(0)\" class = \"calendars\" data-id=\"" + id+ "\">" +description+"</a></li>";
-                    
-                   }else{
-                       
-                       
-                       // this is a invitation TODO
-                   }
-
-
-                }
+            console.log(vm.notificationsView[i]);
+            console.log("\n");
+                
+            var x = description;
+            description = x.replace(/'/g,"\\'");
+                
+            if(!vm.notificationsView[i].hasOwnProperty('senderID')) {
+                // this is a simple notification
+                string+="<li><a href=\"javascript:void(0)\" class = \"calendars\" data-id=\"" + id+ "\">" +description+"</a></li>";
+            } else {    
+                // this is a invitation TODO
+            }
+        }
             
-            
-            viewList.append(string);        
-            
-            vm.deleteNotifications();
+        viewList.append(string);        
+        vm.deleteNotifications();
     };
 
     
@@ -751,11 +736,12 @@ angular
         });
     };
     
-    vm.answerInvitation = function (id, answer) {
+    vm.answerInvitation = function (invitation_id, answer) {
         $.ajax({
             type: "POST",
             url: "answerNotification",
             data: {
+                invitation_id: invitation_id,
                 answer: answer ? "accept" : "decline",
             },
             success: function (response) {
