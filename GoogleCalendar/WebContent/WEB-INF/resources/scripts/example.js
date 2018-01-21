@@ -782,6 +782,8 @@ angular
             
             if (received.length) {
                 vm.notifications = vm.notifications.concat(received.slice());
+                
+                // TODO btn notif red
             }
         };
     };
@@ -794,6 +796,9 @@ angular
             
             if (received.length) {
                 vm.invitations = vm.invitations.concat(received.slice());
+                
+                // TODO btn notif red
+
             }
         };
     };

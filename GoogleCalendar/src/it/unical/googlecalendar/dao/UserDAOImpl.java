@@ -180,16 +180,6 @@ return result;
 		
 	}
 	
-	@Override
-	public List<String> searchEmail(String email){
-		Session session = sessionFactory.openSession();
-		//sql query
-				
-			List<String> result= session.createQuery("SELECT u.email FROM User u WHERE u.email like :user_email").setParameter("user_email", "%"+email+"%").getResultList();
-				 
-		session.close();
-		return result;
-	}
 	
 	@Override
 	public List<String> searchEmail(String email){
