@@ -238,6 +238,9 @@ public class IndexController {
                 Integer.parseInt(calendar_id), start, end));
     }
 
+    /*
+     * JSON_getMyAlarms
+     */
     @RequestMapping(value = "/JSON_getMyAlarms", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_getMyAlarms(HttpSession session) {
@@ -258,15 +261,14 @@ public class IndexController {
     }
 
     /*
-     * JSON_getUnsentNotifications called by user at login
+     * resetSentStateByUserId
      */
-    @RequestMapping(value = "/resetSentStateByUserId", method = RequestMethod.POST)
+    @RequestMapping(value = "/resetSentStateOnMessages", method = RequestMethod.POST)
     @ResponseBody
     public String resetSentStateByUserId(HttpSession session) {
     	 return dbService.resetSentState((Integer) session.getAttribute("user_id")) ? "YES"  : "NO";
         
     }
-    
     
     /*
      * L'utente notifica che ha letto le notifiche
@@ -276,7 +278,6 @@ public class IndexController {
     public String deleteNotifications(HttpSession session) {
         return dbService.deleteNotifications((Integer) session.getAttribute("user_id")) ? "YES"  : "NO";
     }
-    
 
     /*
      * JSON_getMyInvitations
@@ -309,7 +310,7 @@ public class IndexController {
         	
         	PrintWriter writer = response.getWriter();
         	Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        	
+        	        	
         	if(((Integer) session.getAttribute("user_id")) != null) {
             	writer.write("data: " + gson.toJson(dbService.getUnsentNotifications((Integer) session.getAttribute("user_id"))) + "\n\n");
             	writer.flush();
@@ -317,7 +318,9 @@ public class IndexController {
         	writer.close();
     }
     
-    //TODO: giuseppe aggiungi questo metodo
+    /*
+     * JSON_searchEmailInDb
+     */
     @RequestMapping(value = "/JSON_searchEmailInDb", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_searchEmailInDb( @RequestParam String emailToSearch) {

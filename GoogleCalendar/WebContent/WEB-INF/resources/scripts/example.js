@@ -50,10 +50,10 @@ angular
     // Only used in conjunction with shownCalendars
     vm.checkedCalendars = [];
     
-    // Received notifications buffer (move in session)
+    // Received notifications buffer
     vm.notifications = [];
     
-    // Received invitations buffer (move in session)
+    // Received invitations buffer
     vm.invitations = [];
     
     // Cell state, used by the view
@@ -285,8 +285,6 @@ angular
 
     
     vm.updateCalendarView = function (a,b) {
-            alert(a);
-            alert(b);
             // TO DO open modal update Calendar
     };
     
@@ -409,7 +407,7 @@ angular
             type: "POST",
             url: "JSON_searchEmailInDb",
             data: {
-               email:email,
+               emailToSearch: email,
             },
             success: function (response) {
             	   callback(response);                
@@ -655,6 +653,16 @@ angular
     };
     
     /*
+     * resetSentStateOnMessages
+     */
+    vm.resetSentStateOnMessages = function () {
+        $.ajax({
+            type: "POST",
+            url: "resetSentStateOnMessages",
+        });
+    };
+    
+    /*
      * sendInvitation
      */
     vm.sendInvitation = function (calendar_id, email, privileges) {
@@ -715,7 +723,7 @@ angular
             var received = JSON.parse(event.data);
             
             if (received.length) {
-                vm.notifies = vm.notifies.concat(received.slice());
+                vm.notifications = vm.notifications.concat(received.slice());
             }
         };
     };
@@ -739,6 +747,7 @@ angular
     
     (function () {
         vm.updateCalendarList();
+        vm.resetSentStateOnMessages();
         vm.SSENotificationSubscription();
         // FIXME: write interface on IndexController first
         // vm.SSEInvitationSubscription();
