@@ -231,12 +231,12 @@
                       increment="vm.calendarView"
                       ng-click="vm.viewModifierBehavior()">Next</button>
 
-                    <!-- DEBUG BUTTON -->
+               <!--      DEBUG BUTTON
                     <button
                       class="btn btn-primary"
                       ng-click='vm.fn()'>DEBUG_1</button>
-                    <!-- /DEBUG BUTTON -->
-
+                    /DEBUG BUTTON
+ -->
                   </div>
                 </div>
 
@@ -490,7 +490,7 @@
             type="text"
             placeholder="Change Calendar Name"
             name="uname"
-            id="newNameCalndar">
+            id="calendarID">
           
           <div
             class="btn-group"
@@ -545,7 +545,7 @@
               id="btn-dlCalendar"
               class="btn btn-info navbar-btn"
               onclick="closeMadal4()"
-              ng-click="vm.deleteCalendar()"
+              ng-click="vm.deleteCalendarView()"
               style="background: #C62828;">
               <span><strong>Delete Calendar</strong></span>
             </button>
@@ -553,10 +553,11 @@
               type="button"
               id="btn-upCalendar"
               class="btn btn-info navbar-btn"
-              onclick="closeMadal4()"
+              onclick="vm.updateCalendarView()"
               style="background: #42A5F5;">
               <span><strong>Update Calendar</strong></span>
             </button>
+          </div>
           </div>
         
       </form>

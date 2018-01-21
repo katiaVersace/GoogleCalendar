@@ -129,8 +129,10 @@ angular
         this.calendar = undefined; // FIXME: insert memo calendar (or whatever)
         this.title = title;
         this.description = description;
-        this.startsAt = now; // graphical purposes only (renders it on the current day)
-        this.endsAt = now; // graphical purposes only (renders it on the current day)
+        this.startsAt = now; // graphical purposes only (renders it on the
+								// current day)
+        this.endsAt = now; // graphical purposes only (renders it on the
+							// current day)
         this.dateAdded = now; // date this memo was added/saved on db
         this.color = {
             primary: color,
@@ -239,7 +241,7 @@ angular
                         + " <label>\n" 
                         + "      <i\n"
                         + "        class=\"glyphicon glyphicon-cog\"\n"
-                        + "        ng-click=\"vm.updateCalendarView('"+title+"','"+calendar.id+"')\"\n"
+                        + "        ng-click=\"vm.openCalendarView('"+title+"','"+calendar.id+"')\"\n"
                         + "        style=\"margin-left: 80%;\">\n"
                         + "      </i>\n"
                         + "    </label>\n"
@@ -356,9 +358,16 @@ angular
     };
 
     
-    vm.updateCalendarView = function (a,b) {
+    vm.openCalendarView = function (title,id) {
         // TO DO open modal update Calendar
+    	document.getElementById("calendarNm").innerHTML = title;
+    	document.getElementById("calendarID").setAttribute(id);
+    	modal(4);
     };
+    
+    vm.updateCalendarView = function(title,description){
+    	
+    }
     
     
     vm.updateUserInformation = function() {
@@ -411,8 +420,8 @@ angular
     // -------------------------- //
     
     /*
-     * JSON_getMyEventsInPeriod    
-     */
+	 * JSON_getMyEventsInPeriod
+	 */
     vm.JSON_getMyEventsInPeriod = function (calendar_id, start, end, callback) {
         $.ajax({
             type: "POST",
@@ -428,8 +437,8 @@ angular
     };
     
     /*
-     * JSON_getAllMyCalendars
-     */
+	 * JSON_getAllMyCalendars
+	 */
     vm.JSON_getAllMyCalendars = function (callback) {
         $.ajax({
             type: "POST",
@@ -441,8 +450,8 @@ angular
     };
     
     /*
-     * JSON_getMyMemos
-     */
+	 * JSON_getMyMemos
+	 */
     vm.JSON_getMyMemos = function (callback) {
         $.ajax({
             type: "POST",
@@ -454,9 +463,8 @@ angular
     };
     
     /*
-     * JSON_getMyAlarms
-     * TODO: test me
-     */
+	 * JSON_getMyAlarms TODO: test me
+	 */
     vm.JSON_getMyAlarms = function (callback) {
         $.ajax({
             type: "POST",
@@ -468,9 +476,8 @@ angular
     };
     
     /*
-     * JSON_getAlarmForAnOccurrence
-     * TODO: test me
-     */
+	 * JSON_getAlarmForAnOccurrence TODO: test me
+	 */
     vm.JSON_getAlarmForAnOccurrence = function (occurrence_id, callback) {
         $.ajax({
             type: "POST",
@@ -482,9 +489,8 @@ angular
     };
     
     /*
-     * JSON_getMyNotifications
-     * TODO: test me
-     */
+	 * JSON_getMyNotifications TODO: test me
+	 */
     vm.JSON_getMyNotifications = function (callback) {
         $.ajax({
             type: "POST",
@@ -496,8 +502,8 @@ angular
     };
     
     /*
-     * JSON_searchEmailInDb
-     */
+	 * JSON_searchEmailInDb
+	 */
     vm.JSON_searchEmailInDb = function (email,callback) {
         $.ajax({
             type: "POST",
@@ -512,9 +518,8 @@ angular
     };
     
     /*
-     * JSON_getMyInvitations
-     * TODO: test me
-     */
+	 * JSON_getMyInvitations TODO: test me
+	 */
     vm.JSON_getMyInvitations = function (callback) {
         $.ajax({
             type: "POST",
@@ -526,8 +531,8 @@ angular
     };
     
     /*
-     * insertNewEvent
-     */
+	 * insertNewEvent
+	 */
     vm.insertNewEvent = function (calendar_id, title, description, 
             startsAt, endsAt, primaryColor, secondaryColor) {
         $.ajax({
@@ -550,8 +555,8 @@ angular
     };
     
     /*
-     * updateEvent
-     */
+	 * updateEvent
+	 */
     vm.updateEvent = function (id, title, description, 
             startsAt, endsAt, primaryColor, secondaryColor) {
         $.ajax({
@@ -574,8 +579,8 @@ angular
     };
     
     /*
-     * deleteOccurenceId
-     */
+	 * deleteOccurenceId
+	 */
     vm.deleteOccurrence = function (id) {
         $.ajax({
             type: "POST",
@@ -589,8 +594,8 @@ angular
     };
     
     /*
-     * insertNewMemo
-     */
+	 * insertNewMemo
+	 */
     vm.insertNewMemo = function (title, description, date, color) {
         $.ajax({
             type: "POST",
@@ -608,8 +613,8 @@ angular
     };
     
     /*
-     * updateMemo
-     */
+	 * updateMemo
+	 */
     vm.updateMemo = function (memo_id, title, description, date, color) {
         $.ajax({
             type: "POST",
@@ -627,8 +632,8 @@ angular
     };
     
     /*
-     * deleteMemoById
-     */
+	 * deleteMemoById
+	 */
     vm.deleteMemoById = function (memo_id) {
         $.ajax({
             type: "POST",
@@ -640,8 +645,8 @@ angular
     };
     
     /*
-     * insertNewCalendar
-     */
+	 * insertNewCalendar
+	 */
     vm.insertNewCalendar = function (title, description) {
         $.ajax({
            type: "POST",
@@ -659,8 +664,8 @@ angular
     };
     
     /*
-     * updateCalendar
-     */
+	 * updateCalendar
+	 */
     vm.updateCalendar = function (calendar_id, title, description) {
         $.ajax({
             type: "POST",
@@ -678,8 +683,8 @@ angular
     };
     
     /*
-     * disconnectFromCalendar
-     */
+	 * disconnectFromCalendar
+	 */
     vm.disconnectFromCalendar = function (id) {
         $.ajax({
             type: "POST",
@@ -694,9 +699,8 @@ angular
     };
     
     /*
-     * addAlarm
-     * TODO: test me
-     */
+	 * addAlarm TODO: test me
+	 */
     vm.addAlarm = function (occurrence_id, minutes) {
         $.ajax({
             type: "POST",
@@ -711,22 +715,22 @@ angular
     };
     
     /*
-     * updateAlarm
-     */
+	 * updateAlarm
+	 */
     vm.updateAlarm = function (/* ... */) {
         // TODO
     }
     
     /*
-     * deleteAlarm
-     */
+	 * deleteAlarm
+	 */
     vm.deleteAlarm = function (/* ... */) {
         // TODO
     }
     
     /*
-     * updateUser
-     */
+	 * updateUser
+	 */
     vm.updateUser = function (username, password) {
         $.ajax({
             type: "POST",
@@ -737,17 +741,17 @@ angular
             },
             success: function (response) {
                 // FIXME: graphical representations of the username
-                //        inside the page need to be updated. IndexController
-                //        should expose a function for retrieving the current
-                //        username, to be used at page initialization and after
-                //        a successful call to vm.updateUser
+                // inside the page need to be updated. IndexController
+                // should expose a function for retrieving the current
+                // username, to be used at page initialization and after
+                // a successful call to vm.updateUser
             },
         });
     };
     
     /*
-     * resetSentStateOnMessages
-     */
+	 * resetSentStateOnMessages
+	 */
     vm.resetSentStateOnMessages = function () {
         $.ajax({
             type: "POST",
@@ -756,8 +760,8 @@ angular
     };
     
     /*
-     * sendInvitation
-     */
+	 * sendInvitation
+	 */
     vm.sendInvitation = function (calendar_id, email, privileges) {
         $.ajax({
             type: "POST",
@@ -1090,7 +1094,7 @@ angular
     }
     
     // ---------------------------- //
-    // --       WASTELAND        -- //
+    // -- WASTELAND -- //
     // -- enter at your own risk -- //
     // ---------------------------- //
     
@@ -1123,79 +1127,79 @@ angular
     vm.fn = function () { };
     
     
-//    
-// // ----------------------------- //
-//  //-- PROVA PER RICERCA UTENTI -- //
-//  //-------------------------------//
-//  $scope.onKeyUP = function ($event) {
-//  	vm.manageInputString();
-//   };
-//     
-//  vm.manageInputString = function(){
-//  	
-//  	var strCurrent = document.getElementById('userChoice').value; 
-//    	console.log(strCurrent);  	
-//
-//    	
-//  vm.searchEmailInDb(strCurrent, function (x) {
-//  		var resp = JSON.parse(x);
-//  		console.log(JSON.stringify(resp,null,4));
-//  	    
-//  		vm.populateListOfUsername(resp);
-//
-//
-//  });
-//  	
-//  };
-//
-//
-//  vm.populateListOfUsername = function (resp){
-//  	    	
-//  	 var viewList = $("#userListModal");
-//       var contRespUser = 0;
-//       viewList.empty();
-//       var string =''; 
-//           string = "<div  class=\"btn-group\" >\n"
-//           +"<button type=\"button\" class=\"btn btn-primary dropdown-toggle\"" 
-//           +  "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\" style=\"margin-top:3px;\">"
-//           +"<i style=\"font-size: 25px; color: white;\"" 
-//           +  "class=\"glyphicon glyphicon-search\"></i> <span class=\"caret\"></span>"
-//           +"</button>"
-//           +"<ul class=\"dropdown-menu\">";
-//       
-//      
-//           resp.forEach(function(element) {
-//          	if(contRespUser<=10){ 
-//   			console.log(element);
-//   			string+="<li><a href=\"javascript:void(0)\" onclick=\"setUser('"+element+"')\"" +
-//              " class = \"calendars\" data-id=\" \">" +element+"</a></li>";                       
-//          	}
-//          	contRespUser++;
-//           	});
-//
-//           
-//           
-//
-//
-//        viewList.append(string);  
-//
-//  }
-//
-//
-//
-//
-//  vm.searchEmailInDb = function (email,callback) {
-//      $.ajax({
-//          type: "POST",
-//          url: "JSON_searchEmailInDb",
-//          data: {
-//          	emailToSearch:email,
-//          },
-//          success: function (response) {
-//          	callback(response);
-//          },
-//      });
-//  };
-//         
+    
+ // ----------------------------- //
+  // -- PROVA PER RICERCA UTENTI -- //
+  // -------------------------------//
+  $scope.onKeyUP = function ($event) {
+  	vm.manageInputString();
+   };
+     
+  vm.manageInputString = function(){
+  	
+  	var strCurrent = document.getElementById('userChoice').value; 
+    	console.log(strCurrent);  	
+
+    	
+  vm.searchEmailInDb(strCurrent, function (x) {
+  		var resp = JSON.parse(x);
+  		console.log(JSON.stringify(resp,null,4));
+  	    
+  		vm.populateListOfUsername(resp);
+
+
+  });
+  	
+  };
+
+
+  vm.populateListOfUsername = function (resp){
+  	    	
+  	 var viewList = $("#userListModal");
+       var contRespUser = 0;
+       viewList.empty();
+       var string =''; 
+           string = "<div  class=\"btn-group\" >\n"
+           +"<button type=\"button\" class=\"btn btn-primary dropdown-toggle\"" 
+           +  "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\" style=\"margin-top:3px;\">"
+           +"<i style=\"font-size: 25px; color: white;\"" 
+           +  "class=\"glyphicon glyphicon-search\"></i> <span class=\"caret\"></span>"
+           +"</button>"
+           +"<ul class=\"dropdown-menu\">";
+       
+      
+           resp.forEach(function(element) {
+          	if(contRespUser<=10){ 
+   			console.log(element);
+   			string+="<li><a href=\"javascript:void(0)\" onclick=\"setUser('"+element+"')\"" +
+              " class = \"calendars\" data-id=\" \">" +element+"</a></li>";                       
+          	}
+          	contRespUser++;
+           	});
+
+           
+           
+
+
+        viewList.append(string);  
+
+  }
+
+
+
+
+  vm.searchEmailInDb = function (email,callback) {
+      $.ajax({
+          type: "POST",
+          url: "JSON_searchEmailInDb",
+          data: {
+          	emailToSearch:email,
+          },
+          success: function (response) {
+          	callback(response);
+          },
+      });
+  };
+         
 
 });
