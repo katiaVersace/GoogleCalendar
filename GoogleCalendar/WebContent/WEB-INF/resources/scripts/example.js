@@ -228,7 +228,11 @@ angular
             JSON.parse(calendars).forEach(function (calendar) {
                 vm.calendarsArray.push(calendar);
                 var x = calendar.title;
-                var title = x.replace(/'/g,"\\'");;
+                var title = x.replace(/'/g,"\\'");
+                
+                var y = calendar.description;
+                var description = y.replace(/'/g,"\\'");
+                
                 viewList.append(
                      $compile(
                           "<li id=\"cal_entry_" + calendar.id + "\">\n"
@@ -245,7 +249,7 @@ angular
                         + " <label>\n" 
                         + "      <i\n"
                         + "        class=\"glyphicon glyphicon-cog\"\n"
-                        + "        ng-click=\"vm.openCalendarView('"+title+"','"+calendar.id+"','"+calendar.description+"')\"\n"
+                        + "        ng-click=\"vm.openCalendarView('"+title+"','"+calendar.id+"','"+description+"')\"\n"
                         + "        style=\"margin-left: 80%;\">\n"
                         + "      </i>\n"
                         + "    </label>\n"
@@ -260,7 +264,7 @@ angular
     vm.updateMemoList = function () {
         vm.memoList = [];
         vm.JSON_getMyMemos(function (memos) {
-            JSON.parse(memos).foreach(function (blueprint) {
+            JSON.parse(memos).forEach(function (blueprint) {
                 vm.memoList.push(new vm.Memo(
                     blueprint.id,
                     blueprint.title,
@@ -391,7 +395,7 @@ angular
     
   	vm.deleteCalendarView = function(){
     	
-    	console.log("Delete calendar with id => "+vm.calendarToUpd.id)
+    	console.log("Delete calendar with id => "+vm.calendarToUpd.id);
     	vm.disconnectFromCalendar(vm.calendarToUpd.id);
     }
     

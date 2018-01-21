@@ -55,7 +55,7 @@ public class DbService {
 		// User katia=udao.getUserByEmail("k@h.it");
 		User katia = new User("k@h.it", "Katia2", "1234");
 		udao.save(katia);
-		Calendar katiaCalendar = new Calendar(katia, "katias's Calendar", "list of katia's events");
+		Calendar katiaCalendar = new Calendar(katia, "katia's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia, "Calendar n2", "second list of katia's events");
 		cdao.save(katiaCalendar2);
 		cdao.save(katiaCalendar);
