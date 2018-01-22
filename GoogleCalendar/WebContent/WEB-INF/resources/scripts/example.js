@@ -202,11 +202,14 @@ angular
         
         if(vm.memosToggled) {
             vm.events = vm.events.concat(vm.memoList);
-
+            if (!vm.shownCalendars.length) { 
+                $scope.$digest(); 
+            }
         }
         
-        if (!vm.shownCalendars.length) { $scope.$digest(); }
-
+        // TODO: moved up where makes more sense, test it
+        // if (!vm.shownCalendars.length) { $scope.$digest(); }
+        
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
@@ -1183,11 +1186,22 @@ angular
     // -- DEBUG -- //
     // ----------- //
     
-    vm.fn = function () { };
+    vm.fn = function () {
+        var ev = new Event(
+            "ciao",
+            "2",
+            "ciao",
+            "ciao",
+            new Date(),
+            new Date(),
+            "#555555",
+            "#aaaaaa"
+        );
+        
+        
+    };
     
-    
-    
- // ----------------------------- //
+  // ----------------------------- //
   // -- PROVA PER RICERCA UTENTI -- //
   // -------------------------------//
   $scope.onKeyUP = function ($event) {

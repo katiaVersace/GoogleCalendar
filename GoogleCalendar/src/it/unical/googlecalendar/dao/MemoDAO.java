@@ -112,7 +112,7 @@ public class MemoDAO {
 				session.flush();
 
 				tx.commit();
-				u.getMemos().remove(m);
+				u.getMemos().remove(m); // FIXME: lazy initialization
 				result = true;
 
 			} catch (Exception e) {
