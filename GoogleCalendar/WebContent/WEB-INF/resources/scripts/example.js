@@ -1,6 +1,7 @@
 // --------------------------- //
 // -- MERGE MARIO MARCO [0] -- //
 // --------------------------- //
+
 var imported = document.createElement('script');
 imported.src = 'resources/scripts/openModal.js';
 document.head.appendChild(imported);
@@ -67,26 +68,26 @@ angular
     // calendar for modal
     vm.calendarToUpd = undefined;
     
-    
     // List of glyphs shown after entries in a day's event list,
     // with behavior
-    var actions = [ {
-        label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
-        onClick : function(args) {
-            vm.clickUpdateEvent(args.calendarEvent);
-        }
-    }, {
-        label : '<i class=\'glyphicon glyphicon-remove\'></i>',
-        onClick : function(args) {
-       
-
-           if(args.calendarEvent.memo){
-        	   vm.deleteMemoById(args.calendarEvent.id)
-           }else{
-            vm.deleteOccurrence(args.calendarEvent.id);
-           }
-        },
-    } ];
+    var actions = [
+        {
+            label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
+            onClick : function(args) {
+                vm.clickUpdateEvent(args.calendarEvent);
+            }
+        }, 
+        {
+            label : '<i class=\'glyphicon glyphicon-remove\'></i>',
+            onClick : function(args) {
+               if (args.calendarEvent.memo) {
+            	       vm.deleteMemoById(args.calendarEvent.id)
+               } else {
+                   vm.deleteOccurrence(args.calendarEvent.id);
+               }
+            }
+        }, 
+    ];
         
     // --------------------------- //
     // -- MERGE MARIO MARCO [1] -- //
@@ -137,10 +138,8 @@ angular
         this.calendar = undefined; // FIXME: insert memo calendar (or whatever)
         this.title = title;
         this.description = description;
-        this.startsAt = now; // graphical purposes only (renders it on the
-								// current day)
-        this.endsAt = now; // graphical purposes only (renders it on the
-							// current day)
+        this.startsAt = now; // graphical purposes only (renders it on the current day)
+        this.endsAt = now; // graphical purposes only (renders it on the current day)
         this.dateAdded = now; // date this memo was added/saved on db
         this.color = {
             primary: color,
@@ -152,13 +151,25 @@ angular
         this.actions = actions;
     };
     
- 
+    vm.getRRuleFreqType = function (type) {
+        switch (type) {
+            case "YEAR":
+                return RRule.YEARLY;
+            case "MONTH":
+                return RRule.MONTHLY;
+            case "WEEK":
+                return RRule.WEEKLY;
+            case "DAY":
+                return RRule.DAILY;
+        }
+        
+        return undefined;
+    }
     
-    // 
     vm.getViewDateBoundaries = function () {        
         return {
-            start: moment(vm.viewDate).startOf(vm.calendarView).toDate(),
-            end: moment(vm.viewDate).endOf(vm.calendarView).toDate(),
+            start: moment(vm.viewDate).startOf(vm.calendarView),
+            end: moment(vm.viewDate).endOf(vm.calendarView),
         };
     };
     
@@ -170,7 +181,7 @@ angular
         messages.sort(function (first, second) {
             var ts_first = moment(first.timestamp);
             var ts_second = moment(second.timestamp);
-            
+
             if (ts_first < ts_second) {
                 return -1;
             }
@@ -179,11 +190,10 @@ angular
             }            
             return 0;
         });
-        
         return messages;
     };
     
-    // Delete an answered invitation from buffer
+    // Delete an answered invitation from table
     vm.discardInvitation = function (id) {
         vm.invitations.filter(function (item) {
             return item.id != id;
@@ -197,7 +207,7 @@ angular
     // Repopulate vm.events accordingly to the data fetched from the DB
     vm.updateEventList = function () {
         vm.events = [];
-
+        
         var boundaries = vm.getViewDateBoundaries();
         
         if(vm.memosToggled) {
@@ -206,31 +216,58 @@ angular
                 $scope.$digest(); 
             }
         }
-        
-        // TODO: moved up where makes more sense, test it
-        // if (!vm.shownCalendars.length) { $scope.$digest(); }
-        
+                
         vm.shownCalendars.forEach(function (calendar_id) {
-            vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start, boundaries.end, function (events) {
+            vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start.toDate(), boundaries.end.toDate(), function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
-                    vm.events.push(new vm.Event(
-                        blueprint.id,
-                        blueprint.calendar.id,
-                        blueprint.title,
-                        blueprint.description,
-                        new Date(blueprint.startTime),
-                        new Date(blueprint.endTime),
-                        blueprint.primaryColor,
-                        blueprint.secondaryColor
-                    ));
+                    if (typeof blueprint.repetition !== "undefined") {
+                        var rruleset = new RRuleSet();
+                        var boundaries = vm.getViewDateBoundaries();
+                        
+                        rruleset.rrule(new RRule({
+                            freq: vm.getRRuleFreqType(blueprint.repetition.repetitionType),
+                            dtstart: (moment.max(boundaries.start, moment(blueprint.startTime))).toDate(),
+                            until: (moment.min(boundaries.end, moment(blueprint.repetition.endTime))).toDate(),
+                        }));
+                        
+                        if (typeof blueprint.repetition.exceptions !== "undefined") {
+                            blueprint.repetition.exceptions.forEach(function (item) {
+                                rruleset.exdate(new Date(item.startTime));
+                            });
+                        }
+                        
+                        rruleset.all().forEach(function (rule) {
+                            var event = new vm.Event(
+                                blueprint.id,
+                                blueprint.calendar.id,
+                                blueprint.title,
+                                blueprint.description,
+                                new Date(rule), // same date atm
+                                new Date(rule), // same date atm
+                                blueprint.primaryColor,
+                                blueprint.secondaryColor
+                            );
+                            
+                            event.repetition = blueprint.repetition;
+                            vm.events.push(event);
+                        });
+                    } else {
+                        vm.events.push(new vm.Event(
+                            blueprint.id,
+                            blueprint.calendar.id,
+                            blueprint.title,
+                            blueprint.description,
+                            new Date(blueprint.startTime),
+                            new Date(blueprint.endTime),
+                            blueprint.primaryColor,
+                            blueprint.secondaryColor
+                        ));
+                    }
                 });
-             
                 // Needed for asynchronous update of vm.events
                 $scope.$digest();
             });
         });
-        
-        
     };
     
     // Update the list of calendars displayed within the sidebar
@@ -261,12 +298,12 @@ angular
                         + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
                         + " </label>\n"
                         + " <label>\n" 
-                        + "      <i\n"
-                        + "        class=\"glyphicon glyphicon-cog\"\n"
-                        + "        ng-click=\"vm.openCalendarView('"+title+"','"+calendar.id+"','"+description+"')\"\n"
-                        + "        style=\"margin-left: 80%;\">\n"
-                        + "      </i>\n"
-                        + "    </label>\n"
+                        + "    <i\n"
+                        + "      class=\"glyphicon glyphicon-cog\"\n"
+                        + "      ng-click=\"vm.openCalendarView('" + title + "','" + calendar.id + "','" + description + "')\"\n"
+                        + "      style=\"margin-left: 80%;\">\n"
+                        + "    </i>\n"
+                        + "  </label>\n"
                         + "</li>\n"
                      )($scope)
                 );
@@ -1186,24 +1223,12 @@ angular
     // -- DEBUG -- //
     // ----------- //
     
-    vm.fn = function () {
-        var ev = new Event(
-            "ciao",
-            "2",
-            "ciao",
-            "ciao",
-            new Date(),
-            new Date(),
-            "#555555",
-            "#aaaaaa"
-        );
+    vm.fn = function () { };
         
-        
-    };
-    
-  // ----------------------------- //
+  // ------------------------------ //
   // -- PROVA PER RICERCA UTENTI -- //
   // -------------------------------//
+    
   $scope.onKeyUP = function ($event) {
   	vm.manageInputString();
    };

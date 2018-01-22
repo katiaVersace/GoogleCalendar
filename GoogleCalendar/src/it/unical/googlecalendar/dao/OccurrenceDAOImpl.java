@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import it.unical.googlecalendar.dao.OccurrenceDAO;
 import it.unical.googlecalendar.model.Calendar;
+import it.unical.googlecalendar.model.EventException;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
 import it.unical.googlecalendar.model.Users_Calendars;
@@ -172,6 +173,17 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			s1.addAll(res1);
 			res1.clear();
 			res1.addAll(s1);
+			
+			for (Occurrence occurrence : res1) {
+			    if (occurrence.getRepetition() != null) {
+			        Hibernate.initialize(occurrence.getRepetition());
+			        
+			        if (!occurrence.getRepetition().getExceptions().isEmpty()) {
+			            Hibernate.initialize(occurrence.getRepetition().getExceptions());
+			        }
+			    }
+			}
+			
 			return res1;
 		} catch(Exception e) {
 			e.printStackTrace();

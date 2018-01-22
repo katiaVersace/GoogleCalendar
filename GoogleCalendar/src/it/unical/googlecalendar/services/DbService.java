@@ -71,11 +71,11 @@ public class DbService {
 		Notification n = new Notification(katia, "la mia prima notifica");
 		ndao.save(n);
 		// ora creo un evento e lo associo al mio calendario
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 		String dateInString = "21-01-2018 10:20:56";
 		String dateInString2 = "24-01-2018 16:20:00";
-		String leftBoundary = "01-02-2018 12:00:00";
-		String rightBoundary = "05-02-2018 12:00:00";
+		String leftBoundary = "03-02-2018 12:00:00";
+		String rightBoundary = "10-02-2018 12:00:00";
 		// int minutes=5;
 		Occurrence ev1 = null;
 		Occurrence ev2 = null;
@@ -89,7 +89,7 @@ public class DbService {
 			ev3 = new Occurrence(katiaCalendar2, katia, "Ricordati che devi morire", "Sii retto, ma non in faccia",
 					sdf.parse(dateInString), sdf.parse(dateInString2), "#555555", "#aaaaaa");
 			ev4 = new Occurrence(katiaCalendar2, katia, "Una mano è solo un piede che non ha mai smesso di sognare",
-					"Saggezza", sdf.parse(leftBoundary), sdf.parse(rightBoundary), "#555555", "#aaaaaa");
+					"Saggezza", sdf.parse(leftBoundary), sdf.parse(leftBoundary), "#555555", "#aaaaaa");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -102,10 +102,10 @@ public class DbService {
 		
 		try {
 		    rep_id = rdao.insertNewRepetition(
-		            ev4, "DAY", katia.getId(), sdf.parse("2018-02-01 06:00:00"), sdf.parse("2018-02-10 06:00:00"));
+		            ev4, "DAY", katia.getId(), sdf.parse("01-02-2018 06:00:00"), sdf.parse("10-02-2018 06:00:00"));
 		    Repetition rep_obj = rdao.getRepetitionById(rep_id);
 		    edao.insertNewException(
-		            rep_obj, sdf.parse("2018-02-05 06:00:00"), sdf.parse("2018-02-05 06:00:00"), katia.getId());
+		            rep_obj, sdf.parse("05-02-2018 06:00:00"), sdf.parse("05-02-2018 06:00:00"), katia.getId());
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
