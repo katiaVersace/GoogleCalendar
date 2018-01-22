@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.services;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import it.unical.googlecalendar.dao.CalendarDAOImpl;
+import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.UserDAOImpl;
+import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.User;
 
 @Service
@@ -17,6 +21,10 @@ public class LoginService {
 
 	@Autowired
 	private UserDAOImpl udao;
+	@Autowired
+	private CalendarDAOImpl cdao;
+	@Autowired
+	private OccurrenceDAOImpl odao;
 
 	// form visible
 	private String visible = "block";
@@ -96,9 +104,32 @@ public class LoginService {
 	}
 
 	public boolean creaUtenteFB(String emailFB, String username) {
-		if (udao.save(new User(emailFB, username, null)))
-			return true;
-		return false;
+		if (udao.insertNewUser(emailFB, username, null)!=-1)
+			{
+			return true;}
+		{
+			
+			return false;}
 
 	}
+
+	public int createFbCalendar(int user_id, String title, String description) {
+		return cdao.insertNewFBCalendar(user_id, title, description);
+	}
+
+	public void insertNewFBEvent(int calendar_id,int user_id,String title, String description,Date startTime,Date endTime,String c1, String c2) {
+		odao.insertNewEvent(calendar_id, user_id, title, description, startTime, endTime, c1, c2);
+		
+	}
+
+	public Calendar getFBCalendar(int user_id) {
+	return	udao.getFbCalendar(user_id);
+	}
+
+	public boolean deleteEventsById(int o, int c) {
+	return odao.deleteById(o, c);
+		
+	}
+
+	
 }

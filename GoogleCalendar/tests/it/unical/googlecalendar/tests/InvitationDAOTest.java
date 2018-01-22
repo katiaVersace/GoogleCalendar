@@ -50,7 +50,7 @@ public class InvitationDAOTest {
 		udao.save(mario);
 		udao.save(fabio);
 
-		Calendar c = new Calendar(peppe, "peppe calendar", "jshdjs");
+		Calendar c = new Calendar(peppe, "peppe calendar", "jshdjs",false);
 		cdao.save(c);
 		//peppe invita mario a c
 		idao.sendInvitation(peppe.getId(), mario.getEmail(), c.getId(), "RW");

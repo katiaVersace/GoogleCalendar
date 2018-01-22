@@ -52,8 +52,8 @@ public class OccurrenceDAOTest {
 		User ciccio=new User("ciccio3.h@hotmail.it","Ciccio","1234");
     	udao.save(katia);
     	udao.save(ciccio);
-    	Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events");
-		Calendar ciccioCalendar = new Calendar(ciccio,"ciccio's Calendar", "list of ciccio's events");
+    	Calendar katiaCalendar = new Calendar(katia,"katia's Calendar", "list of katia's events",false);
+		Calendar ciccioCalendar = new Calendar(ciccio,"ciccio's Calendar", "list of ciccio's events",false);
 		cdao.save(ciccioCalendar);
     	cdao.save(katiaCalendar);
 		

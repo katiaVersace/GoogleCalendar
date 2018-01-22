@@ -53,9 +53,9 @@ public class User {
     
     private List<Alarm> alarms=new ArrayList<Alarm>();
     
-//	@OneToOne(mappedBy="user",orphanRemoval=true,cascade=CascadeType.ALL)
-//  	private Calendar MyFacebookCalendar;
-//    
+	@OneToOne(mappedBy="fbUser",orphanRemoval=true,cascade=CascadeType.ALL)
+  	private Calendar myFacebookCalendar;
+    
 	
 	public User() {
 		super();
@@ -69,7 +69,15 @@ public class User {
 	}
 	
 	
-	 public List<Alarm> getAlarms() {
+	 public Calendar getMyFacebookCalendar() {
+		return myFacebookCalendar;
+	}
+
+	public void setMyFacebookCalendar(Calendar myFacebookCalendar) {
+		this.myFacebookCalendar = myFacebookCalendar;
+	}
+
+	public List<Alarm> getAlarms() {
 		return alarms;
 	}
 

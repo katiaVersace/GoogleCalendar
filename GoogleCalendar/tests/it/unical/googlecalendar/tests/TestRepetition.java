@@ -50,8 +50,8 @@ public class TestRepetition {
 
 		User ciccino = new User("c@jj.it", "ciccino", "1234");
 		udao.save(ciccino);
-		Calendar ciccinoCalendar = new Calendar(ciccino, "ciccino'ss Calendar", "list of ciccino's events");
-		Calendar ciccinoCalendar2 = new Calendar(ciccino, "ciccino'ss Calendar2", "list2 of ciccino's events");
+		Calendar ciccinoCalendar = new Calendar(ciccino, "ciccino'ss Calendar", "list of ciccino's events",false);
+		Calendar ciccinoCalendar2 = new Calendar(ciccino, "ciccino'ss Calendar2", "list2 of ciccino's events",false);
 		cdao.save(ciccinoCalendar);
 		cdao.save(ciccinoCalendar2);
 

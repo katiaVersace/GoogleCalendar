@@ -226,7 +226,7 @@ private Users_CalendarsDAOImpl ucdao;
 	public int insertNewCalendar(int u_id, String title, String description) {
 		Session session = sessionFactory.openSession();
 		User u = session.get(User.class, u_id);
-		Calendar c=new Calendar(u,title,description);
+		Calendar c=new Calendar(u,title,description,false);
 		int result = -1;
 		
 				Transaction tx = null;
@@ -336,6 +336,32 @@ return result;
 		session.close();
 		return result;
 	
+	}
+
+	public int insertNewFBCalendar(int u_id, String title, String description) {
+		Session session = sessionFactory.openSession();
+		User u = session.get(User.class, u_id);
+		Calendar c=new Calendar(u,title,description,true);
+		int result = -1;
+		
+				Transaction tx = null;
+
+				try {
+					tx = session.beginTransaction();
+					session.save(c);
+					result=c.getId();
+					session.update(u);
+					tx.commit();
+					result = c.getId();
+				} catch (Exception e) {
+					result=-1;
+					tx.rollback();
+
+				}
+
+				session.close();
+
+				return result;
 	}
 	
 }

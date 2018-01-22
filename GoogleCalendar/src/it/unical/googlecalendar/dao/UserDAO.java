@@ -30,6 +30,8 @@ public interface UserDAO {
 
 	int insertNewUser(String email, String username, String password);
 
+	Calendar getFbCalendar(int user_id);
+
 	
 	
 	

@@ -243,6 +243,7 @@ public class UserDAOImpl implements UserDAO {
 					tx.commit();
 					result=u.getId();
 					} catch (Exception e) {
+						e.printStackTrace();
 					result=-1;
 					tx.rollback();
 
@@ -251,6 +252,16 @@ public class UserDAOImpl implements UserDAO {
 				session.close();
 
 				return result;
+		
+	}
+
+	@Override
+	public Calendar getFbCalendar(int user_id) {
+		Session session = sessionFactory.openSession();
+		// sql query
+
+		User u=session.get(User.class,user_id);
+		return u.getMyFacebookCalendar();
 		
 	}
 
