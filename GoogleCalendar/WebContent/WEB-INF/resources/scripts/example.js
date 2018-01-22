@@ -232,9 +232,12 @@ angular
                         
                         if (typeof blueprint.repetition.exceptions !== "undefined") {
                             blueprint.repetition.exceptions.forEach(function (item) {
-                                rruleset.exdate(new Date(item.startTime));
+                                rruleset.exdate(moment(item.startTime));
                             });
                         }
+                        
+                        console.log("rruleset.all()");
+                        console.log(JSON.stringify(rruleset.all(), null, 4));
                         
                         rruleset.all().forEach(function (rule) {
                             var event = new vm.Event(
@@ -247,7 +250,6 @@ angular
                                 blueprint.primaryColor,
                                 blueprint.secondaryColor
                             );
-                            
                             event.repetition = blueprint.repetition;
                             vm.events.push(event);
                         });

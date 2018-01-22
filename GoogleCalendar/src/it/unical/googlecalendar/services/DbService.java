@@ -105,7 +105,7 @@ public class DbService {
 		            ev4, "DAY", katia.getId(), sdf.parse("01-02-2018 06:00:00"), sdf.parse("10-02-2018 06:00:00"));
 		    Repetition rep_obj = rdao.getRepetitionById(rep_id);
 		    edao.insertNewException(
-		            rep_obj, sdf.parse("05-02-2018 06:00:00"), sdf.parse("05-02-2018 06:00:00"), katia.getId());
+		            rep_obj, sdf.parse("05-02-2018 12:00:00"), sdf.parse("05-02-2018 12:00:00"), katia.getId());
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
