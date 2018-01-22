@@ -322,12 +322,12 @@
 							developed this Web Application for ASDE exam.</strong>
 					</p>
 					<p></p>
-					<p style="color: white; text-align: center;">Marco Amato</p>
-					<p style="color: white; text-align: center;">Giuseppe Benvenuto</p>
+					<p style="color: white; text-align: center;">Marco Amato - 187734</p>
+					<p style="color: white; text-align: center;">Giuseppe Benvenuto - 189248</p>
 					<p style="color: white; text-align: center;">Mario Carricato -
 						187799</p>
 					<p style="color: white; text-align: center;">Fabio Fabiano</p>
-					<p style="color: white; text-align: center;">Caterina Versace</p>
+					<p style="color: white; text-align: center;">Caterina Versace - 187471</p>
 				</div>
 			</form>
 		</div>
@@ -363,7 +363,7 @@
 								class="glyphicon glyphicon-equalizer"></i> <span class="caret"></span>
 						</button>
 						<input type="text"
-							style="font-size: 15px; width: 150px; height: 40px;" id="TourId3"
+							style="font-size: 15px; width: 150px; height: 40px;" id="privilages"
 							value="none" class="form-control"></input>
 						<div class="dropdown-menu scrollable-menu" id="ulGenres">
 							<li><a href="javascript:void(0)"
@@ -398,6 +398,13 @@
 							ng-click="vm.updateCalendarView()" style="background: #42A5F5;">
 							<span><strong>Update Calendar</strong></span>
 						</button>
+						<button type="button" id="btn-shareCalendar"
+							class="btn btn-info navbar-btn"
+							ng-click=" vm.shareCalendarView()" style="background: #66BB6A;">
+							<i style="font-size: 15px; color: white;"
+								class="glyphicon glyphicon-send"></i>
+							<span><strong>Share Calendar</strong></span>
+						</button>
 					</div>
 				</div>
 
@@ -414,8 +421,7 @@
 					<span
 						onclick="document.getElementById('modal-wrapper5').style.display='none'"
 						class="close" title="Close PopUp">&times;</span>
-					<h1 style="text-align: center; color: white; padding-top: 10px;">Your
-						Calendars</h1>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Add Event</h1>
 					<a href="#" class="avatar"><i
 						style="font-size: 45px; color: white;"
 						class="glyphicon glyphicon-calendar"></i></a>
@@ -451,9 +457,6 @@
 						<form>
 							<fieldset id="calendarsListModal""></fieldset>
 							<label id="choiceId" style="visibility: hidden;"></label>
-							<h3 style="text-align: center; color: white; padding-top: 10px;">Add
-								Event</h3>
-
 							<div id="event_tmp">
 								<table class="table table-bordered">
 									<thead>
@@ -509,17 +512,126 @@
 							<div style="text-align: center;">
 
 
-								<textarea rows="2" placeholder="Description" id="descEvent"
-									ng-model="vm.temp.description"></textarea>
+								<label style="float:right;">
+        	                    <input  type="checkbox" id= "repetition" data-toggle="collapse" data-target="#repPanel">                                                          
+                            	<label for="repetition" ><span></span>set repetition</label>
+                         	</label>
+					
+					<div id="repPanel" class="collapse">  <!-- START HIDDEN PANNEL -->
+					
+					 <div class="btn-group" style="float: left;">
+						<button type="button" class="btn btn-primary dropdown-toggle"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i style="font-size: 25px; color: white;"
+								class="glyphicon glyphicon-repeat"></i> <span class="caret"></span>
+						</button>
+						<input type="text"
+							style="font-size: 15px; width: 150px; height: 40px;" id="repChoice"
+							value="none" class="form-control"></input>
+						<div class="dropdown-menu scrollable-menu" id="ulGenres">
+							<li><a href="javascript:void(0)" onclick="addFreq('RRule.HOURLY')"
+								 data-id="0">Hourly</a></li>
+							<li><a href="javascript:void(0)" onclick="addFreq('RRule.DAILY')"
+								 data-id="10">Daily</a></li>
+							<li><a href="javascript:void(0)" onclick="addFreq('RRule.WEEKLY')"
+								 data-id="20">Weekly</a></li>
+							<li><a href="javascript:void(0)" onclick="addFreq('RRule.MONTHLY')"
+								 data-id="30">Monthly</a></li>
+							<li><a href="javascript:void(0)" onclick="addFreq('RRule.YEARLY')"
+								 data-id="none">Yearly</a></li>
+						</div>
+					</div>
+					 
+					<!-- div class="btn-group" >
+						<button type="button" class="btn btn-primary dropdown-toggle"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i style="font-size: 25px; color: white;"
+								class="glyphicon glyphicon-time"></i> <span class="caret"></span>
+						</button>
+						<input type="text"
+							style="font-size: 15px; width: 150px; height: 40px;" id="TourId"
+							value="none" class="form-control"></input>
+						<div class="dropdown-menu scrollable-menu" id="ulGenres">
+							<li><a href="javascript:void(0)" onclick="addClock(0)"
+								class="clocks" data-id="0">At event time</a></li>
+							<li><a href="javascript:void(0)" onclick="addClock(10)"
+								class="clocks" data-id="10">10 min first</a></li>
+							<li><a href="javascript:void(0)" onclick="addClock(20)"
+								class="clocks" data-id="20">20 min first</a></li>
+							<li><a href="javascript:void(0)" onclick="addClock(30)"
+								class="clocks" data-id="30">30 min first</a></li>
+							<li><a href="javascript:void(0)" onclick="addClock(-1)"
+								class="clocks" data-id="none">none</a></li>
+						</div>
+					</div>   -->
+					
+					<!-- <i style="color: white; margin-left: 40px; ">Interval</i>
+  					<input type="number" style="width: 100px;" name="quantity" min="1" max="5">  -->
+					
+					
+					<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>Starts at</th>
+											<th>Ends at</th>
+										</tr>
+									</thead>
 
-								<button type="button" id="addEvnt" ng-click="vm.addEventView()"
+									<tbody>
+										<td>
+											<p class="input-group">
+												<input type="text" class="form-control" readonly
+													uib-datepicker-popup="dd MMMM yyyy"
+													ng-model="vm.temp.dtstart" is-open="vm.temp.startOpen2"
+													close-text="Close"> <span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+														ng-click="vm.toggle($event, 'startOpen2', vm.temp)">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</p>
+											<div uib-timepicker ng-model="vm.temp.dtstart" hour-step="1"
+												minute-step="15" show-meridian="false"></div>
+										</td>
+										<td>
+											<p class="input-group">
+												<input type="text" class="form-control" readonly
+													uib-datepicker-popup="dd MMMM yyyy"
+													ng-model="vm.temp.until" is-open="vm.temp.endOpen2"
+													close-text="Close"> <span class="input-group-btn">
+													<button type="button" class="btn btn-default"
+														ng-click="vm.toggle($event, 'endOpen2', vm.temp)">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</p>
+											<div uib-timepicker ng-model="vm.temp.until" hour-step="1"
+												minute-step="15" show-meridian="false"></div>
+										</td>
+									</tbody>
+								</table>
+								
+								
+								
+								
+					</div>  <!-- END HIDDEN PANNEL -->
+				
+					
+					          	
+						
+						<textarea rows="2" placeholder="Description" id="descEvent"
+						 ng-model="vm.temp.description"></textarea>
+					
+					
+					<div>
+						<button type="button" id="addEvnt" ng-click="vm.addEventView()"
 									class="btn btn-info navbar-btn" style="background: #42A5F5">
-									<span><strong>Add </strong></span>
-								</button>
-
+						<span><strong>Add </strong></span>
+						</button>
 							</div>
 					</div>
-
+					</div>
+				
 					<!-- DELETEEEEE GRAPHIC EVENT
       				<button class="btn btn-danger" ng-click="vm.events.splice($index, 1)">Delete</button>
 					 <td>

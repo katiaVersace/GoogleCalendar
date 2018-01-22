@@ -201,13 +201,13 @@ public class UserDAOImpl implements UserDAO {
 	
 
 	@Override
-	public List<String> searchEmail(String email){
+	public List<String> searchEmail(String email,String personalEmail){
 		Session session = sessionFactory.openSession();
 		//sql query
 				
 		List<String> result = 
-		        session.createQuery("SELECT u.email FROM User u WHERE u.email like :user_email")
-		        .setParameter("user_email", "%"+email+"%").getResultList();
+		        session.createQuery("SELECT u.email FROM User u WHERE u.email like :user_email AND u.email <> :personal_email")
+		        .setParameter("user_email", "%"+email+"%").setParameter("personal_email",personalEmail).getResultList();
 				 
 		session.close();
 		return result;

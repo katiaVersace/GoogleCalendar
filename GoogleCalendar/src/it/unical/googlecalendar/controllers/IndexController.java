@@ -301,9 +301,12 @@ public class IndexController {
      */
     @RequestMapping(value = "/JSON_searchEmailInDb", method = RequestMethod.POST)
     @ResponseBody
-    public String JSON_searchEmailInDb( @RequestParam String emailToSearch) {
+    public String JSON_searchEmailInDb( @RequestParam String emailToSearch, HttpSession session) {
+    	
+    	String personalEmail = (String) session.getAttribute("email");
+    	
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(dbService.searchEmail(emailToSearch));
+        return gson.toJson(dbService.searchEmail(emailToSearch,personalEmail));
     }
     
     /*

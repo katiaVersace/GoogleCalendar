@@ -237,8 +237,8 @@ public class DbService {
 		return ndao.deleteNotifications(u);
 	}
 
-	public List<String> searchEmail(String emailToSearch) {
-		return udao.searchEmail(emailToSearch);
+	public List<String> searchEmail(String emailToSearch, String personalEmail) {
+		return udao.searchEmail(emailToSearch,personalEmail);
 	}
 
 }
