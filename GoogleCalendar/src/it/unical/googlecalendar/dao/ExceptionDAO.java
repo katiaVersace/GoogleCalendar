@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.hibernate.Cache;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -132,24 +134,35 @@ public class ExceptionDAO {
 		return result;
 	}
 
-	public int insertNewException(Repetition u, Date s, Date en,int user_id) {
+	public int insertNewException(Repetition r, Date s, Date en,int user_id) {
 		Session session = sessionFactory.openSession();
-		EventException m = new EventException(u,s, en);
+		Repetition u=session.get(Repetition.class, r.getId());
 		int result =-1;
 		Transaction tx = null;
 	
 		try {
+			
+			EventException m = new EventException(u,s, en);
 			tx = session.beginTransaction();
+			   // DEBUG
+			session.clear();
+			Cache cache = sessionFactory.getCache();
+			if (cache != null) {
+				cache.evictAllRegions();
+			}
+			// END DEBUG
 			session.save(m);
-			result=m.getId();
 			tx.commit();
-
+			result=m.getId();
+			
 		} catch (Exception e) {
+			e.printStackTrace();
 			result = -1;
 			tx.rollback();
 		}
 		
 		session.close();
+		
 		return result;
 	}
 

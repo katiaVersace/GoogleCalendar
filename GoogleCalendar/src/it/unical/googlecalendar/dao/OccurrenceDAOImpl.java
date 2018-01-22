@@ -145,7 +145,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date startPeriod = format.parse(start);
 			Date endPeriod = format.parse(end);
-			
+	
 			Query query = session.createQuery(
 					"SELECT o "
 			      + "FROM Occurrence o, Users_Calendars uc "
@@ -165,7 +165,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			List<Occurrence> res1=query.getResultList();
 			
 			
-			Query queryR = session.createQuery("SELECT o FROM Occurrence o JOIN o.repetition orep WHERE orep.endTime>= :start").setParameter("start",start);
+			Query queryR = session.createQuery("SELECT o FROM Occurrence o JOIN o.repetition orep WHERE orep.endTime>= :start").setParameter("start",startPeriod);
 			List<Occurrence> res2=queryR.getResultList();
 			res1.addAll(res2);
 			Set<Occurrence>s1=new HashSet<>();
@@ -385,6 +385,7 @@ boolean result = false;
 
 		// sql query
 		Occurrence result = session.get(Occurrence.class,o_id);
+		Hibernate.initialize(result.getRepetition().getExceptions());
 
 		session.close();
 		return result;

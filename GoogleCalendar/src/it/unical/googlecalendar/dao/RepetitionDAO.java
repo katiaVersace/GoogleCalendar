@@ -150,10 +150,10 @@ public class RepetitionDAO {
 	}
 
 	
-	public int insertNewRepetition(Occurrence o,int nR, String type, int user_id, Date st, Date et) {
+	public int insertNewRepetition(Occurrence o2,int nR, String type, int user_id, Date st, Date et) {
 		Session session = sessionFactory.openSession();
 		int result =-1;
-		
+		Occurrence o=session.get(Occurrence.class, o2.getId());
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
 		query.setParameter("calendar_id",o.getCalendar().getId() ).setParameter("user_id", user_id);
@@ -161,24 +161,28 @@ public class RepetitionDAO {
 		List<Users_Calendars> resultsId = query.getResultList();
 		if (resultsId.size() != 0) {
 			Users_Calendars uc = resultsId.get(0);
+			Transaction tx = null;
 
 			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
+				try {
 				Repetition m = new Repetition(o,nR, type, st, et);
-		Transaction tx = null;
+		
 
-		try {
 			tx = session.beginTransaction();
 			session.save(m);
-			result=m.getId();
+			
 			tx.commit();
+			result=m.getId();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			result = -1;
 			tx.rollback();
 		}
 			}}
 
 		session.close();
+		
 		return result;
 	}
 

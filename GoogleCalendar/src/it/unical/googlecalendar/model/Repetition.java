@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,10 +45,10 @@ public class Repetition  {
 	@JoinColumn(name = "occurrence_id",nullable = false)
 	private Occurrence occurrence;
 	
-	@OneToMany(cascade=CascadeType.REFRESH)
-	@JoinColumn(name = "exception_id",nullable = false)
-	private List<EventException> exceptions;
-
+	@OneToMany(mappedBy = "repetition",orphanRemoval=true,cascade=CascadeType.REMOVE)
+	@Expose
+	private List<EventException> exceptions=new ArrayList<EventException>();
+	
 	@Column
 	@Expose
 	private Date startTime;
@@ -68,6 +70,7 @@ public class Repetition  {
 		this.endTime=et;
 		//o.getRepetitions().add(this);
 		o.setRepetition(this);
+		
 		
 	}
 	

@@ -16,12 +16,12 @@ import javax.persistence.UniqueConstraint;
 import com.google.gson.annotations.Expose;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"EventException_id"})})
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"exception_id"})})
 public class EventException  {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="EventException_id",unique = true)
+	@Column(name="exception_id",unique = true)
 	@Expose
 	protected int id;
 
@@ -36,9 +36,11 @@ public class EventException  {
 	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "repetition_id",nullable = false)
-	private Repetition repetition;
+	private  Repetition repetition;
 
 	
+	
+		
 	
 	public EventException(){
 		super();
@@ -47,7 +49,10 @@ public class EventException  {
 	public EventException (Repetition r, Date startTime,Date endTime){
 		this.startTime=startTime;
 		this.endTime=endTime;
+		
+		repetition=r;
 		r.getExceptions().add(this);
+		
 	
 	}
 	
