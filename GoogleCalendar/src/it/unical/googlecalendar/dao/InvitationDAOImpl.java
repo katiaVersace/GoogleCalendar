@@ -142,9 +142,12 @@ public class InvitationDAOImpl implements InvitationDAO {
 	}
 
 	@Override
-	public boolean acceptInvitation(User u,Calendar c) {
+	public boolean acceptInvitation(int u_id,int c_id) {
 		boolean result = false;
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class,u_id);
+		Calendar c = session.get(Calendar.class, c_id);
+		
 		String myPrivilege = getPriviledgeForInvitationByCalendarAndReceiver(u.getId(), c.getId());
 		if (myPrivilege != null)// signofica che non ho ricevuto inviti da
 								// accettare per questo calendario quindi esco
@@ -189,9 +192,11 @@ public class InvitationDAOImpl implements InvitationDAO {
 	}
 
 	@Override
-	public boolean declineInvitation(User u, Calendar c) {
+	public boolean declineInvitation(int u_id,int c_id) {
 		boolean result = false;
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class,u_id);
+		Calendar c = session.get(Calendar.class,c_id);
 		Invitation invitationToDelete = getInvitationByCalendarAndReceiver(u.getId(),c.getId());
 		if (invitationToDelete!=null) {
 			Transaction tx = null;
@@ -221,8 +226,9 @@ public class InvitationDAOImpl implements InvitationDAO {
 	}
 
 	@Override
-	public boolean sendInvitation(int sender_id, String receiver_email, Calendar calendar, String privilege) {
+	public boolean sendInvitation(int sender_id, String receiver_email, int c_id, String privilege) {
 		Session session = sessionFactory.openSession();
+		Calendar calendar =session.get(Calendar.class,c_id);
 		boolean result = false;
 
 		Query query1 = session.createQuery("SELECT u FROM User u WHERE u.email= :email");

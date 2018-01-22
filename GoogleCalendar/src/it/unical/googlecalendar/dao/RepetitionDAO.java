@@ -74,9 +74,10 @@ public class RepetitionDAO {
 	
 	
 //FIXME: mi sa che qui il lazy rompe
-	public boolean updateRepetitionById(Repetition r,int nR, String qR,int user_id
+	public boolean updateRepetitionById(int r_id,int nR, String qR,Date st, Date et,int user_id
 			) {
 		Session session = sessionFactory.openSession();
+		Repetition r=session.get(Repetition.class, r_id);
 		boolean result = false;
 		Occurrence o=session.get(Occurrence.class, r.getOccurrence().getId());
 
@@ -95,6 +96,8 @@ public class RepetitionDAO {
 				tx = session.beginTransaction();
                 r.setNumRepetition(nR);
                 r.setRepetitionType(qR);
+                r.setStartTime(st);
+                r.setEndTime(et);
                 session.update(r);
 				tx.commit();
 				result = true;
@@ -111,11 +114,11 @@ public class RepetitionDAO {
 
 	}
 
-	public boolean deleteRepetitionById(Repetition r, int user_id) {
+	public boolean deleteRepetitionById(int r_id, int user_id) {
 		Session session = sessionFactory.openSession();
 		boolean result = false;
+		Repetition r=session.get(Repetition.class, r_id);
 		Occurrence o=session.get(Occurrence.class, r.getOccurrence().getId());
-
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
 		query.setParameter("calendar_id",o.getCalendar().getId() ).setParameter("user_id", user_id);
@@ -150,10 +153,10 @@ public class RepetitionDAO {
 	}
 
 	
-	public int insertNewRepetition(Occurrence o2,int nR, String type, int user_id, Date st, Date et) {
+	public int insertNewRepetition(int o2,int nR, String type, int user_id, Date st, Date et) {
 		Session session = sessionFactory.openSession();
 		int result =-1;
-		Occurrence o=session.get(Occurrence.class, o2.getId());
+		Occurrence o=session.get(Occurrence.class, o2);
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
 		query.setParameter("calendar_id",o.getCalendar().getId() ).setParameter("user_id", user_id);

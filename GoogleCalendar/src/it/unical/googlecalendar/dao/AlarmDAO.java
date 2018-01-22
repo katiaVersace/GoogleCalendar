@@ -84,9 +84,10 @@ public class AlarmDAO {
 
 	}
 
-	public boolean updateAlarmById(Alarm m,int alarm
+	public boolean updateAlarmById(int a_id,int alarm
 			) {
 		Session session = sessionFactory.openSession();
+		Alarm m = session.get(Alarm.class, a_id);
 		boolean result = false;
 		Transaction tx = null;
 
@@ -109,8 +110,11 @@ public class AlarmDAO {
 
 	}
 
-	public boolean deleteAlarmById(Alarm m,User u) {
+	public boolean deleteAlarmById(int a_id,int u_id) {
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class,u_id);
+		Alarm m =  session.get(Alarm.class,a_id);
+		
 		Transaction tx = null;
 		boolean result = false;
 		
@@ -136,8 +140,10 @@ public class AlarmDAO {
 		return result;
 	}
 
-	public int insertNewAlarm(User u, Occurrence o,int a) {
+	public int insertNewAlarm(int u_id,int o_id,int a) {
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class, u_id);
+		Occurrence o = session.get(Occurrence.class, o_id);
 		Alarm m = new Alarm(u,o, a);
 		int result =-1;
 		Transaction tx = null;

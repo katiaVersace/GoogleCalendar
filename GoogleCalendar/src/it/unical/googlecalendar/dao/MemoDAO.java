@@ -70,9 +70,10 @@ public class MemoDAO {
 		return result;
 	}
 
-	public boolean updateMemoById(Memo m, int creator, String title, Date date, String description, String color1
+	public boolean updateMemoById(int m_id, int creator, String title, Date date, String description, String color1
 			) {
 		Session session = sessionFactory.openSession();
+		Memo m = session.get(Memo.class,m_id);
 		boolean result = false;
 		Transaction tx = null;
 
@@ -99,8 +100,12 @@ public class MemoDAO {
 
 	}
 
-	public boolean deleteMemoById(Memo m, User u) {
+	public boolean deleteMemoById(int m_id, int u_id) {
 		Session session = sessionFactory.openSession();
+		Memo m = session.get(Memo.class, m_id);
+		User u = session.get(User.class,u_id);
+
+		
 		Transaction tx = null;
 		boolean result = false;
 
@@ -126,8 +131,9 @@ public class MemoDAO {
 		return result;
 	}
 
-	public int insertNewMemo(User u, String title, Date data, String description, String c1) {
+	public int insertNewMemo(int creator_id, String title, Date data, String description, String c1) {
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class,creator_id);
 		Memo m = new Memo(u, title, data, description,c1);
 		int result =-1;
 		Transaction tx = null;

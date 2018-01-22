@@ -219,7 +219,7 @@ public class IndexController {
     // TODO: Giuseppe aggiungi questo metodo!!
     @RequestMapping(value = "/deleteAlarm/{alarm_id}", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteAlarm(HttpSession session, @RequestParam int minutes,
+    public String deleteAlarm(HttpSession session,
             @PathVariable("alarm_id") String alarm_id) {
         return dbService.deleteAlarm(Integer.parseInt(alarm_id), (Integer) session.getAttribute("user_id")) ? "YES"
                 : "NO";
@@ -354,4 +354,72 @@ public class IndexController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(dbService.searchEmail(emailToSearch));
     }
+    
+    /*
+     * insertNewRepetition
+     */
+    // se ritorna -1 significa che l'inserimento non è andato a buon fine 
+    @RequestMapping(value = "/insertNewRepetition/{occurrence_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public int insertNewRepetition(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
+            @RequestParam int numR,@RequestParam String rType,@RequestParam Date sT,@RequestParam Date eT) {
+    	   return dbService.insertNewRepetition(Integer.parseInt(occurrence_id),numR,rType,(Integer) session.getAttribute("user_id"),sT,eT);
+    }
+    
+    /*
+     * updateRepetition
+     */
+    // TODO: Giuseppe aggiungi questo metodo!!
+    @RequestMapping(value = "/updateRepetition/{repetition_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateRepetition(HttpSession session, @RequestParam int numR, @RequestParam String rType,@RequestParam Date st,@RequestParam Date et,
+            @PathVariable("repetition_id") String repetition_id) {
+        return dbService.updateRepetition(Integer.parseInt(repetition_id), numR,rType,st,et,(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+    }
+
+    /*
+     * deleteRepetition
+     */
+    // TODO: Giuseppe aggiungi questo metodo!!
+    @RequestMapping(value = "/deleteRepetition/{repetition_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteRepetition(HttpSession session,@PathVariable("repetition_id") String repetition_id) {
+        return dbService.deleteRepetition(Integer.parseInt(repetition_id), (Integer) session.getAttribute("user_id")) ? "YES"
+                : "NO";
+    }
+
+    
+     /*
+     * insertNewException
+     */
+    // se ritorna -1 significa che l'inserimento non è andato a buon fine 
+    @RequestMapping(value = "/insertNewException/{repetition_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public int insertNewException(HttpSession session, @PathVariable("repetition_id") String repetition_id,
+            @RequestParam Date sT,@RequestParam Date eT) {
+    	   return dbService.insertNewException(Integer.parseInt(repetition_id),sT,eT,(Integer) session.getAttribute("user_id"));
+    }
+
+    /*
+     * updateException
+     */
+ // TODO: Giuseppe aggiungi questo metodo!!
+    @RequestMapping(value = "/updateException/{exception_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateException(HttpSession session, @RequestParam Date st,@RequestParam Date et,
+            @PathVariable("exception_id") String exception_id) {
+        return dbService.updateException(Integer.parseInt(exception_id), st,et,(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+    }
+
+    /*
+     * deleteException
+     */
+    // TODO: Giuseppe aggiungi questo metodo!!
+    @RequestMapping(value = "/deleteException/{exception_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteException(HttpSession session,@PathVariable("exception_id") String exception_id) {
+        return dbService.deleteException(Integer.parseInt(exception_id), (Integer) session.getAttribute("user_id")) ? "YES"
+                : "NO";
+    }
+
 }

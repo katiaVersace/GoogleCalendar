@@ -126,8 +126,9 @@ public class NotificationDAO {
 	}
 
 
-	public boolean deleteNotifications(User u) {
+	public boolean deleteNotifications(int u_id) {
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class,u_id);
 		Transaction tx = null;
 		boolean result = false;
 

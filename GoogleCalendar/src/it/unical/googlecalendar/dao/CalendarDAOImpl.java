@@ -111,8 +111,10 @@ private Users_CalendarsDAOImpl ucdao;
 	}
 
 	@Override
-	public boolean deleteById(Calendar c, User u) {
+	public boolean deleteById(int c_id, int u_id) {
 		Session session = sessionFactory.openSession();
+		Calendar c =session.get(Calendar.class,c_id);
+		User u = session.get(User.class,u_id);
 		Transaction tx = null;
 		boolean result = false;
 		Users_Calendars resultAssociation;
@@ -133,9 +135,6 @@ private Users_CalendarsDAOImpl ucdao;
 			tx.commit();
 			
 			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
-			//session.save(u);
-			//u.removeAssociationWithCalendar(c);
-			//c.getUsers_calendars().remove(uc);
 			result = true;
 
 		} catch (Exception e) {
@@ -153,9 +152,11 @@ private Users_CalendarsDAOImpl ucdao;
 
 	
 	@Override
-	public boolean disconnectUserFromCalendarById(Calendar c, User u) {
+	public boolean disconnectUserFromCalendarById(int c_id, int u_id) {
 		boolean result = false;
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class,u_id);
+		Calendar c = session.get(Calendar.class,c_id);
 		Users_Calendars resultAssociation;
 		List<Users_Calendars> resultsId=ucdao.getAssociationByUserIdAndCalendarId(u.getId(), c.getId());
 		if(resultsId.size()!=0){
@@ -191,7 +192,7 @@ private Users_CalendarsDAOImpl ucdao;
 			
 			//se rimuovo il calendario a cascata rimuovo anche l'associazione
 			if(toDelete){
-			deleteById(c, u);
+			deleteById(c.getId(), u.getId());
 						}
 			//altrimenti rimuovo solo l'associazione
 			else session.delete(uc);
@@ -222,8 +223,9 @@ private Users_CalendarsDAOImpl ucdao;
 	
 	
 	@Override
-	public int insertNewCalendar(User u, String title, String description) {
+	public int insertNewCalendar(int u_id, String title, String description) {
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class, u_id);
 		Calendar c=new Calendar(u,title,description);
 		int result = -1;
 		
@@ -246,9 +248,9 @@ private Users_CalendarsDAOImpl ucdao;
 	}
 
 	@Override
-	public boolean updateCalendarById(Calendar c,String title, String description, int user_id) {
+	public boolean updateCalendarById(int c_id,String title, String description, int user_id) {
 		Session session = sessionFactory.openSession();
-		
+		Calendar c = session.get(Calendar.class,c_id);
 		
 		boolean result=false;
 		

@@ -92,7 +92,7 @@ public class CalendarDAOTest {
 		
 		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccinoCalendar).size()==2);
 		
-		Assert.assertTrue(cdao.deleteById(ciccinoCalendar,ciccino));
+		Assert.assertTrue(cdao.deleteById(ciccinoCalendar.getId(),ciccino.getId()));
 			
 		
 		

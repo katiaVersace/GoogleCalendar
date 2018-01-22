@@ -42,17 +42,13 @@ public interface OccurrenceDAO {
 	Occurrence getOccurrenceById(int o_id);
 
 	
-	
-	
-	int insertNewEvent(Calendar c, User u, String title, String description, Date startTime, Date endTime, String c1,
+
+	int insertNewEvent(int ca, int u_id, String title, String description, Date startTime, Date endTime, String c1,
 			String c2);
 
-	boolean updateEventById(Occurrence v, String title, String description, Date startTime, Date endTime, String c1,
+	boolean deleteById(int oc_id, int u_id);
+
+	boolean updateEventById(int ev_id, String title, String description, Date startTime, Date endTime, String c1,
 			String c2, int user_id);
-
-	//boolean deleteById(Occurrence oc, User u);
-
-	
-	boolean deleteById(Occurrence oc, User u);
 	
 }

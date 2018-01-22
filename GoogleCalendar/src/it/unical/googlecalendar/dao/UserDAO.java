@@ -17,8 +17,6 @@ public interface UserDAO {
 	
 	boolean update(User user);
 
-	boolean updateUserById(User u, String username, String password);
-
 	User getUserById(int u_id);
 
 	User getUserByEmail(String email);
@@ -26,6 +24,8 @@ public interface UserDAO {
 	List<String> searchEmail(String email);
 
 	boolean existsUserFB(String email);
+
+	boolean updateUserById(int u_id, String username, String password);
 
 	
 	

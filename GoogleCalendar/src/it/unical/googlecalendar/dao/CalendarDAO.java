@@ -19,14 +19,14 @@ public interface CalendarDAO {
 	void update(Calendar Calendar);
 
 	String getPrivilegeForCalendarAndUser(int user_id, int calendar_id);
-
-	boolean deleteById(Calendar c, User u);
-
-	boolean disconnectUserFromCalendarById(Calendar c, User u);
-
-	int insertNewCalendar(User u, String title, String description);
-
-	boolean updateCalendarById(Calendar c, String title, String description, int user_id);
-
+	
 	Calendar getCalendarById(int c_id);
+
+	boolean deleteById(int c_id, int u_id);
+
+	int insertNewCalendar(int u_id, String title, String description);
+
+	boolean updateCalendarById(int c_id, String title, String description, int user_id);
+
+	boolean disconnectUserFromCalendarById(int c_id, int u_id);
 }

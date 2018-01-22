@@ -53,10 +53,10 @@ public class InvitationDAOTest {
 		Calendar c = new Calendar(peppe, "peppe calendar", "jshdjs");
 		cdao.save(c);
 		//peppe invita mario a c
-		idao.sendInvitation(peppe.getId(), mario.getEmail(), c, "RW");
+		idao.sendInvitation(peppe.getId(), mario.getEmail(), c.getId(), "RW");
 		Invitation i = idao.getInvitationByCalendarAndReceiver(mario.getId(), c.getId());
 		//peppe invita fabio a c
-		idao.sendInvitation(peppe.getId(), fabio.getEmail(), c, "ADMIN");
+		idao.sendInvitation(peppe.getId(), fabio.getEmail(), c.getId(), "ADMIN");
 		Invitation in = idao.getInvitationByCalendarAndReceiver(fabio.getId(), c.getId());
 		
 		//System.out.println("inviti di mario prima che accetti: "+mario.receivedInvitations.size());
@@ -70,13 +70,13 @@ public class InvitationDAOTest {
 		Assert.assertTrue(idao.getAllInvitations().contains(i));
 		//idao.acceptInvitation(mario.getId(), i.getId());
 		//fabio accetta a c
-		idao.acceptInvitation(fabio, c);	
+		idao.acceptInvitation(fabio.getId(), c.getId());	
 		
 		//fabio invita mario a c
-		idao.sendInvitation(fabio.getId(), mario.getEmail(), c, "ADMIN");
+		idao.sendInvitation(fabio.getId(), mario.getEmail(), c.getId(), "ADMIN");
 		Assert.assertTrue(idao.getInvitationsByReceiverId(mario.getId()).size()==1);
 		//mario accetta a c
-		idao.acceptInvitation(mario, c);
+		idao.acceptInvitation(mario.getId(), c.getId());
 //		List<Users_Calendars> ass=ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId());
 //		System.out.println("Associazioni di mario con il calendario c "+ass.size());
 		List<Notification> notif=ndao.getUnsentNotificationByUserId(peppe.getId());
@@ -86,7 +86,7 @@ public class InvitationDAOTest {
 //		}
 		
 		//System.out.println("Peppe sta x leggere le notifiche e cancellarle");
-		ndao.deleteNotifications(peppe);
+		ndao.deleteNotifications(peppe.getId());
 		
 		 notif=ndao.getUnsentNotificationByUserId(peppe.getId());
 //			System.out.println("Notifiche di peppe: "+notif.size());

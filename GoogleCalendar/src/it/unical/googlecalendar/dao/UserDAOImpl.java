@@ -139,9 +139,9 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public boolean updateUserById(User u, String username, String password) {
+	public boolean updateUserById(int u_id, String username, String password) {
 		Session session = sessionFactory.openSession();
-
+		User u = session.get(User.class,u_id);
 		boolean result = false;
 		Transaction tx = null;
 

@@ -78,10 +78,11 @@ public class ExceptionDAO {
 	
 	
 
-	public boolean updateExceptionById(EventException ex, Date startTime,Date endTime, int user_id
+	public boolean updateExceptionById(int e_id, Date startTime,Date endTime, int user_id
 			) {
 		
 		Session session = sessionFactory.openSession();
+		EventException ex=session.get(EventException.class, e_id);
 		boolean result = false;
 		
 		if(isWriter(user_id, ex.getId())){
@@ -107,8 +108,10 @@ public class ExceptionDAO {
 
 	}
 
-	public boolean deleteExceptionById(EventException m,Repetition r,int user_id) {
+	public boolean deleteExceptionById(int ex_id,int user_id) {
 		Session session = sessionFactory.openSession();
+		EventException m=session.get(EventException.class,ex_id);
+		Repetition r=session.get(Repetition.class,m.getRepetition().getId());
 		Transaction tx = null;
 		boolean result = false;
 		if(isWriter(user_id, m.getId())){
@@ -134,11 +137,21 @@ public class ExceptionDAO {
 		return result;
 	}
 
-	public int insertNewException(Repetition r, Date s, Date en,int user_id) {
+
+	public int insertNewException(int r_id, Date s, Date en,int user_id) {
 		Session session = sessionFactory.openSession();
-		Repetition u=session.get(Repetition.class, r.getId());
+		Repetition u=session.get(Repetition.class,r_id);
 		int result =-1;
 		Transaction tx = null;
+		
+		Query query = session.createQuery(
+				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+		query.setParameter("calendar_id",u.getOccurrence().getCalendar().getId() ).setParameter("user_id", user_id);
+
+		List<Users_Calendars> resultsId = query.getResultList();
+		if (resultsId.size() != 0) {
+			Users_Calendars uc = resultsId.get(0);
+				if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
 	
 		try {
 			
@@ -159,7 +172,7 @@ public class ExceptionDAO {
 			e.printStackTrace();
 			result = -1;
 			tx.rollback();
-		}
+		}}}
 		
 		session.close();
 		
