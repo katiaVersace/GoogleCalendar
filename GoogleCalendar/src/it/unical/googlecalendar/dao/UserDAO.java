@@ -10,7 +10,7 @@ public interface UserDAO {
 	boolean save(User User);
 
 	List<User> getAllUsers();
-	public boolean existsUser(String email, String password);
+	public String existsUser(String email, String password);
 	public String getUsernameByEmail(String email);
 	
 	boolean update(User user);
@@ -21,6 +21,7 @@ public interface UserDAO {
 
 	User getUserByEmail(String email);
 
-
 	List<String> searchEmail(String email);
+
+	boolean existsUserFB(String email);	
 }

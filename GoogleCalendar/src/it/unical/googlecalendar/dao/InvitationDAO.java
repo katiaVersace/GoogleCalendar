@@ -17,7 +17,6 @@ public interface InvitationDAO {
 	
 	
 	void update(Invitation invitation);
-	boolean changePrivilegeOfInvitation();
 	
 	boolean acceptInvitation(User u, Calendar c);
 
@@ -30,6 +29,8 @@ public interface InvitationDAO {
 	List<Invitation> getUnsentInvitationByUserId(int user_id);
 
 	boolean resetSentStateByUserId(int user_id);
+
+	Invitation getInvitationById(int u_id);
 
 	
 	

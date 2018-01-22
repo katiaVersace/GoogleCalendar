@@ -1,11 +1,14 @@
 package it.unical.googlecalendar.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +22,7 @@ import javax.persistence.UniqueConstraint;
 import com.google.gson.annotations.Expose;
 
 @Entity
+@Embeddable
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"repetition_id"})})
 public class Repetition  {
 	
@@ -28,11 +32,6 @@ public class Repetition  {
 	@Expose
 	protected int id;
 
-
-	@Column
-	@Expose
-	private int numRepetition;
-
 	@Column
 	@Expose
 	private String repetitionType;
@@ -41,39 +40,53 @@ public class Repetition  {
 	@JoinColumn(name = "occurrence_id",nullable = false)
 	private Occurrence occurrence;
 	
-	@OneToMany(cascade=CascadeType.REFRESH)
-	@JoinColumn(name = "exception_id",nullable = false)
-	private List<EventException> exceptions;
-
+	@OneToMany(mappedBy = "repetition",orphanRemoval=true,cascade=CascadeType.REMOVE)
+	@Expose
+	private List<EventException> exceptions=new ArrayList<EventException>();
 	
+	@Column
+	@Expose
+	private Date startTime;
 	
-	public Repetition(){
+	@Column
+	@Expose
+	private Date endTime;
+	
+	public Repetition() {
 		super();
 	}
 	
-	public Repetition (Occurrence o, int numR, String rType){
-		this.numRepetition=numR;
+	public Repetition (Occurrence o, String rType, Date st, Date et){
 		this.repetitionType=rType;
 		this.occurrence=o;
+		this.startTime=st;
+		this.endTime=et;
 		//o.getRepetitions().add(this);
 		o.setRepetition(this);
-		
 	}
 	
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
 	public List<EventException> getExceptions() {
 		return exceptions;
 	}
 
 	public void setExceptions(List<EventException> exceptions) {
 		this.exceptions = exceptions;
-	}
-
-	public int getNumRepetition() {
-		return numRepetition;
-	}
-
-	public void setNumRepetition(int numRepetition) {
-		this.numRepetition = numRepetition;
 	}
 
 	public String getRepetitionType() {

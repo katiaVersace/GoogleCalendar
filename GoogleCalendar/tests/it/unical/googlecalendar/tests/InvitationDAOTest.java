@@ -54,10 +54,10 @@ public class InvitationDAOTest {
 		cdao.save(c);
 		//peppe invita mario a c
 		idao.sendInvitation(peppe.getId(), mario.getEmail(), c, "RW");
-		Invitation i = idao.getInvitationsByCalendarAndReceiver(mario.getId(), c.getId()).get(0);
+		Invitation i = idao.getInvitationByCalendarAndReceiver(mario.getId(), c.getId());
 		//peppe invita fabio a c
 		idao.sendInvitation(peppe.getId(), fabio.getEmail(), c, "ADMIN");
-		Invitation in = idao.getInvitationsByCalendarAndReceiver(fabio.getId(), c.getId()).get(0);
+		Invitation in = idao.getInvitationByCalendarAndReceiver(fabio.getId(), c.getId());
 		
 		//System.out.println("inviti di mario prima che accetti: "+mario.receivedInvitations.size());
 //		 for(Invitation in:mario.receivedInvitations){
@@ -74,8 +74,11 @@ public class InvitationDAOTest {
 		
 		//fabio invita mario a c
 		idao.sendInvitation(fabio.getId(), mario.getEmail(), c, "ADMIN");
+		Assert.assertTrue(idao.getInvitationsByReceiverId(mario.getId()).size()==1);
 		//mario accetta a c
 		idao.acceptInvitation(mario, c);
+//		List<Users_Calendars> ass=ucdao.getAssociationByUserIdAndCalendarId(mario.getId(), c.getId());
+//		System.out.println("Associazioni di mario con il calendario c "+ass.size());
 		List<Notification> notif=ndao.getUnsentNotificationByUserId(peppe.getId());
 //		System.out.println("Notifiche di peppe: "+notif.size());
 //		for(Notification no:notif){
@@ -98,7 +101,7 @@ public class InvitationDAOTest {
 //		 }
 //		
 		String privilegiDiMario=cdao.getPrivilegeForCalendarAndUser(mario.getId(),c.getId());
-
+//System.out.println(privilegiDiMario);
 		
 		
 //	System.out.println("Privilegi di mario "+privilegiDiMario);

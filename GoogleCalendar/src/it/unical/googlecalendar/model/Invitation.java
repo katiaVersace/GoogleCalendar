@@ -1,10 +1,13 @@
 package it.unical.googlecalendar.model;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,7 +26,7 @@ import javax.persistence.UniqueConstraint;
 @Table(     
         uniqueConstraints = {
         		 @UniqueConstraint(columnNames = {"invitation_id"}),
-                @UniqueConstraint(columnNames = {"senderId","user_id", "calendar_id"})
+                @UniqueConstraint(columnNames = {"user_id", "calendar_id"})
         }
 )
 public class Invitation {
@@ -37,7 +40,9 @@ public class Invitation {
 	private Date timestamp;
 
 	@Column
-	public int senderId;
+	@ElementCollection(targetClass=Integer.class)
+	public List<Integer> senderId=new ArrayList<>();
+	
 	@Column
 	private boolean sent=false;
 
@@ -63,14 +68,17 @@ public class Invitation {
 
 	public Invitation(int sender, User receiver,Calendar calendar, String privilege) {
 		super();
-		this.senderId=sender;
+		senderId.add(sender);
 		this.receiver=receiver;
 		this.calendar=calendar;
+		
 		this.privilege=privilege;
 		timestamp=new Date();
 		
+		
 	//	receiver.receivedInvitations.add(this);
 		calendar.Invitations.add(this);
+		
 	}
 	
 	
@@ -88,9 +96,11 @@ public class Invitation {
 		return privilege;
 	}
 
-	public void setPrivilege(String privilege) {
-		this.privilege = privilege;
-	}
+	public void setPrivilege(String privilege1) {
+		
+		if((this.privilege.equals("RW")&& privilege1.equals("ADMIN"))||(this.privilege.equals("R")&& (privilege1.equals("ADMIN")||privilege1.equals("RW")))||this.privilege==null)
+			this.privilege=privilege1;
+		}
 
 	
 	
@@ -117,13 +127,12 @@ public class Invitation {
 	public void setCalendar(Calendar calendar) {
 		this.calendar = calendar;
 	}
-	public int getSenderId() {
+	
+	public List<Integer> getSendersId() {
 		return senderId;
 	}
 
-	public void setSenderId(int senderId) {
-		this.senderId = senderId;
-	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -84,9 +84,8 @@ public class OccurrenceDAOTest {
 		odao.save(memo2);
 		odao.save(memo3);
     	
-		//System.out.println("Ciccio calendar id prima di send invitation "+ciccioCalendar.getId());
 		idao.sendInvitation(ciccio.getId(),katia.getEmail(), ciccioCalendar,"ADMIN");
-		Invitation i=idao.getInvitationsByCalendarAndReceiver(katia.getId(), ciccioCalendar.getId()).get(0);
+		Invitation i=idao.getInvitationByCalendarAndReceiver(katia.getId(), ciccioCalendar.getId());
 		//System.out.println("Ciccio calendar id dopo send invitation "+ciccioCalendar.getId());
 		idao.acceptInvitation(katia,ciccioCalendar);
 			cdao.update(ciccioCalendar);
@@ -105,7 +104,8 @@ public class OccurrenceDAOTest {
 //				System.out.println(o.getTitle()+" Id: "+o.getCalendar().getId()+" Start: "+o.getStartTime()+" End: "+o.getEndTime()+" Color1: "+o.getPrimaryColor()+" Color 2"+o.getSecondaryColor());
 //			}
 			
-	
+	List<Calendar> c=cdao.getCalendarsByEmail(katia.getEmail());
+	Assert.assertTrue(c.contains(ciccioCalendar));
 				
 		Assert.assertTrue(occList.contains(memo3));
 		

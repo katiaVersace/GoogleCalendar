@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.sound.midi.SysexMessage;
 
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +20,12 @@ import com.google.gson.JsonElement;
 
 import it.unical.googlecalendar.dao.AlarmDAO;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
+import it.unical.googlecalendar.dao.ExceptionDAO;
 import it.unical.googlecalendar.dao.InvitationDAOImpl;
 import it.unical.googlecalendar.dao.MemoDAO;
 import it.unical.googlecalendar.dao.NotificationDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
+import it.unical.googlecalendar.dao.RepetitionDAO;
 import it.unical.googlecalendar.dao.UserDAOImpl;
 import it.unical.googlecalendar.model.Alarm;
 import it.unical.googlecalendar.model.Calendar;
@@ -30,6 +33,7 @@ import it.unical.googlecalendar.model.Invitation;
 import it.unical.googlecalendar.model.Memo;
 import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.model.Occurrence;
+import it.unical.googlecalendar.model.Repetition;
 import it.unical.googlecalendar.model.User;
 
 @Service
@@ -49,12 +53,17 @@ public class DbService {
 	private AlarmDAO adao;
 	@Autowired
 	private NotificationDAO ndao;
+	@Autowired
+	private RepetitionDAO rdao;
+    @Autowired
+    private ExceptionDAO edao;
 
 	@PostConstruct
 	public void initialize() {
 		// User katia=udao.getUserByEmail("k@h.it");
 		User katia = new User("k@h.it", "Katia2", "1234");
 		udao.save(katia);
+
 		Calendar katiaCalendar = new Calendar(katia, "katia's Calendar", "list of katia's events");
 		Calendar katiaCalendar2 = new Calendar(katia, "Calendar n2", "second list of katia's events");
 		cdao.save(katiaCalendar2);
@@ -79,7 +88,7 @@ public class DbService {
 					sdf.parse(dateInString), sdf.parse(dateInString2), "#555555", "#aaaaaa");
 			ev3 = new Occurrence(katiaCalendar2, katia, "Ricordati che devi morire", "Sii retto, ma non in faccia",
 					sdf.parse(dateInString), sdf.parse(dateInString2), "#555555", "#aaaaaa");
-			ev4 = new Occurrence(katiaCalendar2, katia, "Una mano � solo un piede che non ha mai smesso di sognare",
+			ev4 = new Occurrence(katiaCalendar2, katia, "Una mano è solo un piede che non ha mai smesso di sognare",
 					"Saggezza", sdf.parse(leftBoundary), sdf.parse(rightBoundary), "#555555", "#aaaaaa");
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -88,6 +97,18 @@ public class DbService {
 		odao.save(ev2);
 		odao.save(ev3);
 		odao.save(ev4);
+		
+		int rep_id;
+		
+		try {
+		    rep_id = rdao.insertNewRepetition(
+		            ev4, "DAY", katia.getId(), sdf.parse("2018-02-01 06:00:00"), sdf.parse("2018-02-10 06:00:00"));
+		    Repetition rep_obj = rdao.getRepetitionById(rep_id);
+		    edao.insertNewException(
+		            rep_obj, sdf.parse("2018-02-05 06:00:00"), sdf.parse("2018-02-05 06:00:00"), katia.getId());
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 	}
 
 	public Collection<Occurrence> stampaTuttiGliEventi() {
@@ -150,7 +171,6 @@ public class DbService {
 	public String updateUserById(int user_id, String username, String oldPassword, String newPassword) {
 		User u = udao.getUserById(user_id);
 		return udao.updateUserById(u, username, oldPassword, newPassword);
-
 	}
 
 	public boolean disconnectMeByCalendar(int user_id, int calendarId) {
@@ -240,5 +260,15 @@ public class DbService {
 	public List<String> searchEmail(String emailToSearch) {
 		return udao.searchEmail(emailToSearch);
 	}
-
+	
+	public String answerInvitation(int inv_id, int u_id, String answer) {
+		Invitation i = idao.getInvitationById(inv_id);
+		User u = udao.getUserById(u_id);
+		Calendar c = cdao.getCalendarById(i.getCalendar().getId());
+		if (answer.equals("accepted") && idao.acceptInvitation(u, c))
+			return "accepted";
+		else if (answer.equals("declined") && idao.declineInvitation(u, c))
+			return "declined";
+		return "error";
+	}
 }

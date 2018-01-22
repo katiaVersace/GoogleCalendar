@@ -3,7 +3,6 @@ package it.unical.googlecalendar.controllers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -172,6 +171,16 @@ public class IndexController {
             @PathVariable("calendar_id") String calendar_id, @RequestParam String privilege) {
         return dbService.sendInvitation((Integer) session.getAttribute("user_id"), receiver_email,
                 Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
+    }
+    
+    /*
+     * answerInvitation
+     */
+    @RequestMapping(value = "/answerInvitation/{invitation_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String answerInvitation(HttpSession session,@RequestParam String answer,
+            @PathVariable("invitation_id") String invitation_id) {
+        return dbService.answerInvitation(Integer.parseInt(invitation_id), (Integer) session.getAttribute("user_id"), answer);
     }
     
     /*
@@ -347,6 +356,4 @@ public class IndexController {
         }
         writer.close();
     }
-
-    
 }

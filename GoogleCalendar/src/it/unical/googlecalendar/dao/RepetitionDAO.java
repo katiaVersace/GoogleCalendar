@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -73,8 +74,7 @@ public class RepetitionDAO {
 	
 	
 //FIXME: mi sa che qui il lazy rompe
-	public boolean updateRepetitionById(Repetition r,int nR, String qR,int user_id
-			) {
+	public boolean updateRepetitionById(Repetition r, String qR, int user_id) {
 		Session session = sessionFactory.openSession();
 		boolean result = false;
 		Occurrence o=session.get(Occurrence.class, r.getOccurrence().getId());
@@ -92,7 +92,6 @@ public class RepetitionDAO {
 
 			try {
 				tx = session.beginTransaction();
-                r.setNumRepetition(nR);
                 r.setRepetitionType(qR);
                 session.update(r);
 				tx.commit();
@@ -149,10 +148,10 @@ public class RepetitionDAO {
 	}
 
 	
-	public int insertNewRepetition(Occurrence o,int nR, String type, int user_id) {
+	public int insertNewRepetition(Occurrence o2, String type, int user_id, Date st, Date et) {
 		Session session = sessionFactory.openSession();
 		int result =-1;
-		
+		Occurrence o=session.get(Occurrence.class, o2.getId());
 		Query query = session.createQuery(
 				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
 		query.setParameter("calendar_id",o.getCalendar().getId() ).setParameter("user_id", user_id);
@@ -160,24 +159,28 @@ public class RepetitionDAO {
 		List<Users_Calendars> resultsId = query.getResultList();
 		if (resultsId.size() != 0) {
 			Users_Calendars uc = resultsId.get(0);
+			Transaction tx = null;
 
 			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
-				Repetition m = new Repetition(o,nR, type);
-		Transaction tx = null;
+				try {
+				Repetition m = new Repetition(o, type, st, et);
+		
 
-		try {
 			tx = session.beginTransaction();
 			session.save(m);
-			result=m.getId();
+			
 			tx.commit();
+			result=m.getId();
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			result = -1;
 			tx.rollback();
 		}
 			}}
 
 		session.close();
+		
 		return result;
 	}
 
