@@ -72,7 +72,12 @@ public class UserDAOImpl implements UserDAO {
 		Query q = session
 				.createQuery("SELECT u FROM User u WHERE u.email = :user_email");
 		q.setParameter("user_email", email);
-		result = (User) q.getSingleResult();
+		try{
+			result = (User) q.getSingleResult();
+		}catch (Exception e) {
+			return "FALSE"; //utente non registrato
+			// TODO: handle exception
+		}
 
 		
 		if (result!=null)
@@ -222,6 +227,31 @@ public class UserDAOImpl implements UserDAO {
 
 		session.close();
 		return result;
+	}
+
+	@Override
+	public int insertNewUser(String email,String username, String password) {
+		Session session = sessionFactory.openSession();
+		User u =new User(email, username, password);
+		int result = -1;
+		
+				Transaction tx = null;
+
+				try {
+					tx = session.beginTransaction();
+					session.save(u);
+					tx.commit();
+					result=u.getId();
+					} catch (Exception e) {
+					result=-1;
+					tx.rollback();
+
+					}
+
+				session.close();
+
+				return result;
+		
 	}
 
 }

@@ -241,9 +241,11 @@ private Users_CalendarsDAOImpl ucdao;
 				} catch (Exception e) {
 					result=-1;
 					tx.rollback();
+
 				}
 
 				session.close();
+
 				return result;
 	}
 

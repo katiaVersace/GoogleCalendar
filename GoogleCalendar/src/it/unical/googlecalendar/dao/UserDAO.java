@@ -27,6 +27,9 @@ public interface UserDAO {
 
 	boolean updateUserById(int u_id, String username, String password);
 
+
+	int insertNewUser(String email, String username, String password);
+
 	
 	
 	

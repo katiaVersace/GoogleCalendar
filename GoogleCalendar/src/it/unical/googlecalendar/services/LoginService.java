@@ -46,27 +46,24 @@ public class LoginService {
 
 	}
 
-	public boolean registrationAttempt(String email, String username, String password, String confirmPassword) {
+	public int registrationAttempt(String email, String username, String password, String confirmPassword) {
 
 		// empty fields
 
 		if (email.equals("") || username.equals("") || password.equals(""))
 
-			return false;
+			return -1;
 
 		// password missmatch
 
 		if (!password.equals(confirmPassword))
 
-			return false;
+			return -1;
 
 		// user Exist
-
-		if (!udao.save(new User(email, username, password)))
-
-			return false;
-
-		return true;
+         int user_id=udao.insertNewUser(email, username, password);
+		
+		return user_id;
 
 	}
 
