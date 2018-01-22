@@ -236,9 +236,6 @@ angular
                             });
                         }
                         
-                        console.log("rruleset.all()");
-                        console.log(JSON.stringify(rruleset.all(), null, 4));
-                        
                         rruleset.all().forEach(function (rule) {
                             var event = new vm.Event(
                                 blueprint.id,
