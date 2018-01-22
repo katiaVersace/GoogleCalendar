@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -52,8 +53,8 @@ public class User {
     
     private List<Alarm> alarms=new ArrayList<Alarm>();
     
-	    
-  	
+	@OneToOne(mappedBy="fbUser",orphanRemoval=true,cascade=CascadeType.ALL)
+  	private Calendar myFacebookCalendar;
     
 	
 	public User() {
@@ -68,7 +69,15 @@ public class User {
 	}
 	
 	
-	 public List<Alarm> getAlarms() {
+	 public Calendar getMyFacebookCalendar() {
+		return myFacebookCalendar;
+	}
+
+	public void setMyFacebookCalendar(Calendar myFacebookCalendar) {
+		this.myFacebookCalendar = myFacebookCalendar;
+	}
+
+	public List<Alarm> getAlarms() {
 		return alarms;
 	}
 

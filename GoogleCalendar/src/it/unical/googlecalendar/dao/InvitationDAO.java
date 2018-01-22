@@ -17,20 +17,18 @@ public interface InvitationDAO {
 	
 	
 	void update(Invitation invitation);
-	
-	boolean acceptInvitation(User u, Calendar c);
-
-	boolean declineInvitation(User u, Calendar c);
-
-	
-	
-	boolean sendInvitation(int sender_id, String receiver_email, Calendar calendar, String privilege);
 
 	List<Invitation> getUnsentInvitationByUserId(int user_id);
 
 	boolean resetSentStateByUserId(int user_id);
 
 	Invitation getInvitationById(int u_id);
+
+	boolean sendInvitation(int sender_id, String receiver_email, int c_id, String privilege);
+
+	boolean acceptInvitation(int u_id, int c_id);
+
+	boolean declineInvitation(int u_id, int c_id);
 
 	
 	

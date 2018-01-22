@@ -212,10 +212,11 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-public int insertNewEvent(Calendar ca, User u, String title, String description,Date startTime,Date endTime,String c1, String c2) {
+public int insertNewEvent(int ca, int u_id, String title, String description,Date startTime,Date endTime,String c1, String c2) {
 		
 		Session session = sessionFactory.openSession();
-		Calendar c=session.get(Calendar.class, ca.getId());
+		User u = session.get(User.class,u_id);
+		Calendar c=session.get(Calendar.class, ca);
 		Occurrence ev = new Occurrence(c, u, title, description,startTime,endTime, c1, c2);
 		int result =-1;
 		Transaction tx = null;
@@ -235,31 +236,13 @@ public int insertNewEvent(Calendar ca, User u, String title, String description,
 		return result;
 	}
 
-//	@Override
-//	public int insertNewMemo(Calendar c, User u, String title, Date data, String description) {
-//		Session session = sessionFactory.openSession();
-//		Memo m = new Memo(c, u, title, data, description);
-//		int result =-1;
-//		Transaction tx = null;
-//
-//		try {
-//			tx = session.beginTransaction();
-//			session.save(m);
-//			result=m.getId();
-//			tx.commit();
-//
-//		} catch (Exception e) {
-//			result = -1;
-//			tx.rollback();
-//		}
-//
-//		session.close();
-//		return result;
-//	}
+
 
 	@Override
-	public boolean deleteById(Occurrence oc,User u) {
+	public boolean deleteById(int oc_id,int u_id) {
 		Session session = sessionFactory.openSession();
+		Occurrence oc =session.get(Occurrence.class,oc_id);
+		User u = session.get(User.class,u_id);
 		Transaction tx = null;
 		boolean result = false;
 		Calendar ca=session.load(Calendar.class, oc.getCalendar().getId());
@@ -307,8 +290,9 @@ public int insertNewEvent(Calendar ca, User u, String title, String description,
 	}
 
 	@Override
-	public boolean updateEventById(Occurrence v, String title,  String description, Date startTime,Date endTime,String c1, String c2,int user_id) {
+	public boolean updateEventById(int ev_id, String title,  String description, Date startTime,Date endTime,String c1, String c2,int user_id) {
 		Session session = sessionFactory.openSession();
+		Occurrence v = session.get(Occurrence.class,ev_id);
 boolean result = false;
 
 		// l'utente e il calendario dell'occurrence
@@ -351,45 +335,6 @@ boolean result = false;
 		session.close();
 		return result;
 	}
-
-//	@Override
-//	public boolean updateMemoById(Memo m, String title, Date data, String description, int user_id) {
-//		Session session = sessionFactory.openSession();
-//		
-//		boolean result = false;
-//
-//		// l'utente e il calendario dell'occurrence
-//		Query query = session.createQuery(
-//				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-//		query.setParameter("calendar_id", m.getCalendar().getId()).setParameter("user_id", user_id);
-//
-//		List<Users_Calendars> resultsId = query.getResultList();
-//		if (resultsId.size() != 0) {
-//			Users_Calendars uc = resultsId.get(0);
-//
-//			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
-//		
-//
-//		Transaction tx = null;
-//
-//		try {
-//
-//			tx = session.beginTransaction();
-//			m.setTitle(title);
-//			m.setDate(data);
-//			m.setDescription(description);
-//			session.update(m);
-//			tx.commit();
-//			result = true;
-//
-//		} catch (Exception e) {
-//			result = false;
-//			tx.rollback();
-//		}}}
-//
-//		session.close();
-//		return result;
-//	}
 	
 	@Override
 	public Occurrence getOccurrenceById(int o_id){

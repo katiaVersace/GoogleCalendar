@@ -31,9 +31,9 @@ public class insertNewCalendarTest {
 		
 		User pippo = new User("pippo56@p.it","pippo", "1234");
 		udao.save(pippo);
-		int c1_id=cdao.insertNewCalendar(pippo, "c1", "descr 1");
-		int c2_id=cdao.insertNewCalendar(pippo, "c2", "descr 2");
-		int c3_id=cdao.insertNewCalendar(pippo, "c3", "descr 3");
+		int c1_id=cdao.insertNewCalendar(pippo.getId(), "c1", "descr 1");
+		int c2_id=cdao.insertNewCalendar(pippo.getId(), "c2", "descr 2");
+		int c3_id=cdao.insertNewCalendar(pippo.getId(), "c3", "descr 3");
 		
 		//System.out.println("c1: "+c1_id+" c2: "+c2_id+" c3: "+c3_id);
 	}

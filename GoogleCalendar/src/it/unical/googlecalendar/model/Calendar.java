@@ -11,7 +11,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -45,21 +47,28 @@ public class Calendar {
 //	// invitation
 	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE)
 	public List<Invitation> Invitations = new ArrayList<Invitation>();
+	
+	@OneToOne(cascade=CascadeType.REFRESH)
+	private User fbUser;
 
 	public Calendar() {
 		super();
 	}
 
-	public Calendar(User creator, String title, String description) {
+	public Calendar(User creator, String title, String description, boolean isFB) {
 		super();
 
 		this.title = title;
 
 		this.description = description;
+		
 		Users_Calendars association = null;
 		
 			association = new Users_Calendars(creator, this, "ADMIN", Color.CYAN, this.title);
 		
+		if(isFB)
+		{creator.setMyFacebookCalendar(this);
+		this.fbUser=creator;}
 	}
 	
 
@@ -69,6 +78,14 @@ public class Calendar {
 	// elimina R o RW(se sei ADMIN)
 
 	
+
+	public User getFbUser() {
+		return fbUser;
+	}
+
+	public void setFbUser(User fbUser) {
+		this.fbUser = fbUser;
+	}
 
 	public Users_Calendars getAssociationByUser(User u) {
 		for (Users_Calendars uc : users_calendars) {

@@ -72,7 +72,12 @@ public class UserDAOImpl implements UserDAO {
 		Query q = session
 				.createQuery("SELECT u FROM User u WHERE u.email = :user_email");
 		q.setParameter("user_email", email);
-		result = (User) q.getSingleResult();
+		try{
+			result = (User) q.getSingleResult();
+		}catch (Exception e) {
+			return "FALSE"; //utente non registrato
+			// TODO: handle exception
+		}
 
 		
 		if (result!=null)
@@ -139,8 +144,10 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public String updateUserById(User u, String username, String oldPassword, String newPassword) {
-		Session session = sessionFactory.openSession();				
+	public String updateUserById(int u_id, String username, String oldPassword, String newPassword) {
+		Session session = sessionFactory.openSession();
+	     User u = session.get(User.class,u_id);
+
 				String oldPssDb = u.getPassword();
 				
 				String  result="";
@@ -242,4 +249,39 @@ public class UserDAOImpl implements UserDAO {
 		return result;
 	}
 
+	@Override
+	public int insertNewUser(String email,String username, String password) {
+		Session session = sessionFactory.openSession();
+		User u =new User(email, username, password);
+		int result = -1;
+		
+				Transaction tx = null;
+
+				try {
+					tx = session.beginTransaction();
+					session.save(u);
+					tx.commit();
+					result=u.getId();
+					} catch (Exception e) {
+						e.printStackTrace();
+					result=-1;
+					tx.rollback();
+
+					}
+
+				session.close();
+
+				return result;
+		
+	}
+
+	@Override
+	public Calendar getFbCalendar(int user_id) {
+		Session session = sessionFactory.openSession();
+		// sql query
+
+		User u=session.get(User.class,user_id);
+		return u.getMyFacebookCalendar();
+		
+	}
 }

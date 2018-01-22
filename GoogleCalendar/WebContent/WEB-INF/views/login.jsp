@@ -1,27 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Login Page</title>
-<meta charset="utf-8">
-
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="resources/css/login.css">
 
 <script src="resources/scripts/login.js"></script>
-<script src="resources/scripts/checkRegistrationForm.js"></script>
-
-
 <script>
 	// Load the SDK asynchronously
 	(function(d, s, id) {
@@ -40,7 +33,7 @@
 			cookie : true, // enable cookies to allow the server to access 
 			// the session
 			xfbml : true, // parse social plugins on this page
-			version : 'v2.11' // use graph api version 2.11
+			version : 'v2.8' // use graph api version 2.11
 		});
 
 	};
@@ -62,13 +55,13 @@
 			// Logged into your app and Facebook.
 
 			//user data
-			var name;
-			var email;
+			var user_name;
+			var user_email;
 
 			//calendar data
-			var birthday;
-			var friends;
-			var events;
+			var user_birthday;
+			var user_events;
+ 
 
 			//get Data From FB
 			FB
@@ -76,37 +69,95 @@
 							'/me',
 							{
 								locale : 'it_IT',
-								fields : 'name, email,birthday,friends,events'
+								fields : 'name, email,birthday,events'
 							},
 							function(response) {
 
-								email = response.email;
-								name = response.name;
-								birthday = response.birthday;
-
-								//friends = response.friends.summary.total_count;
-								events = response.events.data;
-
+								document.getElementById('status').innerHTML = 'You are logged as '
+										+ response.name;
+ 
+								user_email = response.email;
+								user_name = response.name;
+								user_birthday = response.birthday;
+								
+								
+ 								events = response.events.data;
+								
+								/* console.log("eventssssssssssssssssssssss \n");
+								console.log(events); */
+								
+/* 								var str = JSON.stringify(events);
+								var jsonOBJ = JSON.parse(str); */
+								
+							
+								// used to read events properties ( some are not defined)
+								function getSafe(fn) {
+								    try {
+								        return fn();
+								    } catch (e) {
+								        return undefined;
+								    }
+								}
+								
+								var evtJSONArray =[];
+ 
+								/* for (var i = 0; i < jsonOBJ.length; i++) {
+								    
+				
+								    console.log("evento ==> "+getSafe(() => jsonOBJ[i].name)+" ----  "+jsonOBJ[i].start_time+ " * "+ getSafe(() => jsonOBJ[i].place.name)+"\n");
+							
+								    var description = "si tiene presso"+getSafe(() => jsonOBJ[i].place.name);
+								    var evtJSON = { "name":getSafe(() => jsonOBJ[i].name), "description":description, "date":getSafe(() => jsonOBJ[i].start_time)};
+								    evtJSONArray.push(evtJSON);
+								    
+								} */
+								
+								console.log("SIZEEEEEEEEEEEEEEEEEEEEEE=Z"+events.length);
+								
+								for (var i = 0; i < events.length; i++) {
+								    
+									
+								    console.log("evento ==> "+getSafe(() => events[i].name)+" ----  "+events[i].start_time+ " * "+ getSafe(() => events[i].place.name)+"\n");
+							
+								    var description = "si tiene presso"+getSafe(() => events[i].place.name);
+								    var evtJSON = { "name":getSafe(() => events[i].name), "description":description, "date":getSafe(() => events[i].start_time)};
+								    evtJSONArray.push(evtJSON);
+								    
+								} 
+								
+								
+ 
+								var resultJSON = {"name":user_name,"email":user_email,"birthday":user_birthday,"events":evtJSONArray}
+  								
+								console.log(JSON.stringify(resultJSON));
+								
 								//pass data to LoginController
 								$.ajax({
+									type: "POST",
 									url : "getFBData",
-									data : {
-										name : name,
-										birthday : birthday,
-										email : email
-									},
+									data :  { resultJSON: JSON.stringify(resultJSON)}
+									 ,
+									dataType : "json",
 									success : function(result) {
 
-										var url = window.location.href;
+										 var url = window.location.href;
 										var lastIndex = url.lastIndexOf("/");
 										url = url.substring(0, lastIndex);
-										var redirect = url + "/"+result;
+										var redirect = url + "/index";
 
-										location.href = redirect;
+										location.href = redirect; 
 
 									},
 									error : function(result) {
-										alert("facebook ajax error ")
+ 										
+ 
+										 var url = window.location.href;
+										var lastIndex = url.lastIndexOf("/");
+										url = url.substring(0, lastIndex);
+										var redirect = url + "/index";
+
+										location.href = redirect;
+
 									}
 
 								});
@@ -122,108 +173,93 @@
 </script>
 
 </head>
-<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-6 col-md-offset-3">
-				<div class="panel panel-login">
-					<div class="panel-heading">
-						<div class="row">
-							<div class="col-xs-6">
-								<a href="#" class="${login_title}" id="login-form-link">Login</a>
-							</div>
-							<div class="col-xs-6">
-								<a href="#" class="${register_title}" id="register-form-link">Register</a>
-							</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="panel panel-login">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-xs-6">
+							<a href="#" class="${login_title}" id="login-form-link">Login</a>
 						</div>
-						<hr>
+						<div class="col-xs-6">
+							<a href="#" class="${register_title}" id="register-form-link">Register</a>
+						</div>
 					</div>
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-lg-12">
-
-								<form id="login-form" method="post" role="form"
-									style="display: ${login_block};">
-									<div class="form-group">
-										<input type="text" name="email" id="email" tabindex="1"
-											class="form-control" placeholder="Email" value=""
-											style="color: #337ab7;">
-									</div>
-									<div class="form-group">
-										<input type="password" name="password" id="password"
-											tabindex="2" class="form-control" placeholder="Password"
-											style="color: #337ab7;">
-									</div>
-									<div class="form-group">
-										<div class="row">
-											<div class="col-sm-6 col-sm-offset-3">
-												<input type="submit" name="login-submit" id="login-submit"
-													formaction="loginAttempt" tabindex="4"
-													class="form-control btn btn-login" value="Log In">
-											</div>
+					<hr>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<form id="login-form" method="post" role="form"
+								style="display: ${login_block};">
+								<div class="form-group">
+									<input type="text" name="email" id="email" tabindex="1"
+										class="form-control" placeholder="Email" value="">
+								</div>
+								<div class="form-group">
+									<input type="password" name="password" id="password"
+										tabindex="2" class="form-control" placeholder="Password">
+								</div>
+								<div class="form-group text-center">
+									<input type="checkbox" tabindex="3" class="" name="remember"
+										id="remember"> <label for="remember"> Remember
+										Me</label>
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-6 col-sm-offset-3">
+											<input type="submit" name="login-submit" id="login-submit"
+												formaction="loginAttempt" tabindex="4"
+												class="form-control btn btn-login" value="Log In">
 										</div>
 									</div>
-									<fb:login-button
+								</div>
+
+								<fb:login-button
 									scope="public_profile,email,user_hometown,user_birthday,user_education_history,user_website,user_work_history,user_events"
 									onlogin="checkLoginState();">
 								</fb:login-button>
-									
-								</form>
 
-								
-								<form id="register-form" method="post" role="form"
-									style="display: ${register_block};">
+								<div id="status"></div>
 
-									<div class="form-group">
-										<input type="text" name="username" id="username_1"
-											onkeyup='check();' tabindex="1" class="form-control"
-											placeholder="Username" value="" style="color: #337ab7;">
-									</div>
-									<div class="form-group">
-										<input type="email" name="email" id="email_1"
-											onkeyup='check();' tabindex="1" class="form-control"
-											placeholder="Email Address" value="" style="color: #337ab7;">
-									</div>
-
-									<div class="form-group">
-										<input name="password" id="password_1" type="password"
-											onkeyup='check();' tabindex="2" class="form-control"
-											placeholder="Password" style="color: #337ab7;" />
-									</div>
-
-									<div class="form-group">
-										<input type="password" name="confirm_password"
-											id="confirm_password" onkeyup='check();' tabindex="2"
-											class="form-control" placeholder="Confirm Password"
-											style="color: #337ab7;" />
-									</div>
-
-									<div class="form-group" style="text-align: center">
-										<span id='message'></span>
-									</div>
-
-									<div class="form-group">
-										<div class="row">
-											<div class="col-sm-6 col-sm-offset-3">
-												<input type="submit" name="register-submit"
-													id="register_button" formaction="registrationAttempt"
-													disabled="true" tabindex="4"
-													class="form-control btn btn-register" value="Register Now"
-													style="color: green;">
-											</div>
+							</form>
+							<form id="register-form" method="post" role="form"
+								style="display: ${register_block};">
+								<div class="form-group">
+									<input type="text" name="username" id="username" tabindex="1"
+										class="form-control" placeholder="Username" value="">
+								</div>
+								<div class="form-group">
+									<input type="email" name="email" id="email" tabindex="1"
+										class="form-control" placeholder="Email Address" value="">
+								</div>
+								<div class="form-group">
+									<input type="password" name="password" id="password"
+										tabindex="2" class="form-control" placeholder="Password">
+								</div>
+								<div class="form-group">
+									<input type="password" name="confirmPassword"
+										id="confirm-password" tabindex="2" class="form-control"
+										placeholder="Confirm Password">
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-6 col-sm-offset-3">
+											<input type="submit" name="register-submit"
+												id="register-submit" formaction="registrationAttempt"
+												onclick="validation(this)" tabindex="4"
+												class="form-control btn btn-register" value="Register Now">
 										</div>
 									</div>
+								</div>
 
-								</form>
-
-							</div>
+							</form>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</html>
 
-
-
+</div>

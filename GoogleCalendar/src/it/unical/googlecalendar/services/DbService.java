@@ -63,9 +63,10 @@ public class DbService {
 		// User katia=udao.getUserByEmail("k@h.it");
 		User katia = new User("k@h.it", "Katia2", "1234");
 		udao.save(katia);
+		
+		Calendar katiaCalendar = new Calendar(katia, "katia's Calendar", "list of katia's events",false);
+		Calendar katiaCalendar2 = new Calendar(katia, "Calendar n2", "second list of katia's events",false);
 
-		Calendar katiaCalendar = new Calendar(katia, "katia's Calendar", "list of katia's events");
-		Calendar katiaCalendar2 = new Calendar(katia, "Calendar n2", "second list of katia's events");
 		cdao.save(katiaCalendar2);
 		cdao.save(katiaCalendar);
 		Notification n = new Notification(katia, "la mia prima notifica");
@@ -102,10 +103,10 @@ public class DbService {
 		
 		try {
 		    rep_id = rdao.insertNewRepetition(
-		            ev4, "DAY", katia.getId(), sdf.parse("01-02-2018 06:00:00"), sdf.parse("10-02-2018 06:00:00"));
+		            ev4.getId(), "DAY", katia.getId(), sdf.parse("01-02-2018 06:00:00"), sdf.parse("10-02-2018 06:00:00"));
 		    Repetition rep_obj = rdao.getRepetitionById(rep_id);
 		    edao.insertNewException(
-		            rep_obj, sdf.parse("05-02-2018 12:00:00"), sdf.parse("05-02-2018 12:00:00"), katia.getId());
+		            rep_obj.getId(), sdf.parse("05-02-2018 12:00:00"), sdf.parse("05-02-2018 12:00:00"), katia.getId());
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
@@ -127,73 +128,59 @@ public class DbService {
 	}
 
 	public boolean deleteCalendarById(int calendarId, int user_id) {
-		Calendar c = cdao.getCalendarById(calendarId);
-		User u = udao.getUserById(user_id);
-		return cdao.deleteById(c, u);
+		return cdao.deleteById(calendarId, user_id);
 	}
 
 	public int insertNewCalendar(int user_id, String title, String description) {
-		User u = udao.getUserById(user_id);
-		return cdao.insertNewCalendar(u, title, description);
+		
+		return cdao.insertNewCalendar(user_id, title, description);
 
 	}
 
 	public boolean updateCalendarById(int calendar_id, String title, String description, int user_id) {
-		Calendar c = cdao.getCalendarById(calendar_id);
-		return cdao.updateCalendarById(c, title, description, user_id);
+		return cdao.updateCalendarById(calendar_id, title, description, user_id);
 	}
 
 	public int insertNewEvent(int calendar_id, int creator_id, String title, String description, Date startTime,
 			Date endTime, String c1, String c2) {
-		Calendar c = cdao.getCalendarById(calendar_id);
-		User u = udao.getUserById(creator_id);
-
-		return odao.insertNewEvent(c, u, title, description, startTime, endTime, c1, c2);
+		
+		return odao.insertNewEvent(calendar_id, creator_id, title, description, startTime, endTime, c1, c2);
 	}
 
 	public int insertNewMemo(int creator_id, String title, Date data, String description, String c1) {
-		User u = udao.getUserById(creator_id);
-		return mdao.insertNewMemo(u, title, data, description, c1);
+		
+		return mdao.insertNewMemo(creator_id, title, data, description, c1);
 	}
 
 	public boolean deleteOccurrenceById(int occurrenceId, int user_id) {
-		Occurrence c = odao.getOccurrenceById(occurrenceId);
-		User u = udao.getUserById(user_id);
-		return odao.deleteById(c, u);
+	
+		return odao.deleteById(occurrenceId, user_id);
 	}
 
 	public boolean updateEventById(int event_id, String title, String description, Date startTime, Date endTime,
 			String c1, String c2, int user_id) {
-		Occurrence e = (Occurrence) odao.getOccurrenceById(event_id);
-		return odao.updateEventById(e, title, description, startTime, endTime, c1, c2, user_id);
+		return odao.updateEventById(event_id, title, description, startTime, endTime, c1, c2, user_id);
 	}
 
 	public String updateUserById(int user_id, String username, String oldPassword, String newPassword) {
-		User u = udao.getUserById(user_id);
-		return udao.updateUserById(u, username, oldPassword, newPassword);
+		return udao.updateUserById(user_id, username, oldPassword, newPassword);
 	}
 
 	public boolean disconnectMeByCalendar(int user_id, int calendarId) {
-		User u = udao.getUserById(user_id);
-		Calendar ca = cdao.getCalendarById(calendarId);
-		return cdao.disconnectUserFromCalendarById(ca, u);
+		return cdao.disconnectUserFromCalendarById(calendarId, user_id);
 	}
 
 	public boolean sendInvitation(int user_id, String receiver_email, int calendar_id, String privilege) {
-		Calendar ca = cdao.getCalendarById(calendar_id);
-		return idao.sendInvitation(user_id, receiver_email, ca, privilege);
+		return idao.sendInvitation(user_id, receiver_email, calendar_id, privilege);
 	}
 
 	public boolean updateMemoById(int memo_id, int user_id, String title, Date data, String description, String c1) {
-		Memo m = mdao.getMemoById(memo_id);
-		return mdao.updateMemoById(m, user_id, title, data, description, c1);
+		return mdao.updateMemoById(memo_id, user_id, title, data, description, c1);
 
 	}
 
 	public boolean deleteMemoById(int memo_id, int user_id) {
-		Memo c = mdao.getMemoById(memo_id);
-		User u = udao.getUserById(user_id);
-		return mdao.deleteMemoById(c, u);
+		return mdao.deleteMemoById(memo_id, user_id);
 	}
 
 	public List<Calendar> getAllMyCalendars(String email) {
@@ -205,20 +192,15 @@ public class DbService {
 	}
 
 	public boolean updateAlarm(int alarm_id, int minutes) {
-		Alarm a = adao.getAlarmById(alarm_id);
-		return adao.updateAlarmById(a, minutes);
+		return adao.updateAlarmById(alarm_id, minutes);
 	}
 
 	public int addAlarm(int user_id, int occurrence_id, int minutes) {
-		User u = udao.getUserById(user_id);
-		Occurrence o = odao.getOccurrenceById(occurrence_id);
-		return adao.insertNewAlarm(u, o, minutes);
+		return adao.insertNewAlarm(user_id, occurrence_id, minutes);
 	}
 
 	public boolean deleteAlarm(int alarm_id, int user_id) {
-		User u = udao.getUserById(user_id);
-		Alarm a = adao.getAlarmById(alarm_id);
-		return adao.deleteAlarmById(a, u);
+	return adao.deleteAlarmById(alarm_id, user_id);
 	}
 
 	public List<Alarm> getMyAlarms(int user_id) {
@@ -243,7 +225,6 @@ public class DbService {
 	}
 
 	public List<Memo> getMyMemos(int user_id) {
-		User u = udao.getUserById(user_id);
 		return mdao.getMemoByUserId(user_id);
 	}
 
@@ -253,8 +234,7 @@ public class DbService {
 	}
 
 	public boolean deleteNotifications(int user) {
-		User u = udao.getUserById(user);
-		return ndao.deleteNotifications(u);
+		return ndao.deleteNotifications(user);
 	}
 
 	public List<String> searchEmail(String emailToSearch) {
@@ -263,12 +243,35 @@ public class DbService {
 	
 	public String answerInvitation(int inv_id, int u_id, String answer) {
 		Invitation i = idao.getInvitationById(inv_id);
-		User u = udao.getUserById(u_id);
-		Calendar c = cdao.getCalendarById(i.getCalendar().getId());
-		if (answer.equals("accepted") && idao.acceptInvitation(u, c))
+		
+		if (answer.equals("accepted") && idao.acceptInvitation(u_id, i.getCalendar().getId()))
 			return "accepted";
-		else if (answer.equals("declined") && idao.declineInvitation(u, c))
+		else if (answer.equals("declined") && idao.declineInvitation(u_id, i.getCalendar().getId()))
 			return "declined";
 		return "error";
+	}
+
+	public int insertNewRepetition(int occ_id, String rType, int u_id, Date sT, Date eT) {
+		return rdao.insertNewRepetition(occ_id, rType, u_id, sT, eT);
+	}
+
+	public int insertNewException(int r, Date sT, Date eT, int user_id) {
+		return edao.insertNewException(r, sT, eT, user_id);
+	}
+
+	public boolean updateRepetition(int r, String rType, Date st, Date et, int user_id) {
+		return rdao.updateRepetitionById(r, rType,st,et, user_id);
+	}
+
+	public boolean deleteRepetition(int r_id,int u_id) {
+	return rdao.deleteRepetitionById(r_id, u_id);
+	}
+
+	public boolean updateException(int e_id, Date st, Date et, int user_id) {
+		return edao.updateExceptionById(e_id ,st, et, user_id);
+	}
+
+	public boolean deleteException(int ex_id, int user_id) {
+		return edao.deleteExceptionById(ex_id, user_id);
 	}
 }

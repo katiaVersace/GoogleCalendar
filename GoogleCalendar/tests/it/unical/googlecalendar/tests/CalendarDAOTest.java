@@ -44,8 +44,8 @@ public class CalendarDAOTest {
 		
 		User ciccino=new User("c@j.it","ciccino","1234");	
 		udao.save(ciccino);
-		Calendar ciccinoCalendar = new Calendar(ciccino,"ciccino's Calendar", "list of ciccino's events");
-		Calendar ciccinoCalendar2 = new Calendar(ciccino,"ciccino's Calendar2", "list2 of ciccino's events");
+		Calendar ciccinoCalendar = new Calendar(ciccino,"ciccino's Calendar", "list of ciccino's events",false);
+		Calendar ciccinoCalendar2 = new Calendar(ciccino,"ciccino's Calendar2", "list2 of ciccino's events",false);
 		cdao.save(ciccinoCalendar);
 		cdao.save(ciccinoCalendar2);
 		
@@ -92,7 +92,7 @@ public class CalendarDAOTest {
 		
 		Assert.assertTrue(odao.getOccurrencesByCalendar(ciccinoCalendar).size()==2);
 		
-		Assert.assertTrue(cdao.deleteById(ciccinoCalendar,ciccino));
+		Assert.assertTrue(cdao.deleteById(ciccinoCalendar.getId(),ciccino.getId()));
 			
 		
 		

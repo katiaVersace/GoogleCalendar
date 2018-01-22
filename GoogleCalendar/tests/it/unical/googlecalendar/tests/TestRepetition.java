@@ -50,8 +50,8 @@ public class TestRepetition {
 
 		User ciccino = new User("c@jj.it", "ciccino", "1234");
 		udao.save(ciccino);
-		Calendar ciccinoCalendar = new Calendar(ciccino, "ciccino'ss Calendar", "list of ciccino's events");
-		Calendar ciccinoCalendar2 = new Calendar(ciccino, "ciccino'ss Calendar2", "list2 of ciccino's events");
+		Calendar ciccinoCalendar = new Calendar(ciccino, "ciccino'ss Calendar", "list of ciccino's events",false);
+		Calendar ciccinoCalendar2 = new Calendar(ciccino, "ciccino'ss Calendar2", "list2 of ciccino's events",false);
 		cdao.save(ciccinoCalendar);
 		cdao.save(ciccinoCalendar2);
 
@@ -85,10 +85,11 @@ public class TestRepetition {
 					"Evento comn ripetizione", sdf.parse(dateInString), sdf.parse(dateInString), Color.black.toString(),
 					Color.BLUE.toString());
 			odao.save(evR);
-			int r = rdao.insertNewRepetition(evR, "DAY", ciccino.getId(), sdf.parse(dateInStringR),
+
+			int r = rdao.insertNewRepetition(evR.getId(), "DAY", ciccino.getId(), sdf.parse(dateInStringR),
 					sdf.parse(dateInStringREnd));
 			Repetition rep = rdao.getRepetitionById(r);
-			edao.insertNewException(rep, sdf.parse(d1), sdf.parse(d2), ciccino.getId());
+			edao.insertNewException(rep.getId(), sdf.parse(d1), sdf.parse(d2), ciccino.getId());
 			
 			
 			
@@ -98,7 +99,7 @@ public class TestRepetition {
 					"Evento 2comn ripetizione", sdf.parse(d1), sdf.parse(d2), Color.black.toString(),
 					Color.BLUE.toString());
 			odao.save(evR2);
-			rdao.insertNewRepetition(evR2, "DAY", ciccino.getId(), sdf.parse(d3), sdf.parse(d4));
+			rdao.insertNewRepetition(evR2.getId(), "DAY", ciccino.getId(), sdf.parse(d3), sdf.parse(d4));
 
 		} catch (ParseException e) {
 			e.printStackTrace();

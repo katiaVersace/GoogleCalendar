@@ -127,15 +127,12 @@ public class NotificationDAO {
 		return result;
 	}
 
-
-	public boolean deleteNotifications(User u1) {
+	
+	public boolean deleteNotifications(int u_id) {
 		Session session = sessionFactory.openSession();
+		User u = session.get(User.class,u_id);
 		Transaction tx = null;
 		boolean result = false;
-
-		// ciao bernà, non ci dire niente,
-		// è che così finalmente va
-		User u = session.get(User.class, u1.getId());
 	
 		try {
 			tx = session.beginTransaction();
