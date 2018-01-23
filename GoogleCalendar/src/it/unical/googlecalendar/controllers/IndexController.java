@@ -360,38 +360,35 @@ public class IndexController {
     /*
      * insertNewRepetition
      */
-    // se ritorna -1 significa che l'inserimento non � andato a buon fine 
     @RequestMapping(value = "/insertNewRepetition/{occurrence_id}", method = RequestMethod.POST)
     @ResponseBody
     public int insertNewRepetition(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
-            @RequestParam int numR,@RequestParam String rType,@RequestParam Date sT,@RequestParam Date eT) {
+            @RequestParam String rType,@RequestParam Date sT,@RequestParam Date eT) {
     	   return dbService.insertNewRepetition(Integer.parseInt(occurrence_id),rType,(Integer) session.getAttribute("user_id"),sT,eT);
     }
     
     /*
      * updateRepetition
      */
-    // TODO: Giuseppe aggiungi questo metodo!!
     @RequestMapping(value = "/updateRepetition/{repetition_id}", method = RequestMethod.POST)
     @ResponseBody
-    public String updateRepetition(HttpSession session, @RequestParam int numR, @RequestParam String rType,@RequestParam Date st,@RequestParam Date et,
+    public String updateRepetition(HttpSession session, @RequestParam String rType,@RequestParam Date st,@RequestParam Date et,
             @PathVariable("repetition_id") String repetition_id) {
-        return dbService.updateRepetition(Integer.parseInt(repetition_id), rType,st,et,(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
+        return dbService.updateRepetition(Integer.parseInt(repetition_id), rType,st,et,(Integer) session.getAttribute("user_id")) ? 
+                "YES" : "NO";
     }
 
     /*
      * deleteRepetition
      */
-    // TODO: Giuseppe aggiungi questo metodo!!
     @RequestMapping(value = "/deleteRepetition/{repetition_id}", method = RequestMethod.POST)
     @ResponseBody
     public String deleteRepetition(HttpSession session,@PathVariable("repetition_id") String repetition_id) {
-        return dbService.deleteRepetition(Integer.parseInt(repetition_id), (Integer) session.getAttribute("user_id")) ? "YES"
-                : "NO";
+        return dbService.deleteRepetition(Integer.parseInt(repetition_id), (Integer) session.getAttribute("user_id")) ? 
+                "YES" : "NO";
     }
-
     
-     /*
+    /*
      * insertNewException
      */
     // se ritorna -1 significa che l'inserimento non � andato a buon fine 

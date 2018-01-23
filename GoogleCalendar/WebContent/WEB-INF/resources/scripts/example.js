@@ -1,3 +1,5 @@
+// TODO: decidere come inserire ripetizioni
+
 // --------------------------- //
 // -- MERGE MARIO MARCO [0] -- //
 // --------------------------- //
@@ -242,8 +244,8 @@ angular
                                 blueprint.calendar.id,
                                 blueprint.title,
                                 blueprint.description,
-                                new Date(rule), // same date atm
-                                new Date(rule), // same date atm
+                                new Date(rule),
+                                new Date(rule),
                                 blueprint.primaryColor,
                                 blueprint.secondaryColor
                             );
@@ -295,8 +297,8 @@ angular
                         + "      ng-model=\"vm.checkedCalendars['" + calendar.id + "']\"\n"
                         + "      ng-change=\"vm.toggleCalendar('" + calendar.id + "')\"/>\n"
                         + "    <label for=\"" + calendar.id + "\"><span></span>" + calendar.title + "</label>\n"
-                        + " </label>\n"
-                        + " <label>\n" 
+                        + "  </label>\n"
+                        + "  <label>\n" 
                         + "    <i\n"
                         + "      class=\"glyphicon glyphicon-cog\"\n"
                         + "      ng-click=\"vm.openCalendarView('" + title + "','" + calendar.id + "','" + description + "')\"\n"
@@ -313,7 +315,6 @@ angular
     
     vm.updateMemoList = function () {
         vm.memoList = [];
-       // alert("sono in upd memo list");
         var str = '<i class="glyphicon glyphicon-tag" style=" color: #42A5F5; font-size: 20px; margin-right: 10px; "></i>';
         
         vm.JSON_getMyMemos(function (memos) {
@@ -357,9 +358,7 @@ angular
             var id = vm.calendarsArray[i].id;
             
             var x = title;
-            title = x.replace(/'/g,"\\'");
-           // alert(title);
-         
+            title = x.replace(/'/g,"\\'");         
             
             string+="<li><a href=\"javascript:void(0)\" onclick=\"setCalendar('"+title+"','"+id+"')\"" +
                 " class = \"calendars\" data-id=\"" + id+ "\">" +vm.calendarsArray[i].title+"</a></li>";
@@ -602,7 +601,7 @@ angular
     };
     
     /*
-	 * JSON_getMyInvitations TODO: test me
+	 * JSON_getMyInvitations
 	 */
     vm.JSON_getMyInvitations = function (callback) {
         $.ajax({
@@ -618,7 +617,7 @@ angular
 	 * insertNewEvent
 	 */
     vm.insertNewEvent = function (calendar_id, title, description, 
-            startsAt, endsAt, primaryColor, secondaryColor) {
+            startsAt, endsAt, primaryColor, secondaryColor, callback) {
         $.ajax({
             type: "POST",
             url: "insertNewEvent/" + calendar_id,
@@ -632,7 +631,11 @@ angular
             },
             success: function (response) {
                 if (response != -1) {
-                    vm.updateEventList();
+                    if (typeof callback !== "undefined") {
+                        callback(response);
+                    } else {
+                        vm.updateEventList();
+                    }
                 }
             },
         });
@@ -678,6 +681,63 @@ angular
     };
     
     /*
+     * insertNewRepetition
+     */
+    vm.insertNewRepetition = function (occurrence_id, repetitionType,
+            startTime, endTime) {
+        $.ajax({
+            type: "POST",
+            url: "insertNewRepetition/" + occurrence_id,
+            data: {
+                rType: repetitionType,
+                sT: startTime,
+                eT: endTime,
+            },
+            success: function (response) {
+                if (response != -1) { 
+                    vm.updateEventList();
+                }
+            },
+        });
+    };
+    
+    /*
+     * updateRepetition
+     */
+    vm.updateRepetition = function (repetition_id, repetitionType,
+            startTime, endTime) {
+        $.ajax({
+            type: "POST",
+            url: "updateRepetition/" + repetition_id,
+            data: {
+                rType: repetitionType,
+                sT: startTime,
+                eT: endTime,
+            },
+            success: function (response) {
+                if (response == "YES") {
+                    vm.updateEventList();
+                }
+            },
+        });
+    };
+    
+    /*
+     * deleteRepetition
+     */
+    vm.deleteRepetition = function (repetition_id) {
+        $.ajax({
+            type: "POST",
+            url: "deleteRepetition" + repetition_id,
+            success: function (response) {
+                if (response == "YES") {
+                    vm.updateEventList();
+                }
+            },
+        });
+    };
+    
+    /*
 	 * insertNewMemo
 	 */
     vm.insertNewMemo = function (title, description, date, color) {
@@ -691,8 +751,6 @@ angular
                 c1: color,
             },
             success: function (response) {
-             // alert("successo insert memo db");
-
                 vm.updateMemoList();
             },
         });
@@ -785,19 +843,10 @@ angular
     };
     
     /*
-	 * addAlarm TODO: test me
+	 * addAlarm
 	 */
     vm.addAlarm = function (occurrence_id, minutes) {
-        $.ajax({
-            type: "POST",
-            url: "addAlarm/" + occurrence_id,
-            data: {
-                minutes: minutes,
-            },
-            success: function (response) {
-                // TODO
-            },
-        });
+        // TODO
     };
     
     /*
@@ -829,19 +878,7 @@ angular
             success: function (response) {
             		if(response == "User update successfully" || response == "Username changed successfully")
                         document.getElementById('usernameHome').innerHTML = username;
-
-                	alert(response);
              },
-        });
-    };
-    
-    /*
-	 * resetSentStateOnMessages
-	 */
-    vm.resetSentStateOnMessages = function () {
-        $.ajax({
-            type: "POST",
-            url: "resetSentStateOnMessages",
         });
     };
     
@@ -864,6 +901,9 @@ angular
         });
     };
     
+    /*
+     * deleteNotifications
+     */
     vm.deleteNotifications = function () {
         $.ajax({
             type: "POST",
@@ -876,6 +916,9 @@ angular
         });
     };
     
+    /*
+     * answerInvitation
+     */
     vm.answerInvitation = function (invitation_id, answer) {
         $.ajax({
             type: "POST",
@@ -893,6 +936,16 @@ angular
                     console.log(JSON.stringify(response, null, 4));
                 }
             },
+        });
+    };
+    
+    /*
+     * resetSentStateOnMessages
+     */
+    vm.resetSentStateOnMessages = function () {
+        $.ajax({
+            type: "POST",
+            url: "resetSentStateOnMessages",
         });
     };
     
@@ -928,6 +981,10 @@ angular
         };
     };
     
+    vm.SSEAlarmSubscription = function () {
+        // TODO
+    };
+    
     // ---------- //
     // -- INIT -- //
     // ---------- //
@@ -937,6 +994,7 @@ angular
         vm.resetSentStateOnMessages();
         vm.SSENotificationSubscription();
         vm.SSEInvitationSubscription();
+        vm.SSEAlarmSubscription();
     })();
     
     // --------------------------- //
@@ -1095,8 +1153,6 @@ angular
         // INSERTNEWEVENT
         vm.temp.clock = document.getElementById("TourId").value;
 
- 
-
         if (idCalendar != undefined) {
             vm.insertNewEvent(idCalendar, vm.temp.title,
                     vm.temp.description, vm.temp.startsAt,
@@ -1114,7 +1170,6 @@ angular
                     + " " + vm.temp.startsAt + " " + vm.temp.endsAt
                     + " " + vm.temp.color.primary + " "
                     + vm.temp.color.secondary);
-
         } else {
             alert("please choose a calendar");
         }
