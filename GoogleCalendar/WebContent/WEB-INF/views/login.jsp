@@ -239,8 +239,8 @@
 										tabindex="2" class="form-control" placeholder="Password">
 								</div>
 								<div class="form-group">
-									<input type="password" name="confirmPassword"
-										id="confirm-password" tabindex="2" class="form-control"
+									<input type="password" name="confirm_password"
+										id="confirm_password" tabindex="2" class="form-control"
 										placeholder="Confirm Password">
 								</div>
 								<div class="form-group">

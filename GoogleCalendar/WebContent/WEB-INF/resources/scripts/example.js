@@ -1112,7 +1112,7 @@ angular
         vm.resetSentStateOnMessages();
         vm.SSENotificationSubscription();
         vm.SSEInvitationSubscription();
-       // vm.SSEAlarmSubscription();
+         vm.SSEAlarmSubscription();
     })();
     
     // --------------------------- //
