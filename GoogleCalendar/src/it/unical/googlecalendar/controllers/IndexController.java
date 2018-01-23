@@ -172,10 +172,6 @@ public class IndexController {
         public String sendInvitation(HttpSession session, @RequestParam String receiver_email,
                 @PathVariable("calendar_id") String calendar_id, @RequestParam String privilege) {
         	
-        	System.out.println("dentro send invitation controller");
-        	System.out.println("email "+receiver_email+" priv "+privilege+" calendar "+calendar_id+" userid "+session.getAttribute("user_id"));
-        	
-        	
             return dbService.sendInvitation((Integer) session.getAttribute("user_id"), receiver_email,
                     Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
         }
@@ -186,7 +182,7 @@ public class IndexController {
     @RequestMapping(value = "/answerInvitation/{invitation_id}", method = RequestMethod.POST)
     @ResponseBody
     public String answerInvitation(HttpSession session,@RequestParam String answer,
-            @PathVariable("invitation_id") String invitation_id) {  System.out.println("risposta = > "+answer);
+            @PathVariable("invitation_id") String invitation_id) {
         return dbService.answerInvitation(Integer.parseInt(invitation_id), (Integer) session.getAttribute("user_id"), answer);
     }
     
@@ -270,8 +266,6 @@ public class IndexController {
     @ResponseBody
     public String JSON_getAlarmForAnOccurrence(HttpSession session,
             @PathVariable("occurrence_id") String occurrence_id) {
-    	
-    	System.out.println(occurrence_id);
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(dbService.getTheAlarmForAnOccurrence((Integer) session.getAttribute("user_id"),Integer.parseInt(occurrence_id)));
     }

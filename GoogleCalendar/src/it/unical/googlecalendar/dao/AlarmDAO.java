@@ -65,7 +65,7 @@ public class AlarmDAO {
 		List<Alarm> result = 
 		        session.createQuery("SELECT m FROM Alarm m where m.user.id= :user_id")
 				.setParameter("user_id", user_id).getResultList();
-		
+		session.close();
 			return result;
 	}
 	
@@ -75,9 +75,8 @@ public class AlarmDAO {
 		Alarm result = (Alarm) session.createQuery("SELECT a FROM Alarm a where a.user.id= :user_id and a.occurrence.id= :occurrence_id")
 				.setParameter("user_id", user_id).setParameter("occurrence_id", occurrence_id).uniqueResult();
 		
-	       System.out.println("result in get alarms by occurnece ==>  "+result);
-
-			return result;
+	       session.close();
+		return result;
 	}
 
 	public boolean updateAlarmById(int a_id,int alarm

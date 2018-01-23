@@ -288,8 +288,6 @@ angular
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start.toDate(), boundaries.end.toDate(), function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
-
-                	
                     if (typeof blueprint.repetition !== "undefined") {
                         var rruleset = new RRuleSet();
                         var boundaries = vm.getViewDateBoundaries();
@@ -298,11 +296,11 @@ angular
                         var ruleEnd = undefined;
                         
                         if(moment(blueprint.startTime)>= boundaries.start && moment(blueprint.startTime)<=boundaries.end){
-                        	  ruleStart = (moment.max(boundaries.start, moment(blueprint.startTime))).toDate();
+                    	      ruleStart = (moment.max(boundaries.start, moment(blueprint.startTime))).toDate();
                         	  ruleEnd = (moment.min(boundaries.end, moment(blueprint.repetition.endTime))).toDate();
-                        }else{
-                        	ruleStart = moment(blueprint.startTime).toDate();
-                        	ruleEnd = moment(blueprint.repetition.endTime).toDate();
+                        } else {
+                        	  ruleStart = moment(blueprint.startTime).toDate();
+                        	  ruleEnd = moment(blueprint.repetition.endTime).toDate();
                         }
                         
                         
@@ -334,41 +332,37 @@ angular
                             event.repetition = blueprint.repetition;
                             vm.events.push(event);
                         });
+                        $scope.$digest();
                     } else {
                     	
                     	 var event = new vm.Event(
-                                 blueprint.id,
-                                 blueprint.calendar.id,
-                                 blueprint.title,
-                                 blueprint.description,
-                                 new Date(blueprint.startTime),
-                                 new Date(blueprint.endTime),
-                                 blueprint.primaryColor,
-                                 blueprint.secondaryColor,
-                                 "ADMIN"  //TODO
-                             );
+                	         blueprint.id,
+                         blueprint.calendar.id,
+                         blueprint.title,
+                         blueprint.description,
+                         new Date(blueprint.startTime),
+                         new Date(blueprint.endTime),
+                         blueprint.primaryColor,
+                         blueprint.secondaryColor,
+                         "ADMIN"  //TODO
+                     );
                              
-                             vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
-                             	event.alarm = JSON.parse(response);
-                             	console.log(event.alarm);
-                             	vm.events.push(event);
-                             	 $scope.$digest();
-                             });
-//                        vm.events.push(new vm.Event(
-//                            blueprint.id,
-//                            blueprint.calendar.id,
-//                            blueprint.title,
-//                            blueprint.description,
-//                            new Date(blueprint.startTime),
-//                            new Date(blueprint.endTime),
-//                            blueprint.primaryColor,
-//                            blueprint.secondaryColor,
-//                            "ADMIN"
-//                        ));
+                     vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
+                         if (response != "null") {
+                             var received = JSON.parse(response);                                     
+                             event.alarm = {
+                                 id: received.id,
+                                 time: received.alarm,
+                             }
+                         }
+                     	
+                         vm.events.push(event);
+                     	$scope.$digest();
+                     });
                     }
                 });
                 // Needed for asynchronous update of vm.events
-                $scope.$digest();
+                // $scope.$digest();
             });
         });
     };
