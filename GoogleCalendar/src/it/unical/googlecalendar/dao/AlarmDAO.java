@@ -94,6 +94,7 @@ public class AlarmDAO {
 			try {
 				tx = session.beginTransaction();
                 m.setAlarm(alarm);
+                m.setMinutes(alarm);
                 session.update(m);
 				tx.commit();
 				result = true;

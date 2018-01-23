@@ -25,7 +25,7 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
+   <dependencies>
     <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
     <dependency>
       <groupId>org.springframework</groupId>
@@ -104,6 +104,18 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20171018</version>
+    </dependency>
+     <!-- Java Mail API -->
+    <dependency>
+	    <groupId>javax.mail</groupId>
+	    <artifactId>mail</artifactId>
+	    <version>1.4.3</version>
+    </dependency>
+     <!-- Spring framework -->
+    <dependency>
+     	    <groupId>org.springframework</groupId>
+	    <artifactId>spring</artifactId>
+	    <version>2.5.6</version>
     </dependency>
   </dependencies>
 </project>
