@@ -59,10 +59,6 @@ public class InvitationDAOTest {
 		idao.sendInvitation(peppe.getId(), fabio.getEmail(), c.getId(), "ADMIN");
 		Invitation in = idao.getInvitationByCalendarAndReceiver(fabio.getId(), c.getId());
 		
-		//System.out.println("inviti di mario prima che accetti: "+mario.receivedInvitations.size());
-//		 for(Invitation in:mario.receivedInvitations){
-//				 System.out.println("Invitok: "+in.getSenderId()+in.getReceiver().getUsername()+" + "+in.getPrivilege());
-//				 }
 
 		// Invitation i=new Invitation(peppe.getId(), mario, c, "ADMIN");
 		// idao.save(i);
@@ -72,8 +68,21 @@ public class InvitationDAOTest {
 		//fabio accetta a c
 		idao.acceptInvitation(fabio.getId(), c.getId());	
 		
+		
+		
 		//fabio invita mario a c
 		idao.sendInvitation(fabio.getId(), mario.getEmail(), c.getId(), "ADMIN");
+		
+//		List<Invitation> receivedInvitations=idao.getInvitationsByReceiverId(mario.getId());
+//		System.out.println("inviti di mario prima che accetti: "+receivedInvitations.size());
+//		 for(Invitation in2:receivedInvitations){
+//				 System.out.println("Invito: "+in2.getReceiver().getUsername()+" + "+in2.getPrivilege());
+//				 System.out.println("Senders: "+in2.getSendersId().size());
+//				 for(int user_id:in2.getSendersId()){
+//					 User sender=udao.getUserById(user_id);
+//					 System.out.println("sender: "+sender.getUsername());
+//				 }
+//				 }
 		Assert.assertTrue(idao.getInvitationsByReceiverId(mario.getId()).size()==1);
 		//mario accetta a c
 		idao.acceptInvitation(mario.getId(), c.getId());

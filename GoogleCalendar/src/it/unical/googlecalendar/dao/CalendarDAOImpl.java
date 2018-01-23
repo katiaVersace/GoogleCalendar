@@ -1,5 +1,6 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -252,7 +253,8 @@ private Users_CalendarsDAOImpl ucdao;
 	@Override
 	public boolean updateCalendarById(int c_id,String title, String description, int user_id) {
 		Session session = sessionFactory.openSession();
-		Calendar c = session.get(Calendar.class,c_id);
+		Calendar oldC= session.get(Calendar.class,c_id);
+		Calendar c =oldC;
 		
 		boolean result=false;
 		
@@ -283,11 +285,23 @@ private Users_CalendarsDAOImpl ucdao;
 					}
 					// END DEBUG
 					
+//					//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+//					Calendar cDB=getCalendarById(c_id);
+//					if(c.getVersion()==cDB.getVersion()){
+//					c.setVersion(new Date());
 					session.update(c);
 					tx.commit();
 					result=true;
-					
+//					}
+//					else{
+//						c.setTitle(oldC.getTitle());
+//						c.setDescription(oldC.getDescription());
+//						
+//						System.out.println("Il calendario è stato modificato da un utente, le tue modifiche andranno perse");
+//					}
 
+				
+				
 				} catch (Exception e) {
 					result=false;
 					tx.rollback();

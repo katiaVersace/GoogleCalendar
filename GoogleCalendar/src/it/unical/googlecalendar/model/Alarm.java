@@ -75,7 +75,6 @@ import com.google.gson.annotations.Expose;
 			alarm=new Date(o.getStartTime().getTime()-minutes*60*1000L);
 			u.getAlarms().add(this);
 		o.getAlarms().add(this);
-		System.out.println(alarm.toString());
 		
 		}
 
