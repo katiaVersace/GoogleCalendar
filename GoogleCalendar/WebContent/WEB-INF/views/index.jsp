@@ -166,11 +166,11 @@
 										<button class="btn btn-primary" mwl-date-modifier
 											date="vm.viewDate" increment="vm.calendarView"
 											ng-click="vm.viewModifierBehavior()">Next</button>
-										<!-- DEBUG -->
+										<!-- <!-- DEBUG -->
 										<button class="btn btn-primary" ng-click="vm.fn()">DEBUG</button>
-										<!-- END DEBUG -->
+										END DEBUG
 
-										<!--  -->
+										 -->
 									</div>
 								</div>
 								<br class="visible-xs visible-sm">

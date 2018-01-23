@@ -335,6 +335,24 @@ angular
                             vm.events.push(event);
                         });
                     } else {
+                    	
+                    	 var event = new vm.Event(
+                                 blueprint.id,
+                                 blueprint.calendar.id,
+                                 blueprint.title,
+                                 blueprint.description,
+                                 new Date(blueprint.startTime),
+                                 new Date(blueprint.endTime),
+                                 blueprint.primaryColor,
+                                 blueprint.secondaryColor,
+                                 "ADMIN"  //TODO
+                             );
+                             
+//                             vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
+//                             	event.alarm = JSON.parse(response);
+//                             	console.log(event.alarm);
+//                             	vm.events.push(event);
+//                             });
                         vm.events.push(new vm.Event(
                             blueprint.id,
                             blueprint.calendar.id,
