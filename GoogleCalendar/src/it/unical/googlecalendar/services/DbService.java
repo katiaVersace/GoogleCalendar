@@ -1,6 +1,5 @@
 package it.unical.googlecalendar.services;
 
-import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -8,15 +7,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.sound.midi.SysexMessage;
 
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 import it.unical.googlecalendar.dao.AlarmDAO;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
@@ -205,7 +198,6 @@ public class DbService {
 
 	public List<Alarm> getMyAlarms(int user_id) {
 		return adao.getAlarmsByUserId(user_id);
-
 	}
 
 	public Alarm getTheAlarmForAnOccurrence(int user_id, int occurrence_id) {
