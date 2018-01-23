@@ -68,26 +68,7 @@ angular
     // calendar for modal
     vm.calendarToUpd = undefined;
     
-    // List of glyphs shown after entries in a day's event list,
-    // with behavior
-    var actions = [
-        {
-            label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
-            onClick : function(args) {
-                vm.clickUpdateEvent(args.calendarEvent);
-            }
-        }, 
-        {
-            label : '<i class=\'glyphicon glyphicon-remove\'></i>',
-            onClick : function(args) {
-               if (args.calendarEvent.memo) {
-            	       vm.deleteMemoById(args.calendarEvent.id)
-               } else {
-                   vm.deleteOccurrence(args.calendarEvent.id);
-               }
-            }
-        }, 
-    ];
+    var actions = [];
         
     // --------------------------- //
     // -- MERGE MARIO MARCO [1] -- //
@@ -111,9 +92,10 @@ angular
     // -- UTILITIES -- //
     // --------------- //
     
+    
     // Event Constructor
     vm.Event = function (id, calendar, title, description, 
-            startsAt, endsAt, primaryColor, secondaryColor) {
+            startsAt, endsAt, primaryColor, secondaryColor,actionsType) {
         this.id = id;
         this.calendar = calendar;
         this.title = title;
@@ -127,19 +109,21 @@ angular
         this.draggable = false;
         this.resizable = false;
         this.memo = false;
-        this.actions = actions;
+        this.actions = vm.getActions(actionsType);
     };
   
     // Memo Constructor (deceives vm.events into thinking it's a regular event)
-    vm.Memo = function (id, title, description, color, dateAdded) {
+    vm.Memo = function (id, title, description, color, dateAdded,actionsType) {
         var now = new Date();
         
         this.id = id;
         this.calendar = undefined; // FIXME: insert memo calendar (or whatever)
         this.title = title;
         this.description = description;
-        this.startsAt = now; // graphical purposes only (renders it on the current day)
-        this.endsAt = now; // graphical purposes only (renders it on the current day)
+        this.startsAt = now; // graphical purposes only (renders it on the
+								// current day)
+        this.endsAt = now; // graphical purposes only (renders it on the
+							// current day)
         this.dateAdded = now; // date this memo was added/saved on db
         this.color = {
             primary: color,
@@ -148,11 +132,69 @@ angular
         this.draggable = false;
         this.resizable = false;
         this.memo = true;
-        this.actions = actions;
+        this.actions = vm.getActions(actionsType);
     };
+    
+    
+
+    // List of glyphs shown after entries in a day's event list,
+    // with behavior
+   
+    vm.getActions = function(type){
+    	
+    	var result =[];
+    	
+    	switch (type) {
+        case "REPETITION":
+        	result = [ {
+	                    label : '<i class=\'glyphicon glyphicon-remove\'></i>',
+		                    onClick : function(args) {
+		                       if (args.calendarEvent.memo) {
+		                    	       vm.deleteMemoById(args.calendarEvent.id)
+		                       } else {
+		                           vm.deleteOccurrence(args.calendarEvent.id);
+		                       }
+		                    }
+                		}, {
+                			label : '<i class=\'glyphicon glyphicon-ban-circle\'></i>',
+                			
+                			 onClick : function(args) {
+                				 vm.insertNewException(args.calendarEvent.repetition.id,args.calendarEvent.startsAt);
+  		                    }
+                			}
+                	  ];
+            return result;
+        case "ADMIN":
+        	result = [
+                {
+                    label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
+                    onClick : function(args) {
+                        vm.clickUpdateEvent(args.calendarEvent);
+                    }
+                }, 
+                {
+                    label : '<i class=\'glyphicon glyphicon-remove\'></i>',
+                    onClick : function(args) {
+                       if (args.calendarEvent.memo) {
+                    	       vm.deleteMemoById(args.calendarEvent.id)
+                       } else {
+                           vm.deleteOccurrence(args.calendarEvent.id);
+                       }
+                    }
+                }, 
+            ];
+            return result;
+        case "READER":
+            return result;
+    	}
+    
+    return undefined;
+    	
+    }
     
     vm.getRRuleFreqType = function (type) {
         switch (type) {
+       
             case "YEAR":
                 return RRule.YEARLY;
             case "MONTH":
@@ -161,6 +203,8 @@ angular
                 return RRule.WEEKLY;
             case "DAY":
                 return RRule.DAILY;
+            case "HOUR":
+                return RRule.HOURLY;
         }
         
         return undefined;
@@ -220,16 +264,30 @@ angular
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start.toDate(), boundaries.end.toDate(), function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
+
+                	
                     if (typeof blueprint.repetition !== "undefined") {
                         var rruleset = new RRuleSet();
                         var boundaries = vm.getViewDateBoundaries();
                         
+                        var ruleStart = undefined;
+                        var ruleEnd = undefined;
+                        
+                        if(moment(blueprint.startTime)>= boundaries.start && moment(blueprint.startTime)<=boundaries.end){
+                        	  ruleStart = (moment.max(boundaries.start, moment(blueprint.startTime))).toDate();
+                        	  ruleEnd = (moment.min(boundaries.end, moment(blueprint.repetition.endTime))).toDate();
+                        }else{
+                        	ruleStart = moment(blueprint.startTime).toDate();
+                        	ruleEnd = moment(blueprint.repetition.endTime).toDate();
+                        }
+                        
+                        
                         rruleset.rrule(new RRule({
                             freq: vm.getRRuleFreqType(blueprint.repetition.repetitionType),
-                            dtstart: (moment.max(boundaries.start, moment(blueprint.startTime))).toDate(),
-                            until: (moment.min(boundaries.end, moment(blueprint.repetition.endTime))).toDate(),
+                            dtstart: ruleStart,
+                            until: ruleEnd
                         }));
-                        
+                                                
                         if (typeof blueprint.repetition.exceptions !== "undefined") {
                             blueprint.repetition.exceptions.forEach(function (item) {
                                 rruleset.exdate(new Date(item.startTime));
@@ -245,7 +303,9 @@ angular
                                 new Date(rule),
                                 new Date(rule),
                                 blueprint.primaryColor,
-                                blueprint.secondaryColor
+                                blueprint.secondaryColor,
+                                "REPETITION"					// type for
+																// actions
                             );
                             event.repetition = blueprint.repetition;
                             vm.events.push(event);
@@ -259,7 +319,8 @@ angular
                             new Date(blueprint.startTime),
                             new Date(blueprint.endTime),
                             blueprint.primaryColor,
-                            blueprint.secondaryColor
+                            blueprint.secondaryColor,
+                            "ADMIN"
                         ));
                     }
                 });
@@ -377,28 +438,28 @@ angular
         } else {
             document.getElementById("notificationDropDown").setAttribute("data-toggle", "null"); 
         }
-            
-        console.log("dentro drop down notifications ( notificationsView.length ==> "+vm.notificationsView.length+")");
-            
+                        
         viewList.empty();
         var string =''; 
 
         for(i = vm.notificationsView.length-1; i>=0;i--) {
             var id = vm.notificationsView[i].id;
-            var description = vm.notificationsView[i].description;
             var timestamp = vm.notificationsView[i].timestamp;
                 
-            console.log(vm.notificationsView[i]);
-            console.log("\n");
                 
-            var x = description;
-            description = x.replace(/'/g,"\\'");
-                
-            if(!vm.notificationsView[i].hasOwnProperty('senderID')) {
+            if(vm.notificationsView[i].hasOwnProperty('description')) {
                 // this is a simple notification
+            	var description = vm.notificationsView[i].description;
+            	var x = description;
+                description = x.replace(/'/g,"\\'");
+            	
                 string+="<li><a href=\"javascript:void(0)\" class = \"calendars\" data-id=\"" + id+ "\">" +description+"</a></li>";
             } else {    
+            	
+            	var calendarName = vm.notificationsView[i].calendar.title;
+            	var text = "you have been invited to calendar : "+calendarName;
                 // this is a invitation TODO
+            	string+="<li><a href=\"javascript:void(0)\" ng-click=\"vm.openAnswerModal('"+id+"')\" class = \"calendars\" data-id=\"" + id+ "\">" +text+"</a></li>";
             }
         }
             
@@ -412,13 +473,11 @@ angular
     	
        var title = document.getElementById("nameCal").value;
        var description = document.getElementById("descrCalendar").value;
-       
-       console.log("insert new calenadar with title descr => "+title+" , "+description);
-       
+              
        vm.insertNewCalendar(title, description);
        document.getElementById('modal-wrapper1').style.display = 'none';
        document.getElementById("nameCal").value = '';
-       document.getElementById("descrCalendar").value = ''
+       document.getElementById("descrCalendar").value = '';
     };
 
     
@@ -431,14 +490,31 @@ angular
     		title: title,
     		description : description
     	}
-     
+    	
     	modal(4);
     };
     
-    vm.updateCalendarView = function(title,description){
-    	 
-    	console.log("update calendar with id,title,descr=> "+vm.calendarToUpd.id, vm.calendarToUpd.title, vm.calendarToUpd.description);
+    
+    vm.shareCalendarView = function(){
     	
+    	var privilages = document.getElementById("privilages").value;    	
+    	
+    	var email = document.getElementById('userChoice').value
+    	
+    	
+    	if(privilages == 'none' ||  email==''){
+    		alert("Please insert correct value");
+    	}
+    	else{
+    		vm.sendInvitation(vm.calendarToUpd.id,email,privilages);
+    		document.getElementById('modal-wrapper4').style.display = 'none';
+         	resetShareCalendarValue();
+    	}
+     }
+    
+    
+    vm.updateCalendarView = function(title,description){
+    	     	
     	vm.updateCalendar(vm.calendarToUpd.id, vm.calendarToUpd.title, vm.calendarToUpd.description);
     	
     	document.getElementById('modal-wrapper4').style.display = 'none';
@@ -446,7 +522,6 @@ angular
     
   	vm.deleteCalendarView = function(){
     	
-    	console.log("Delete calendar with id => "+vm.calendarToUpd.id);
     	vm.disconnectFromCalendar(vm.calendarToUpd.id);
     }
     
@@ -582,22 +657,7 @@ angular
         });
     };
     
-    /*
-	 * JSON_searchEmailInDb
-	 */
-    vm.JSON_searchEmailInDb = function (email,callback) {
-        $.ajax({
-            type: "POST",
-            url: "JSON_searchEmailInDb",
-            data: {
-               emailToSearch: email,
-            },
-            success: function (response) {
-                   callback(response);                
-            },
-        });
-    };
-    
+ 
     /*
 	 * JSON_getMyInvitations
 	 */
@@ -679,8 +739,8 @@ angular
     };
     
     /*
-     * insertNewRepetition
-     */
+	 * insertNewRepetition TODO aggiungere intervallo
+	 */
     vm.insertNewRepetition = function (occurrence_id, repetitionType,
             startTime, endTime) {
         $.ajax({
@@ -700,8 +760,8 @@ angular
     };
     
     /*
-     * updateRepetition
-     */
+	 * updateRepetition
+	 */
     vm.updateRepetition = function (repetition_id, repetitionType,
             startTime, endTime) {
         $.ajax({
@@ -721,8 +781,8 @@ angular
     };
     
     /*
-     * deleteRepetition
-     */
+	 * deleteRepetition
+	 */
     vm.deleteRepetition = function (repetition_id) {
         $.ajax({
             type: "POST",
@@ -736,12 +796,15 @@ angular
     };
     
     /*
-     * insertNewException
-     */
-    vm.insertNewException = function (repetition_id) {
+	 * insertNewException
+	 */
+    vm.insertNewException = function (repetition_id, date_exception) {
         $.ajax({
             type: "POST",
             url: "insertNewException/" + repetition_id,
+            data:{
+            	date_exception : date_exception,
+            },
             success: function (response) {
                 if (response != -1) {
                     vm.updateEventList();
@@ -914,6 +977,8 @@ angular
             success: function (response) {
             		if(response == "User update successfully" || response == "Username changed successfully")
                         document.getElementById('usernameHome').innerHTML = username;
+            		
+            		alert(response);
              },
         });
     };
@@ -938,8 +1003,8 @@ angular
     };
     
     /*
-     * deleteNotifications
-     */
+	 * deleteNotifications
+	 */
     vm.deleteNotifications = function () {
         $.ajax({
             type: "POST",
@@ -953,8 +1018,8 @@ angular
     };
     
     /*
-     * answerInvitation
-     */
+	 * answerInvitation
+	 */
     vm.answerInvitation = function (invitation_id, answer) {
         $.ajax({
             type: "POST",
@@ -967,17 +1032,14 @@ angular
                 if (response == "accepted") {
                     vm.discardInvitation(id);
                     vm.updateCalendarList();
-                } else if (response != "declined") {
-                    console.log("vm.answerInvitation unsuccessful");
-                    console.log(JSON.stringify(response, null, 4));
                 }
             },
         });
     };
     
     /*
-     * resetSentStateOnMessages
-     */
+	 * resetSentStateOnMessages
+	 */
     vm.resetSentStateOnMessages = function () {
         $.ajax({
             type: "POST",
@@ -1019,7 +1081,7 @@ angular
         var eventSource = new EventSource("alarms");
         
         eventSource.onmessage = function (event) {
-            // TODO
+            console.log(JSON.stringify(JSON.parse(event.data), null, 4));
         };
     };
     
@@ -1105,7 +1167,11 @@ angular
             },
             draggable : false,
             resizable : false,
-            actions : actions
+            actions : actions,
+            // ///////////////// REPETITON DATA ******************
+            freq: "none",
+            dtstart: startDate,
+            until: endDate
         };
         vm.openEventModal();
 
@@ -1136,7 +1202,11 @@ angular
             },
             draggable : false,
             resizable : false,
-            actions : actions
+            actions : actions,
+            // ///////////////// REPETITON DATA ******************
+            freq: "none",
+            dtstart: vm.firstDateClicked,
+            until: vm.lastDateClicked
         };
         document.getElementById('btn-add').disabled = false;
 
@@ -1166,8 +1236,6 @@ angular
     
     vm.cellModifier = function(cell) {
         vm.vtrCell.push(cell);
-        console.log(vm.vtrCell.length);
-        console.log(vm.vtrCell[length - 1]);
     };
 
     // MANAGE EVENT
@@ -1185,33 +1253,70 @@ angular
     // add event press button action
     vm.addEventView = function() {
 
-        var idCalendar = document.getElementById("choiceId").value;
+    
+    	var idCalendar = document.getElementById("choiceId").value;
 
         // ///////////// TO DO /////////////////// ADD ATTR in
         // INSERTNEWEVENT
         vm.temp.clock = document.getElementById("TourId").value;
 
+          
+      
+       
+
         if (idCalendar != undefined) {
-            vm.insertNewEvent(idCalendar, vm.temp.title,
-                    vm.temp.description, vm.temp.startsAt,
-                    vm.temp.endsAt, vm.temp.color.primary,
-                    vm.temp.color.secondary);
+        	
+        	  // for repetition events
+            if(document.getElementById("repetition").checked==true){
+            	
+            	 vm.temp.endsAt = vm.temp.startsAt; 
+            	 // value of repetition
+                 vm.temp.freq = document.getElementById("repChoice").value;
+                 
 
-            document.getElementById('btn-add').disabled = true;
-
-            resetClock();
-            document.getElementById('modal-wrapper5').style.display = 'none';
-            
-            console.log("insert new event with (idC, title, descr, start, end , primcol , secondcol)");
-            console.log(idCalendar + " "
-                    + vm.temp.title + " " + vm.temp.description
-                    + " " + vm.temp.startsAt + " " + vm.temp.endsAt
-                    + " " + vm.temp.color.primary + " "
-                    + vm.temp.color.secondary);
-        } else {
-            alert("please choose a calendar");
-        }
-    }
+             	if(vm.temp.freq != "none"){
+                 
+		                 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
+		                         vm.temp.color.secondary, function (response){
+		
+		     				 resetFreqChoice();
+		     				
+		     				
+		                     document.getElementById("repetition").checked = false;
+		                 	
+		                 	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
+		                 });
+		                 
+		                 
+		                 document.getElementById('btn-add').disabled = true;
+		               	 
+		                 
+		                 document.getElementById('modal-wrapper5').style.display = 'none';
+		                 resetClock(); 			
+		      
+                 } else{
+                	 alert("please insert a valid frequence");
+                 }
+             }else{		// event without repetition
+            	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
+                         vm.temp.color.secondary);
+                 
+                 document.getElementById('btn-add').disabled = true;
+               	 
+                 
+                 document.getElementById('modal-wrapper5').style.display = 'none';
+                 resetClock(); 			
+            	 
+             }
+  
+        } else { 
+        	 	alert("please choose a calendar");
+        	 }
+          
+          
+          
+          
+    	}
 
     // update event press button action
     vm.updateEventView = function() {
@@ -1223,12 +1328,6 @@ angular
                 vm.temp.endsAt, vm.temp.color.primary,
                 vm.temp.color.secondary);
         
-        console.log("update event with id "+vm.temp.id+" title, descr, start, end , primcol , secondcol");
-        console.log(vm.temp.title + " " + vm.temp.description
-                + " " + vm.temp.startsAt + " " + vm.temp.endsAt
-                + " " + vm.temp.color.primary + " "
-                + vm.temp.color.secondary);
-
         resetClock();
         document.getElementById('modal-wrapper6').style.display = 'none';
 
@@ -1260,27 +1359,20 @@ angular
     	
     	var now = new Date();
     	
-   
- 
         vm.insertNewMemo(vm.memo.title, vm.memo.description, now , vm.memo.color.primary);
         
-        console.log("insert new MEMO => "+vm.memo.title+ " " + vm.memo.description+" " +now+" " +vm.memo.color.primary);
-
         document.getElementById('modal-wrapper7').style.display = 'none';
 
     }
 
     // update memo press button action
     vm.updateMemoView = function() {
-    		
-    	// use tmp.memo variables
+       	// use tmp.memo variables
     	
     	var now = new Date();
  
         vm.updateMemo(vm.memo.id, vm.memo.title, vm.memo.description, now, vm.memo.color.primary);
         
-        console.log("update  MEMO => "+vm.memo.id+" "+vm.memo.title+ " " + vm.memo.description+" " +now+" " +vm.memo.color.primary)
-
         document.getElementById('modal-wrapper8').style.display = 'none';
     }
     
@@ -1322,18 +1414,11 @@ angular
   vm.manageInputString = function(){
   	
   	var strCurrent = document.getElementById('userChoice').value; 
-    	console.log(strCurrent);  	
-
     	
   vm.searchEmailInDb(strCurrent, function (x) {
   		var resp = JSON.parse(x);
-  		console.log(JSON.stringify(resp,null,4));
-  	    
   		vm.populateListOfUsername(resp);
-
-
-  });
-  	
+ 	});
   };
 
 
@@ -1341,6 +1426,7 @@ angular
   	    	
   	 var viewList = $("#userListModal");
        var contRespUser = 0;
+            
        viewList.empty();
        var string =''; 
            string = "<div  class=\"btn-group\" >\n"
@@ -1353,24 +1439,16 @@ angular
        
       
            resp.forEach(function(element) {
-          	if(contRespUser<=10){ 
-   			console.log(element);
+          	if(contRespUser<=10    ){ 
    			string+="<li><a href=\"javascript:void(0)\" onclick=\"setUser('"+element+"')\"" +
               " class = \"calendars\" data-id=\" \">" +element+"</a></li>";                       
           	}
           	contRespUser++;
            	});
 
-           
-           
-
-
         viewList.append(string);  
 
   }
-
-
-
 
   vm.searchEmailInDb = function (email,callback) {
       $.ajax({
@@ -1384,6 +1462,15 @@ angular
           },
       });
   };
+         
+  
+  
+  vm.openAnswerModal = function (id){
+	  
+	  alert(id);
+	  modal(9);
+ 
+  }
 
   // ----------- //
   // -- DEBUG -- //

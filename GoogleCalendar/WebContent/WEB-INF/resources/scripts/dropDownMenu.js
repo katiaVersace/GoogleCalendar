@@ -16,7 +16,13 @@ function updateClock(x) {
 
 function addPermission(x) {
 	
-		document.getElementById('TourId3').value = x;
+	document.getElementById('privilages').value = x;
+}
+
+
+function resetShareCalendarValue() {
+	document.getElementById('privilages').value  = "none";
+	document.getElementById('userChoice').value  = "";
 }
 
 
@@ -32,8 +38,15 @@ function setCalendar(calendar,id){
 }
 
 function setUser(user){
-	alert(user);
 	document.getElementById('userChoice').value = user;
 }
 
+function addFreq(freq){
+	document.getElementById('repChoice').value = freq;
+	
+}
 
+function resetFreqChoice() {
+	document.getElementById('repChoice').value = "none";
+	document.getElementById('repPanel').className = "collapse out";
+}

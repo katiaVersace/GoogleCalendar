@@ -1,6 +1,6 @@
 var modal = function(index){
 	 document.getElementById('modal-wrapper'+index).style.display='block';
-	 var endModal = 9;	
+	 var endModal = 10;
 		 
 	 for(i=1;i<endModal;i++){
 		 if(i!=index)

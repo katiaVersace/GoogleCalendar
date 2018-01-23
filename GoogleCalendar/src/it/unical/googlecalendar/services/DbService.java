@@ -238,8 +238,8 @@ public class DbService {
 		return ndao.deleteNotifications(user);
 	}
 
-	public List<String> searchEmail(String emailToSearch) {
-		return udao.searchEmail(emailToSearch);
+	public List<String> searchEmail(String emailToSearch, String personalEmail) {
+		return udao.searchEmail(emailToSearch,personalEmail);
 	}
 	
 	public String answerInvitation(int inv_id, int u_id, String answer) {
