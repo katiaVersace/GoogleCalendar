@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +28,7 @@ import it.unical.googlecalendar.dao.NotificationDAO;
 import it.unical.googlecalendar.dao.OccurrenceDAOImpl;
 import it.unical.googlecalendar.dao.RepetitionDAO;
 import it.unical.googlecalendar.dao.UserDAOImpl;
+import it.unical.googlecalendar.dao.Users_CalendarsDAO;
 import it.unical.googlecalendar.model.Alarm;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Invitation;
@@ -35,6 +37,7 @@ import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.Repetition;
 import it.unical.googlecalendar.model.User;
+import it.unical.googlecalendar.model.Users_Calendars;
 
 @Service
 public class DbService {
@@ -286,5 +289,10 @@ public class DbService {
 
 	public Object getAlarmsToNotifyById(int user_id) {
 		return adao.getAlarmsByUserId(user_id);
+	}
+	
+	public List<Users_Calendars> getPrivilegesForCalendars(int user_id){
+		return cdao.getPrivilegesForCalendars(user_id);
+		
 	}
 }

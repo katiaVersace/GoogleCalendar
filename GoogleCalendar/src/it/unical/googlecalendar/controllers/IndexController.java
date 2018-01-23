@@ -418,4 +418,14 @@ public class IndexController {
         }
         writer.close();
     }
+    
+    /*
+     * JSON_getPrivileges
+     */
+    @RequestMapping(value = "/JSON_getPrivileges", method = RequestMethod.POST)
+    @ResponseBody
+    public String JSON_getPrivileges(HttpSession session) {
+    	  Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    	  return gson.toJson(dbService.getPrivilegesForCalendars((Integer) session.getAttribute("user_id"))) ;
+    	  }
 }

@@ -18,5 +18,6 @@ public interface Users_CalendarsDAO {
 	List<Users_Calendars> getAssociationByCalendarId(int calendar_id);
 
 	void update(Users_Calendars uc);
+
 	
 }

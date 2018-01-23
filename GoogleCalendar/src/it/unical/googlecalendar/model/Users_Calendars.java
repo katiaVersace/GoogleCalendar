@@ -1,6 +1,5 @@
 package it.unical.googlecalendar.model;
 
-import java.awt.Color;
 
 import javax.persistence.CascadeType;
 
@@ -19,6 +18,8 @@ import javax.persistence.ManyToOne;
 
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import com.google.gson.annotations.Expose;
 
 @Entity
 @Table(
@@ -46,21 +47,15 @@ public class Users_Calendars {
 
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "calendar_id",nullable = false)
+	@Expose
 	private Calendar calendar;
 
 	// additional attributes
 	@Column(nullable = false)
-
+	@Expose
 	private String privileges;
 
-	@Column(nullable = false)
-
-	private Color color;
-
-	@Column(nullable = false)
-
-	private String calendarName;
-
+	
 	public int getId() {
 
 		return id;
@@ -97,32 +92,10 @@ public class Users_Calendars {
 
 	}
 
-	public Color getColor() {
-
-		return color;
-
-	}
-
-	public void setColor(Color color) {
-
-		this.color = color;
-
-	}
-
-	public String getCalendarName() {
-
-		return calendarName;
-
-	}
-
+	
 	public void setCalendar(Calendar c) {
 
 		this.calendar=c;
-
-	}
-	public void setCalendarName(String calendarName) {
-
-		this.calendarName = calendarName;
 
 	}
 
@@ -132,7 +105,7 @@ public class Users_Calendars {
 
 	}
 
-	public Users_Calendars(User u, Calendar c, String privileges, Color color, String calendarName) {
+	public Users_Calendars(User u, Calendar c, String privileges) {
 super();
 		this.user = u;
 
@@ -140,9 +113,7 @@ super();
 
 		this.privileges = privileges;
 
-		this.color = color;
-
-		this.calendarName = calendarName;
+		
 	//u.getUsers_Calendars().add(this);
 	c.getUsers_calendars().add(this);
 	

@@ -7,6 +7,7 @@ import java.util.List;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
+import it.unical.googlecalendar.model.Users_Calendars;
 
 
 public interface OccurrenceDAO {
@@ -50,5 +51,6 @@ public interface OccurrenceDAO {
 
 	boolean updateEventById(int ev_id, String title, String description, Date startTime, Date endTime, String c1,
 			String c2, int user_id);
-	
+
+
 }

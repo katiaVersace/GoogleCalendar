@@ -161,7 +161,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 				// creo un'associazione tra l'utente e il calendario ed elimino
 				
-				Users_Calendars association = new Users_Calendars(u, c, myPrivilege, Color.CYAN, c.getTitle());
+				Users_Calendars association = new Users_Calendars(u, c, myPrivilege);
 				List<Integer>sen=getSendersOfInvitationById(invitationToDelete.getId());
 				
 				for (Integer senderInv : sen) {

@@ -69,7 +69,7 @@ public class Calendar {
 
 		Users_Calendars association = null;
 
-		association = new Users_Calendars(creator, this, "ADMIN", Color.CYAN, this.title);
+		association = new Users_Calendars(creator, this, "ADMIN");
 
 		if (isFB) {
 			creator.setMyFacebookCalendar(this);
