@@ -266,13 +266,14 @@ public class IndexController {
     /*
      * JSON_getAlarmForAnOccurrence
      */
-    @RequestMapping(value = "/JSON_getAlarmForOccurrence/{occurrence_id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/JSON_getAlarmForAnOccurrence/{occurrence_id}", method = RequestMethod.POST)
     @ResponseBody
     public String JSON_getAlarmForAnOccurrence(HttpSession session,
             @PathVariable("occurrence_id") String occurrence_id) {
+    	
+    	System.out.println(occurrence_id);
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(dbService.getTheAlarmForAnOccurrence((Integer) session.getAttribute("user_id"),
-                Integer.parseInt(occurrence_id)));
+        return gson.toJson(dbService.getTheAlarmForAnOccurrence((Integer) session.getAttribute("user_id"),Integer.parseInt(occurrence_id)));
     }
 
     /*
@@ -400,7 +401,7 @@ public class IndexController {
         response.setContentType("text/event-stream");
         response.setCharacterEncoding("UTF-8");
         
-        System.out.println("dentro index sse");
+ 
 
         PrintWriter writer = response.getWriter();
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();

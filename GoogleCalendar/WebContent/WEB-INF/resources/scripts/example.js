@@ -186,7 +186,29 @@ angular
                 }, 
             ];
             return result;
-        case "READER":
+            
+        case "RW":
+        	result = [
+                {
+                    label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
+                    onClick : function(args) {
+                        vm.clickUpdateEvent(args.calendarEvent);
+                    }
+                }, 
+                {
+                    label : '<i class=\'glyphicon glyphicon-remove\'></i>',
+                    onClick : function(args) {
+                       if (args.calendarEvent.memo) {
+                    	       vm.deleteMemoById(args.calendarEvent.id)
+                       } else {
+                           vm.deleteOccurrence(args.calendarEvent.id);
+                       }
+                    }
+                }, 
+            ];
+            return result;
+            
+        case "R":
             return result;
     	}
     
@@ -262,7 +284,7 @@ angular
                 $scope.$digest(); 
             }
         }
-                
+                        
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start.toDate(), boundaries.end.toDate(), function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
@@ -278,7 +300,7 @@ angular
                         if(moment(blueprint.startTime)>= boundaries.start && moment(blueprint.startTime)<=boundaries.end){
                         	  ruleStart = (moment.max(boundaries.start, moment(blueprint.startTime))).toDate();
                         	  ruleEnd = (moment.min(boundaries.end, moment(blueprint.repetition.endTime))).toDate();
-                        }else{
+                        } else {
                         	ruleStart = moment(blueprint.startTime).toDate();
                         	ruleEnd = moment(blueprint.repetition.endTime).toDate();
                         }
@@ -313,7 +335,7 @@ angular
                             vm.events.push(event);
                         });
                     } else {
-                        vm.events.push(new vm.Event(
+                        var event = new vm.Event(
                             blueprint.id,
                             blueprint.calendar.id,
                             blueprint.title,
@@ -322,8 +344,14 @@ angular
                             new Date(blueprint.endTime),
                             blueprint.primaryColor,
                             blueprint.secondaryColor,
-                            "ADMIN"
-                        ));
+                            "ADMIN"  //TODO
+                        );
+                        
+//                        vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
+//                        	event.alarm = JSON.parse(response);
+//                        	console.log(event.alarm);
+                        	vm.events.push(event);
+               //         });
                     }
                 });
                 // Needed for asynchronous update of vm.events
@@ -937,8 +965,7 @@ angular
     };
     
     /*
-	 * updateAlarm
-	 * FIXME: al momento Alarm nel modello ha una lista di allarmi
+	 * updateAlarm FIXME: al momento Alarm nel modello ha una lista di allarmi
 	 */
     vm.updateAlarm = function (alarm_id) {
         $.ajax({
@@ -951,8 +978,7 @@ angular
     };
     
     /*
-	 * deleteAlarm
-	 * FIXME: al momento Alarm nel modello ha una lista di allarmi
+	 * deleteAlarm FIXME: al momento Alarm nel modello ha una lista di allarmi
 	 */
     vm.deleteAlarm = function (alarm_id) {
         $.ajax({
@@ -986,8 +1012,8 @@ angular
     };
     
          /*
-    	 * sendInvitation
-    	 */
+			 * sendInvitation
+			 */
         vm.sendInvitation = function (calendar_id, email, privileges) { alert("invio invito "+calendar_id+" "+email+" "+privileges);
             $.ajax({
                 type: "POST",
@@ -1025,7 +1051,7 @@ angular
     };
     
     /*
-	 * answerInvitation   MARCO
+	 * answerInvitation MARCO
 	 */
     vm.answerInvitation = function (invitation_id, answer) {
         $.ajax({
@@ -1126,7 +1152,7 @@ angular
                 id : event.id,
                 memo : false,
                 description : event.description,
-                clock : event.clock, // TODO: fix clock on DB
+                clock : event.clock,   
                 startsAt : event.startsAt,
                 endsAt : event.endsAt,
                 color : {
@@ -1292,13 +1318,9 @@ angular
                  
 		                 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
 		                         vm.temp.color.secondary, function (response){
-		
-		     				 resetFreqChoice();
-		     				
-		     				
-		                     document.getElementById("repetition").checked = false;
-		                 	
-		                 	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
+		                	 resetFreqChoice();
+			     				document.getElementById("repetition").checked = false;
+			     				vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
 		                 });
 		                 
 		                 
@@ -1311,16 +1333,35 @@ angular
                  } else{
                 	 alert("please insert a valid frequence");
                  }
-             }else{		// event without repetition
+             }else{		
+            	 
+            	 
+            	 if(vm.temp.clock != "none"){// alarm setted
+
+            		 
+            		 // event without repetition with ALARM
+                	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
+                             vm.temp.color.secondary,function(response){
+                		
+                		 vm.addAlarm(response, vm.temp.clock);
+                	 });
+                	 
+                	 resetClock(); 
+            		 
+            	 }else{
+            	 
+            	 // event without repetition without ALARM
             	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
                          vm.temp.color.secondary);
                  
-                 document.getElementById('btn-add').disabled = true;
+                
+                	
+            	 }
+            	 
+            	 document.getElementById('btn-add').disabled = true;
                	 
                  
                  document.getElementById('modal-wrapper5').style.display = 'none';
-                 resetClock(); 			
-            	 
              }
   
         } else { 
@@ -1340,7 +1381,7 @@ angular
         vm.updateEvent(vm.temp.id, vm.temp.title,
                 vm.temp.description, vm.temp.startsAt,
                 vm.temp.endsAt, vm.temp.color.primary,
-                vm.temp.color.secondary);
+                vm.temp.color.secondary,);
         
         resetClock();
         document.getElementById('modal-wrapper6').style.display = 'none';
@@ -1391,7 +1432,7 @@ angular
     }
     
     // ---------------------------- //
-    // --        WASTELAND       -- //
+    // -- WASTELAND -- //
     // -- enter at your own risk -- //
     // ---------------------------- //
     
@@ -1501,29 +1542,29 @@ angular
 });
 
 
-//=======
-//  // ----------- //
-//  // -- DEBUG -- //
-//  // ----------- //
+// =======
+// // ----------- //
+// // -- DEBUG -- //
+// // ----------- //
 //  
-//  vm.fn = function () {
-//      var time = new Date(); console.log(time);
-//      var delay = 10;
-//      time.setMinutes(time.getMinutes() + 1)
-//      time.setSeconds(time.getSeconds() + delay);
+// vm.fn = function () {
+// var time = new Date(); console.log(time);
+// var delay = 10;
+// time.setMinutes(time.getMinutes() + 1)
+// time.setSeconds(time.getSeconds() + delay);
 //      
-//      console.log(time);
+// console.log(time);
 //      
-//      vm.insertNewEvent(
-//              "2",
-//              delay + " seconds",
-//              delay + " seconds before alarm triggers",
-//              time, time,
-//              "#555555", "#aaaaaa", function (response) {
-//          if (response != -1) {
-//              vm.addAlarm(response, 1);
-//          }
-//      });
-//  };
-//});
-//>>>>>>> refs/remotes/origin/_giuseppe_
+// vm.insertNewEvent(
+// "2",
+// delay + " seconds",
+// delay + " seconds before alarm triggers",
+// time, time,
+// "#555555", "#aaaaaa", function (response) {
+// if (response != -1) {
+// vm.addAlarm(response, 1);
+// }
+// });
+// };
+// });
+// >>>>>>> refs/remotes/origin/_giuseppe_
