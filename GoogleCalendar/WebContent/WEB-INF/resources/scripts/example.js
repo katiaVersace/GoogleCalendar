@@ -72,6 +72,7 @@ angular
     // calendar for modal
     vm.calendarToUpd = undefined;
     
+
     // List of glyphs shown after entries in a day's event list,
     // with behavior
     var actions = [
@@ -142,8 +143,10 @@ angular
         this.calendar = undefined; // FIXME: insert memo calendar (or whatever)
         this.title = title;
         this.description = description;
-        this.startsAt = now; // graphical purposes only (renders it on the current day)
-        this.endsAt = now; // graphical purposes only (renders it on the current day)
+        this.startsAt = now; // graphical purposes only (renders it on the
+								// current day)
+        this.endsAt = now; // graphical purposes only (renders it on the
+							// current day)
         this.dateAdded = now; // date this memo was added/saved on db
         this.color = {
             primary: color,
@@ -224,6 +227,14 @@ angular
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start.toDate(), boundaries.end.toDate(), function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
+                	
+                	console.log("*****************");
+
+                	console.log(blueprint);
+                	
+                	console.log("*****************");
+
+                	
                     if (typeof blueprint.repetition !== "undefined") {
                         var rruleset = new RRuleSet();
                         var boundaries = vm.getViewDateBoundaries();
@@ -422,7 +433,7 @@ angular
        vm.insertNewCalendar(title, description);
        document.getElementById('modal-wrapper1').style.display = 'none';
        document.getElementById("nameCal").value = '';
-       document.getElementById("descrCalendar").value = ''
+       document.getElementById("descrCalendar").value = '';
     };
 
     
@@ -435,9 +446,30 @@ angular
     		title: title,
     		description : description
     	}
-     
+    	
     	modal(4);
     };
+    
+    
+    vm.shareCalendarView = function(){
+    	
+    	var privilages = document.getElementById("privilages").value;
+    	console.log("----> " + privilages);
+    	
+    	
+    	var email = document.getElementById('userChoice').value
+    	console.log("----> " + email);
+    	
+    	
+    	if(privilages == 'none' ||  email==''){
+    		alert("Please insert correct value");
+    	}
+    	else{
+    		vm.sendInvitation(vm.calendarToUpd.id,email,privilages);
+    	}
+     	resetShareCalendarValue();
+     }
+    
     
     vm.updateCalendarView = function(title,description){
     	 
@@ -586,22 +618,7 @@ angular
         });
     };
     
-    /*
-	 * JSON_searchEmailInDb
-	 */
-    vm.JSON_searchEmailInDb = function (email,callback) {
-        $.ajax({
-            type: "POST",
-            url: "JSON_searchEmailInDb",
-            data: {
-               emailToSearch: email,
-            },
-            success: function (response) {
-                   callback(response);                
-            },
-        });
-    };
-    
+ 
     /*
 	 * JSON_getMyInvitations
 	 */
@@ -683,8 +700,8 @@ angular
     };
     
     /*
-     * insertNewRepetition
-     */
+	 * insertNewRepetition
+	 */
     vm.insertNewRepetition = function (occurrence_id, repetitionType,
             startTime, endTime) {
         $.ajax({
@@ -704,8 +721,8 @@ angular
     };
     
     /*
-     * updateRepetition
-     */
+	 * updateRepetition
+	 */
     vm.updateRepetition = function (repetition_id, repetitionType,
             startTime, endTime) {
         $.ajax({
@@ -725,8 +742,8 @@ angular
     };
     
     /*
-     * deleteRepetition
-     */
+	 * deleteRepetition
+	 */
     vm.deleteRepetition = function (repetition_id) {
         $.ajax({
             type: "POST",
@@ -740,8 +757,8 @@ angular
     };
     
     /*
-     * insertNewException
-     */
+	 * insertNewException
+	 */
     vm.insertNewException = function (repetition_id) {
         $.ajax({
             type: "POST",
@@ -895,6 +912,8 @@ angular
             success: function (response) {
             		if(response == "User update successfully" || response == "Username changed successfully")
                         document.getElementById('usernameHome').innerHTML = username;
+            		
+            		alert(response);
              },
         });
     };
@@ -919,8 +938,8 @@ angular
     };
     
     /*
-     * deleteNotifications
-     */
+	 * deleteNotifications
+	 */
     vm.deleteNotifications = function () {
         $.ajax({
             type: "POST",
@@ -934,8 +953,8 @@ angular
     };
     
     /*
-     * answerInvitation
-     */
+	 * answerInvitation
+	 */
     vm.answerInvitation = function (invitation_id, answer) {
         $.ajax({
             type: "POST",
@@ -957,8 +976,8 @@ angular
     };
     
     /*
-     * resetSentStateOnMessages
-     */
+	 * resetSentStateOnMessages
+	 */
     vm.resetSentStateOnMessages = function () {
         $.ajax({
             type: "POST",
@@ -1082,7 +1101,11 @@ angular
             },
             draggable : false,
             resizable : false,
-            actions : actions
+            actions : actions,
+            // ///////////////// REPETITON DATA ******************
+            freq: null,
+            dtstart: startDate,
+            until: endDate
         };
         vm.openEventModal();
 
@@ -1113,7 +1136,11 @@ angular
             },
             draggable : false,
             resizable : false,
-            actions : actions
+            actions : actions,
+            // ///////////////// REPETITON DATA ******************
+            freq: null,
+            dtstart: vm.firstDateClicked,
+            until: vm.lastDateClicked
         };
         document.getElementById('btn-add').disabled = false;
 
@@ -1162,20 +1189,42 @@ angular
     // add event press button action
     vm.addEventView = function() {
 
-        var idCalendar = document.getElementById("choiceId").value;
+    
+    	var idCalendar = document.getElementById("choiceId").value;
 
         // ///////////// TO DO /////////////////// ADD ATTR in
         // INSERTNEWEVENT
         vm.temp.clock = document.getElementById("TourId").value;
 
+          
+        // for repetition events
+        if(document.getElementById("repetition").checked==true){
+        	 vm.temp.endsAt = vm.temp.startsAt; 
+         }
+        
+        // value of repetition
+        vm.temp.freq = document.getElementById("repChoice").value;
+
         if (idCalendar != undefined) {
+        	
+        	
+        	
+        	
+        	
             vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
-                    vm.temp.color.secondary, function (reponse){
+                    vm.temp.color.secondary, function (response){
             	
                 document.getElementById('btn-add').disabled = true;
-
-                resetClock();
+ 
+                
                 document.getElementById('modal-wrapper5').style.display = 'none';
+                resetClock();
+				resetFreqChoice();
+				
+				
+                document.getElementById("repetition").checked = false;
+                
+               
                 
                 console.log("insert new event with (idC, title, descr, start, end , primcol , secondcol)");
                 console.log(idCalendar + " "
@@ -1186,22 +1235,27 @@ angular
                 
                 console.log("id event = > "+response);
             	
-            	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dstart, vm.temp.until);
+            	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
             	
             	 console.log("insert new repetition with (id evt, freq , start, end )");
             	 console.log(response + " "
-                         + vm.temp.freq + " " + vm.temp.dstart
+                         + vm.temp.freq + " " + vm.temp.dtstart
                          + " " + vm.temp.until);
             	
             });
-            
+ 
+ 
             
 
         
-        } else {
-            alert("please choose a calendar");
-        }
-    }
+        } else { 
+        	 	alert("please choose a calendar");
+        	 }
+          
+          
+          
+          
+    	}
 
     // update event press button action
     vm.updateEventView = function() {
@@ -1250,8 +1304,6 @@ angular
     	
     	var now = new Date();
     	
-   
- 
         vm.insertNewMemo(vm.memo.title, vm.memo.description, now , vm.memo.color.primary);
         
         console.log("insert new MEMO => "+vm.memo.title+ " " + vm.memo.description+" " +now+" " +vm.memo.color.primary);
@@ -1262,8 +1314,7 @@ angular
 
     // update memo press button action
     vm.updateMemoView = function() {
-    		
-    	// use tmp.memo variables
+       	// use tmp.memo variables
     	
     	var now = new Date();
  
@@ -1275,7 +1326,7 @@ angular
     }
     
     // ---------------------------- //
-    // --        WASTELAND       -- //
+    // -- WASTELAND -- //
     // -- enter at your own risk -- //
     // ---------------------------- //
     
@@ -1301,6 +1352,9 @@ angular
         event[field] = !event[field];
     };
 
+  
+
+    
     // ----------- //
     // -- DEBUG -- //
     // ----------- //
@@ -1324,12 +1378,8 @@ angular
   vm.searchEmailInDb(strCurrent, function (x) {
   		var resp = JSON.parse(x);
   		console.log(JSON.stringify(resp,null,4));
-  	    
   		vm.populateListOfUsername(resp);
-
-
-  });
-  	
+ 	});
   };
 
 
@@ -1337,6 +1387,7 @@ angular
   	    	
   	 var viewList = $("#userListModal");
        var contRespUser = 0;
+            
        viewList.empty();
        var string =''; 
            string = "<div  class=\"btn-group\" >\n"
@@ -1349,7 +1400,7 @@ angular
        
       
            resp.forEach(function(element) {
-          	if(contRespUser<=10){ 
+          	if(contRespUser<=10    ){ 
    			console.log(element);
    			string+="<li><a href=\"javascript:void(0)\" onclick=\"setUser('"+element+"')\"" +
               " class = \"calendars\" data-id=\" \">" +element+"</a></li>";                       
@@ -1357,16 +1408,9 @@ angular
           	contRespUser++;
            	});
 
-           
-           
-
-
         viewList.append(string);  
 
   }
-
-
-
 
   vm.searchEmailInDb = function (email,callback) {
       $.ajax({

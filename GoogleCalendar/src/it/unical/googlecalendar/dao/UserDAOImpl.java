@@ -65,37 +65,41 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public String existsUser(String email, String password) {
 		Session session = sessionFactory.openSession();
-		
+
 		// se la password non � null stai facendo un normale login
 		// sql query
 		User result;
-		Query q = session
-				.createQuery("SELECT u FROM User u WHERE u.email = :user_email");
+		Query q = session.createQuery("SELECT u FROM User u WHERE u.email = :user_email");
 		q.setParameter("user_email", email);
-		try{
+		try {
 			result = (User) q.getSingleResult();
-		}catch (Exception e) {
-			return "FALSE"; //utente non registrato
+		} catch (Exception e) {
+
+			session.close();
+			return "FALSE"; // utente non registrato
 			// TODO: handle exception
 		}
 
-		
-		if (result!=null)
-			{
-			if(result.getPassword()==null)//TODO: ti sei sempre loggato con fb quindi comunicare all utente di entrare cn fb e cambiare la password
-			{	session.close();
-			 return "SETPASSWORD";
-			 }
-			
-			else	if(result.getPassword().equals(password))
+		if (result != null) {
+			if (result.getPassword() == null)// TODO: ti sei sempre loggato con
+												// fb quindi comunicare all
+												// utente di entrare cn fb e
+												// cambiare la password
 			{
 				session.close();
+				return "SETPASSWORD";
+			}
+
+			else if (result.getPassword().equals(password)) {
+				session.close();
 				return "TRUE";
-				}
+			}
 		}
-			return "FALSE"; //utente non registrato
-		
-		}
+		session.close();
+
+		return "FALSE"; // utente non registrato
+
+	}
 
 	@Override
 	public boolean existsUserFB(String email) {
@@ -146,47 +150,43 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public String updateUserById(int u_id, String username, String oldPassword, String newPassword) {
 		Session session = sessionFactory.openSession();
-	     User u = session.get(User.class,u_id);
+		User u = session.get(User.class, u_id);
 
-				String oldPssDb = u.getPassword();
-				
-				String  result="";
-				Transaction tx = null;	
-					
-				try {
-					if(oldPassword.equals(oldPssDb) &&  !newPassword.isEmpty() && !username.isEmpty()){			
-					tx = session.beginTransaction();
-					u.setUsername(username);
-					u.setPassword(newPassword);
-					session.update(u);
-					tx.commit();
-					result="User update successfully";
-					}
-					else if(oldPassword.isEmpty() && !username.isEmpty()){
-						tx = session.beginTransaction();
-						u.setUsername(username);
-						session.update(u);
-						tx.commit();
-						result = "Username changed successfully";	
-					}
-					else if(username.isEmpty() && oldPassword.equals(oldPssDb)){
-						tx = session.beginTransaction();
-						u.setPassword(newPassword);
-						session.update(u);
-						tx.commit();
-						result = "Password changed successfully";	
-					}
-					else{
-					result = "Old Password not mach"; 
-					}
-					
-					
-				} catch (Exception e) {
-					result="Error";
-					tx.rollback();
-				}
-				session.close();
-				return result;
+		String oldPssDb = u.getPassword();
+
+		String result = "";
+		Transaction tx = null;
+
+		try {
+			if (oldPassword.equals(oldPssDb) && !newPassword.isEmpty() && !username.isEmpty()) {
+				tx = session.beginTransaction();
+				u.setUsername(username);
+				u.setPassword(newPassword);
+				session.update(u);
+				tx.commit();
+				result = "User update successfully";
+			} else if (oldPassword.isEmpty() && !username.isEmpty()) {
+				tx = session.beginTransaction();
+				u.setUsername(username);
+				session.update(u);
+				tx.commit();
+				result = "Username changed successfully";
+			} else if (username.isEmpty() && oldPassword.equals(oldPssDb)) {
+				tx = session.beginTransaction();
+				u.setPassword(newPassword);
+				session.update(u);
+				tx.commit();
+				result = "Password changed successfully";
+			} else {
+				result = "Old Password not mach";
+			}
+
+		} catch (Exception e) {
+			result = "Error";
+			tx.rollback();
+		}
+		session.close();
+		return result;
 	}
 
 	@Override
@@ -224,7 +224,7 @@ public class UserDAOImpl implements UserDAO {
 		return result;
 
 	}
-	
+
 	@Override
 	public User getUserByEmail(String email) {
 		Session session = sessionFactory.openSession();
@@ -238,41 +238,42 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public List<String> searchEmail(String email) {
+	public List<String> searchEmail(String email, String personalEmail) {
 		Session session = sessionFactory.openSession();
 		// sql query
+		List<String> result = session
+				.createQuery("SELECT u.email FROM User u WHERE u.email like :user_email AND u.email <> :personal_email")
+				.setParameter("user_email", "%" + email + "%").setParameter("personal_email", personalEmail)
+				.getResultList();
 
-		List<String> result = 
-		        session.createQuery("SELECT u.email FROM User u WHERE u.email like :user_email")
-				.setParameter("user_email", "%" + email + "%").getResultList();
 		session.close();
 		return result;
 	}
 
 	@Override
-	public int insertNewUser(String email,String username, String password) {
+	public int insertNewUser(String email, String username, String password) {
 		Session session = sessionFactory.openSession();
-		User u =new User(email, username, password);
+		User u = new User(email, username, password);
 		int result = -1;
-		
-				Transaction tx = null;
 
-				try {
-					tx = session.beginTransaction();
-					session.save(u);
-					tx.commit();
-					result=u.getId();
-					} catch (Exception e) {
-						e.printStackTrace();
-					result=-1;
-					tx.rollback();
+		Transaction tx = null;
 
-					}
+		try {
+			tx = session.beginTransaction();
+			session.save(u);
+			tx.commit();
+			result = u.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = -1;
+			tx.rollback();
 
-				session.close();
+		}
 
-				return result;
-		
+		session.close();
+
+		return result;
+
 	}
 
 	@Override
@@ -280,8 +281,8 @@ public class UserDAOImpl implements UserDAO {
 		Session session = sessionFactory.openSession();
 		// sql query
 
-		User u=session.get(User.class,user_id);
+		User u = session.get(User.class, user_id);
 		return u.getMyFacebookCalendar();
-		
+
 	}
 }

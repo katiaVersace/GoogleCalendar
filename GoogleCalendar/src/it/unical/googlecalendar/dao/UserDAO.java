@@ -21,12 +21,12 @@ public interface UserDAO {
 	User getUserById(int u_id);
 
 	User getUserByEmail(String email);
-
-	List<String> searchEmail(String email);
-
+ 
+	List<String> searchEmail(String email,String personalEmail);
+	
 	boolean existsUserFB(String email);
 
 	int insertNewUser(String email, String username, String password);
 
 	Calendar getFbCalendar(int user_id);	
-}
+} 

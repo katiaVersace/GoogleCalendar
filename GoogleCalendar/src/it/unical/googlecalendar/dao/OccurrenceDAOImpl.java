@@ -166,7 +166,12 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			List<Occurrence> res1=query.getResultList();
 			
 			
-			Query queryR = session.createQuery("SELECT o FROM Occurrence o JOIN o.repetition orep WHERE orep.endTime>= :start").setParameter("start",startPeriod);
+			Query queryR = session.createQuery("SELECT o FROM Occurrence o  JOIN o.repetition orep, Users_Calendars uc JOIN uc.user u"
+					+ " WHERE orep.endTime>= :start and o.calendar = uc.calendar and o.calendar.id = :calendar_id and u.email = :email").setParameter("start",startPeriod);
+			queryR.setParameter("email", email);
+			queryR.setParameter("calendar_id", calendar_id);
+			
+			
 			List<Occurrence> res2=queryR.getResultList();
 			res1.addAll(res2);
 			Set<Occurrence>s1=new HashSet<>();
