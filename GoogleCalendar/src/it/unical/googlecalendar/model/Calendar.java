@@ -2,6 +2,7 @@ package it.unical.googlecalendar.model;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -50,6 +51,9 @@ public class Calendar {
 	
 	@OneToOne(cascade=CascadeType.REFRESH)
 	private User fbUser;
+	
+	
+//	private Date version;
 
 	public Calendar() {
 		super();
@@ -69,6 +73,8 @@ public class Calendar {
 		if(isFB)
 		{creator.setMyFacebookCalendar(this);
 		this.fbUser=creator;}
+//	version=new Date();
+	
 	}
 	
 
@@ -78,6 +84,14 @@ public class Calendar {
 	// elimina R o RW(se sei ADMIN)
 
 	
+
+//	public Date getVersion() {
+//		return version;
+//	}
+//
+//	public void setVersion(Date version) {
+//		this.version = version;
+//	}
 
 	public User getFbUser() {
 		return fbUser;

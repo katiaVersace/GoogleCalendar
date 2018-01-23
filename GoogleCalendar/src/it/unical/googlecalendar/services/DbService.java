@@ -107,11 +107,11 @@ public class DbService {
 		    e.printStackTrace();
 		}
 		
-		System.out.println("allarmi x katia");
-		List<Alarm> alarmsKatia=adao.getAlarmsToNotifyById(katia.getId());
-		for(Alarm a:alarmsKatia){
-			System.out.println(a.getOccurrence().getTitle()+": "+a.getAlarm());
-		}
+//		System.out.println("allarmi x katia");
+//		List<Alarm> alarmsKatia=adao.getAlarmsToNotifyById(katia.getId());
+//		for(Alarm a:alarmsKatia){
+//			System.out.println(a.getOccurrence().getTitle()+": "+a.getAlarm());
+//		}
 	}
 
 	public Collection<Occurrence> stampaTuttiGliEventi() {

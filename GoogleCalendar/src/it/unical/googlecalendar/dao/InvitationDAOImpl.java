@@ -118,8 +118,10 @@ public class InvitationDAOImpl implements InvitationDAO {
 		Query query1 = session.createQuery(
 				"SELECT i FROM Invitation i WHERE i.receiver.id= :user_id");
 		query1.setParameter("user_id", receiver_id);
-
 		List<Invitation> result = query1.getResultList();
+	for(Invitation i:result)
+		Hibernate.initialize(i.getSendersId());
+
 		session.close();
 		return result;
 
