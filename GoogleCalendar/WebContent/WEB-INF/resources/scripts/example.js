@@ -234,7 +234,7 @@ angular
                         
                         if (typeof blueprint.repetition.exceptions !== "undefined") {
                             blueprint.repetition.exceptions.forEach(function (item) {
-                                rruleset.exdate(moment(item.startTime));
+                                rruleset.exdate(new Date(item.startTime));
                             });
                         }
                         
@@ -1154,22 +1154,35 @@ angular
         vm.temp.clock = document.getElementById("TourId").value;
 
         if (idCalendar != undefined) {
-            vm.insertNewEvent(idCalendar, vm.temp.title,
-                    vm.temp.description, vm.temp.startsAt,
-                    vm.temp.endsAt, vm.temp.color.primary,
-                    vm.temp.color.secondary);
+            vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
+                    vm.temp.color.secondary, function (reponse){
+            	
+                document.getElementById('btn-add').disabled = true;
 
-            document.getElementById('btn-add').disabled = true;
-
-            resetClock();
-            document.getElementById('modal-wrapper5').style.display = 'none';
+                resetClock();
+                document.getElementById('modal-wrapper5').style.display = 'none';
+                
+                console.log("insert new event with (idC, title, descr, start, end , primcol , secondcol)");
+                console.log(idCalendar + " "
+                        + vm.temp.title + " " + vm.temp.description
+                        + " " + vm.temp.startsAt + " " + vm.temp.endsAt
+                        + " " + vm.temp.color.primary + " "
+                        + vm.temp.color.secondary);
+                
+                console.log("id event = > "+response);
+            	
+            	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dstart, vm.temp.until);
+            	
+            	 console.log("insert new repetition with (id evt, freq , start, end )");
+            	 console.log(response + " "
+                         + vm.temp.freq + " " + vm.temp.dstart
+                         + " " + vm.temp.until);
+            	
+            });
             
-            console.log("insert new event with (idC, title, descr, start, end , primcol , secondcol)");
-            console.log(idCalendar + " "
-                    + vm.temp.title + " " + vm.temp.description
-                    + " " + vm.temp.startsAt + " " + vm.temp.endsAt
-                    + " " + vm.temp.color.primary + " "
-                    + vm.temp.color.secondary);
+            
+
+        
         } else {
             alert("please choose a calendar");
         }
