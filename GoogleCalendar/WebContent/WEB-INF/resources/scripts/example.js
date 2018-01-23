@@ -1,4 +1,6 @@
-// TODO: decidere come inserire ripetizioni
+// changelog
+// discusse con marco le storie delle repetition
+// discussa con katia la storia dell'update sulle repetition
 
 // --------------------------- //
 // -- MERGE MARIO MARCO [0] -- //
@@ -731,6 +733,21 @@ angular
             url: "deleteRepetition" + repetition_id,
             success: function (response) {
                 if (response == "YES") {
+                    vm.updateEventList();
+                }
+            },
+        });
+    };
+    
+    /*
+     * insertNewException
+     */
+    vm.insertNewException = function (repetition_id) {
+        $.ajax({
+            type: "POST",
+            url: "insertNewException/" + repetition_id,
+            success: function (response) {
+                if (response != -1) {
                     vm.updateEventList();
                 }
             },

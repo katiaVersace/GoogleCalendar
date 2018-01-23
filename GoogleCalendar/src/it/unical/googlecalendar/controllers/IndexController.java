@@ -398,26 +398,4 @@ public class IndexController {
             @RequestParam Date sT,@RequestParam Date eT) {
     	   return dbService.insertNewException(Integer.parseInt(repetition_id),sT,eT,(Integer) session.getAttribute("user_id"));
     }
-
-    /*
-     * updateException
-     */
- // TODO: Giuseppe aggiungi questo metodo!!
-    @RequestMapping(value = "/updateException/{exception_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String updateException(HttpSession session, @RequestParam Date st,@RequestParam Date et,
-            @PathVariable("exception_id") String exception_id) {
-        return dbService.updateException(Integer.parseInt(exception_id), st,et,(Integer) session.getAttribute("user_id")) ? "YES" : "NO";
-    }
-
-    /*
-     * deleteException
-     */
-    // TODO: Giuseppe aggiungi questo metodo!!
-    @RequestMapping(value = "/deleteException/{exception_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String deleteException(HttpSession session,@PathVariable("exception_id") String exception_id) {
-        return dbService.deleteException(Integer.parseInt(exception_id), (Integer) session.getAttribute("user_id")) ? "YES"
-                : "NO";
-    }
 }
