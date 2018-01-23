@@ -35,6 +35,7 @@ import it.unical.googlecalendar.model.Notification;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.Repetition;
 import it.unical.googlecalendar.model.User;
+import it.unical.googlecalendar.model.Users_Calendars;
 
 @Service
 public class DbService {
@@ -287,4 +288,9 @@ public class DbService {
 	public Object getAlarmsToNotifyById(int user_id) {
 		return adao.getAlarmsByUserId(user_id);
 	}
+	public List<Users_Calendars> getPrivilegesForCalendars(int user_id){
+		return cdao.getPrivilegesForCalendars(user_id);
+		
+	}
+
 }
