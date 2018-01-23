@@ -3,7 +3,6 @@ package it.unical.googlecalendar.dao;
 import java.util.Date;
 import java.util.List;
 
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -63,12 +62,11 @@ public class AlarmDAO {
 		Session session = sessionFactory.openSession();
 
 		// sql query
-		List<Alarm> result = session.createQuery("SELECT m FROM Alarm m where m.user.id= :user_id")
+		List<Alarm> result = 
+		        session.createQuery("SELECT m FROM Alarm m where m.user.id= :user_id")
 				.setParameter("user_id", user_id).getResultList();
-
 		
 			return result;
-		
 	}
 	
 	public Alarm getAlarmsByOccurrenceIdAndUserId(int user_id,int occurrence_id) {
@@ -77,11 +75,8 @@ public class AlarmDAO {
 		// sql query
 		Alarm result = (Alarm) session.createQuery("SELECT a FROM Alarm a where a.user.id= :user_id and a.occurrence.id= :occurrence_id")
 				.setParameter("user_id", user_id).setParameter("alarm_id", occurrence_id).uniqueResult();
-
 		
 			return result;
-		
-
 	}
 
 	public boolean updateAlarmById(int a_id,int alarm
@@ -171,7 +166,27 @@ public class AlarmDAO {
 
 		session.close();
 		return result;
-	
 	}
+	
+	public List<Alarm> getAlarmsToNotifyById(int user_id) {
+		Session session = sessionFactory.openSession();
+		Date now=new Date();
+		Date now1=new Date(now.getTime()+10*1000L);
+		
+		// sql query
+		List<Alarm> result = session.createQuery(
+		        "SELECT m FROM Alarm m where m.user.id= :user_id and m.alarm>=:now and m.alarm<=:now1 ")
+				.setParameter("user_id", user_id).setParameter("now1", now1).setParameter("now", now).getResultList();
+		
+		 
+		
+		for (Alarm alarm : result) {
+		    deleteAlarmById(alarm.getId(), user_id);
+		}
+		
+		 
 
+		session.close();
+		return result;
+	}
 }

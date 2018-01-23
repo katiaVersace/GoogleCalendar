@@ -171,8 +171,8 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 			queryR.setParameter("email", email);
 			queryR.setParameter("calendar_id", calendar_id);
 			
-			
 			List<Occurrence> res2=queryR.getResultList();
+
 			res1.addAll(res2);
 			Set<Occurrence>s1=new HashSet<>();
 			s1.addAll(res1);

@@ -3,6 +3,7 @@ package it.unical.googlecalendar.controllers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import it.unical.googlecalendar.model.Alarm;
 import it.unical.googlecalendar.services.DbService;
 
 @Controller
@@ -162,16 +164,21 @@ public class IndexController {
         return dbService.updateUserById( (Integer) session.getAttribute("user_id"), username,oldPassword,password);
     }
 
-    /*
-     * sendInvitation
-     */
-    @RequestMapping(value = "/sendInvitation/{calendar_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String sendInvitation(HttpSession session, @RequestParam String receiver_email,
-            @PathVariable("calendar_id") String calendar_id, @RequestParam String privilege) {
-        return dbService.sendInvitation((Integer) session.getAttribute("user_id"), receiver_email,
-                Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
-    }
+     /*
+         * sendInvitation
+         */
+        @RequestMapping(value = "/sendInvitation/{calendar_id}", method = RequestMethod.POST)
+        @ResponseBody
+        public String sendInvitation(HttpSession session, @RequestParam String receiver_email,
+                @PathVariable("calendar_id") String calendar_id, @RequestParam String privilege) {
+        	
+        	System.out.println("dentro send invitation controller");
+        	System.out.println("email "+receiver_email+" priv "+privilege+" calendar "+calendar_id+" userid "+session.getAttribute("user_id"));
+        	
+        	
+            return dbService.sendInvitation((Integer) session.getAttribute("user_id"), receiver_email,
+                    Integer.parseInt(calendar_id), privilege) ? "YES" : "NO";
+        }
     
     /*
      * answerInvitation
@@ -203,8 +210,9 @@ public class IndexController {
         return dbService.addAlarm((Integer) session.getAttribute("user_id"), Integer.parseInt(occurrence_id), minutes);
     }
 
-    // FIXME: alarm_id -> occurrence_id
-    // TODO: Giuseppe aggiungi questo metodo!!
+    /*
+     * updateAlarm
+     */
     @RequestMapping(value = "/updateAlarm/{alarm_id}", method = RequestMethod.POST)
     @ResponseBody
     public String updateAlarm(HttpSession session, @RequestParam int minutes,
@@ -212,8 +220,9 @@ public class IndexController {
         return dbService.updateAlarm(Integer.parseInt(alarm_id), minutes) ? "YES" : "NO";
     }
 
-    // FIXME: alarm_id -> occurrence_id
-    // TODO: Giuseppe aggiungi questo metodo!!
+    /*
+     * deleteAlarm
+     */
     @RequestMapping(value = "/deleteAlarm/{alarm_id}", method = RequestMethod.POST)
     @ResponseBody
     public String deleteAlarm(HttpSession session,
@@ -319,48 +328,6 @@ public class IndexController {
     }
     
     /*
-     * SSE notification subscription
-     */
-    @RequestMapping(value = "/notifications")
-    public void pushNotifications(HttpServletRequest request, HttpServletResponse response, HttpSession session)
-            throws ServletException, IOException {
-        response.setContentType("text/event-stream");
-        response.setCharacterEncoding("UTF-8");
-
-        PrintWriter writer = response.getWriter();
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-        if (((Integer) session.getAttribute("user_id")) != null) {
-            writer.write("data: " 
-                    + gson.toJson(dbService.getUnsentNotifications((Integer) session.getAttribute("user_id")))
-                    + "\n\n");
-            writer.flush();
-        }
-        writer.close();
-    }
-    
-    /*
-     * SSE invitations subscription
-     */
-    @RequestMapping(value = "/invitations")
-    public void pushInvitations(HttpServletRequest request, HttpServletResponse response, HttpSession session)
-            throws ServletException, IOException {
-        response.setContentType("text/event-stream");
-        response.setCharacterEncoding("UTF-8");
-
-        PrintWriter writer = response.getWriter();
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-        if (((Integer) session.getAttribute("user_id")) != null) {
-            writer.write("data: "
-                    + gson.toJson(dbService.getUnsentInvitations((Integer) session.getAttribute("user_id")))
-                    + "\n\n");
-            writer.flush();
-        }
-        writer.close();
-    }
-    
-    /*
      * insertNewRepetition
      */
     @RequestMapping(value = "/insertNewRepetition/{occurrence_id}", method = RequestMethod.POST)
@@ -399,5 +366,82 @@ public class IndexController {
     @ResponseBody
     public int insertNewException(HttpSession session, @PathVariable("repetition_id") String repetition_id,  @RequestParam Date date_exception) {
     	   return dbService.insertNewException(Integer.parseInt(repetition_id),date_exception,date_exception,(Integer) session.getAttribute("user_id"));
+    }
+    
+    /*
+     * SSE notification subscription
+     */
+    @RequestMapping(value = "/notifications")
+    public void pushNotifications(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        if (((Integer) session.getAttribute("user_id")) != null) {
+            writer.write(
+                      "retry: 5000\n"
+                    + "data: " 
+                    + gson.toJson(dbService.getUnsentNotifications((Integer) session.getAttribute("user_id")))
+                    + "\n\n");
+            writer.flush();
+        }
+        writer.close();
+    }
+    
+    /*
+     * SSE invitations subscription
+     */
+    @RequestMapping(value = "/invitations")
+    public void pushInvitations(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+        
+        System.out.println("dentro index sse");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        if (((Integer) session.getAttribute("user_id")) != null) {
+            writer.write(
+                      "retry: 5000\n"
+                    + "data: "
+                    + gson.toJson(dbService.getUnsentInvitations((Integer) session.getAttribute("user_id")))
+                    + "\n\n");
+            writer.flush();
+        }
+        writer.close();
+    }
+
+    /*
+     * SSE alarm subscription
+     */
+    @RequestMapping(value = "/alarms")
+    public void pushAlarms(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        
+
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        
+        if (((Integer) session.getAttribute("user_id")) != null) {
+            List<Alarm> alarmList = dbService.getAlarmsToNotifyById((Integer) session.getAttribute("user_id"));
+           
+            
+            writer.write(
+                    "retry: 5000\n"
+                  + "data: "
+                  + gson.toJson(alarmList) 
+                  + "\n\n");
+            writer.flush();
+        }
+        writer.close();
+       
     }
 }

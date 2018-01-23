@@ -79,6 +79,8 @@ public class Occurrence {
     @Expose
     private Repetition repetition;
     
+    
+    
 	
 	public Occurrence(){
 		super();

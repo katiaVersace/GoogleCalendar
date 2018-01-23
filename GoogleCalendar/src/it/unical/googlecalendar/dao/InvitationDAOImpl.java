@@ -118,8 +118,10 @@ public class InvitationDAOImpl implements InvitationDAO {
 		Query query1 = session.createQuery(
 				"SELECT i FROM Invitation i WHERE i.receiver.id= :user_id");
 		query1.setParameter("user_id", receiver_id);
-
 		List<Invitation> result = query1.getResultList();
+	for(Invitation i:result)
+		Hibernate.initialize(i.getSendersId());
+
 		session.close();
 		return result;
 
@@ -269,6 +271,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 							session.update(i);
 						}
 						catch (Exception e) {
+							e.printStackTrace();
 						i = new Invitation(sender_id,receiverId.get(0) , calendar, privilege);
 						session.save(i);
 						
@@ -279,6 +282,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 }
 
 					catch (Exception e) {
+						e.printStackTrace();
 						tx.rollback();
 						result = false;
 					}
@@ -287,6 +291,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 		}
 		session.close();
 
+		System.out.println("dentro DAO "+result);
 		return result;
 	}
 

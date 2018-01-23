@@ -129,9 +129,7 @@
 									style="font-size: 20px; color: '#9E9E9E';"></i> <span
 									class="caret"></span>
 							</a>
-								<div class="dropdown-menu scrollable-menu" id="ulNotifications"></div>
-
-							</li>
+								<div class="dropdown-menu scrollable-menu" id="ulNotifications"></div></li>
 							<li>
 								<form action="logout">
 									<div class="navbar-header">
@@ -168,6 +166,11 @@
 										<button class="btn btn-primary" mwl-date-modifier
 											date="vm.viewDate" increment="vm.calendarView"
 											ng-click="vm.viewModifierBehavior()">Next</button>
+										<!-- DEBUG -->
+										<button class="btn btn-primary" ng-click="vm.fn()">DEBUG</button>
+										<!-- END DEBUG -->
+
+										<!--  -->
 									</div>
 								</div>
 								<br class="visible-xs visible-sm">
@@ -186,6 +189,7 @@
 								<br class="visible-xs visible-sm">
 								<div class="col-md-4 text-center">
 									<div class="btn-group">
+
 
 										<button class="btn btn-primary pull-right" id="buttonShowMemo"
 											ng-click="vm.toggleMemos()" style="margin-left: 3px;">Show
@@ -383,13 +387,13 @@
 					</div>
 
 
-
 					<div class="row-fluid">
 						<input ng-keyup="onKeyUP($event)" type="text"
 							style="width: 40%; height: 90%;" id="userChoice"
 							placeholder="search user">
 						<fieldset id="userListModal"></fieldset>
 					</div>
+
 
 
 					<div style="text-align: center;">
@@ -416,6 +420,7 @@
 			</form>
 		</div>
 	</div>
+
 
 
 	<!-- ADD EVENT-->
@@ -458,6 +463,7 @@
 								class="clocks" data-id="none">none</a></li>
 						</div>
 					</div>
+
 
 					<div>
 						<form>
@@ -516,6 +522,7 @@
 								</table>
 							</div>
 							<div style="text-align: center;">
+
 
 
 								<label style="float: right;"> <input type="checkbox"
@@ -630,7 +637,6 @@
 
 								<textarea rows="2" placeholder="Description" id="descEvent"
 									ng-model="vm.temp.description"></textarea>
-
 
 								<div>
 									<button type="button" id="addEvnt" ng-click="vm.addEventView()"
@@ -814,7 +820,6 @@
 							<textarea rows="2" placeholder="Description" id="descMemo"
 								ng-model="vm.memo.description"></textarea>
 						</div>
-
 						<button type="button" id="newCalendar"
 							class="btn btn-info navbar-btn" ng-click="vm.addMemoView()"
 							style="background: #42A5F5">
@@ -867,6 +872,7 @@
 								ng-model="vm.memo.description"></textarea>
 						</div>
 
+
 						<button type="button" id="newCalendar"
 							class="btn btn-info navbar-btn" ng-click="vm.updateMemoView()"
 							style="background: #42A5F5">
@@ -879,7 +885,7 @@
 	</div>
 
 
-	
+
 	<!-- Invitations -->
 	<div id="modal-wrapper9" class="modal">
 		<div>
@@ -897,12 +903,16 @@
 				<div class="modal-content">
 					<div style="text-align: center;">
 
-						<p id="invitationModal" style="color: white;">Do you want to accept? </p>
+
+						<p id="invitationModal" style="color: white;">Do you want to
+							accept?</p>
+
+
 
 						<div style="text-align: center;">
-							<button type="button" id="btn-dlCalendar" 
-								class="btn btn-info navbar-btn" onclick="" ng-click="vm.refuseInvitation()"
-								style="background: #C62828;">
+							<button type="button" id="btn-dlCalendar"
+								class="btn btn-info navbar-btn" onclick=""
+								ng-click="vm.refuseInvitation()" style="background: #C62828;">
 								<span><strong>Decline</strong></span>
 							</button>
 							<button type="button" id="btn-upCalendar"
@@ -912,14 +922,16 @@
 							</button>
 
 
+
+
 						</div>
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
-	
-	
+
+
 	<script type="text/javascript">
 		var openModalType2 = function() {
 			var name = document.getElementById("nameUser").value = '';

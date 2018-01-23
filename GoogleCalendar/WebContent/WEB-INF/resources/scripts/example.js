@@ -1,7 +1,3 @@
-// changelog
-// discusse con marco le storie delle repetition
-// discussa con katia la storia dell'update sulle repetition
-
 // --------------------------- //
 // -- MERGE MARIO MARCO [0] -- //
 // --------------------------- //
@@ -165,7 +161,6 @@ angular
                 			label : '<i class=\'glyphicon glyphicon-ban-circle\'></i>',
                 			
                 			 onClick : function(args) {
-                				 console.log(args.calendarEvent);
                 				 vm.insertNewException(args.calendarEvent.repetition.id,args.calendarEvent.startsAt);
   		                    }
                 			}
@@ -271,12 +266,6 @@ angular
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start.toDate(), boundaries.end.toDate(), function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
-                	
-                	console.log("*****************");
-
-                	console.log(blueprint);
-                	
-                	console.log("*****************");
 
                 	
                     if (typeof blueprint.repetition !== "undefined") {
@@ -300,11 +289,7 @@ angular
                             dtstart: ruleStart,
                             until: ruleEnd
                         }));
-                        
-                    	console.log("@@@@@@@@@@@@@@@@@@@*");
-
-                        console.log(rruleset.all());
-                        
+                                                
                         if (typeof blueprint.repetition.exceptions !== "undefined") {
                             blueprint.repetition.exceptions.forEach(function (item) {
                                 rruleset.exdate(new Date(item.startTime));
@@ -455,18 +440,13 @@ angular
         } else {
             document.getElementById("notificationDropDown").setAttribute("data-toggle", "null"); 
         }
-            
-        console.log("dentro drop down notifications ( notificationsView.length ==> "+vm.notificationsView.length+")");
-            
+                        
         viewList.empty();
         var string =''; 
 
         for(i = vm.notificationsView.length-1; i>=0;i--) {
             var id = vm.notificationsView[i].id;
             var timestamp = vm.notificationsView[i].timestamp;
-                
-            console.log(vm.notificationsView[i]);
-            console.log("\n");
                 
                 
             if(vm.notificationsView[i].hasOwnProperty('description')) {
@@ -495,9 +475,7 @@ angular
     	
        var title = document.getElementById("nameCal").value;
        var description = document.getElementById("descrCalendar").value;
-       
-       console.log("insert new calenadar with title descr => "+title+" , "+description);
-       
+              
        vm.insertNewCalendar(title, description);
        document.getElementById('modal-wrapper1').style.display = 'none';
        document.getElementById("nameCal").value = '';
@@ -521,12 +499,9 @@ angular
     
     vm.shareCalendarView = function(){
     	
-    	var privilages = document.getElementById("privilages").value;
-    	console.log("----> " + privilages);
-    	
+    	var privilages = document.getElementById("privilages").value;    	
     	
     	var email = document.getElementById('userChoice').value
-    	console.log("----> " + email);
     	
     	
     	if(privilages == 'none' ||  email==''){
@@ -541,9 +516,7 @@ angular
     
     
     vm.updateCalendarView = function(title,description){
-    	 
-    	console.log("update calendar with id,title,descr=> "+vm.calendarToUpd.id, vm.calendarToUpd.title, vm.calendarToUpd.description);
-    	
+    	     	
     	vm.updateCalendar(vm.calendarToUpd.id, vm.calendarToUpd.title, vm.calendarToUpd.description);
     	
     	document.getElementById('modal-wrapper4').style.display = 'none';
@@ -551,7 +524,6 @@ angular
     
   	vm.deleteCalendarView = function(){
     	
-    	console.log("Delete calendar with id => "+vm.calendarToUpd.id);
     	vm.disconnectFromCalendar(vm.calendarToUpd.id);
     }
     
@@ -952,22 +924,45 @@ angular
 	 * addAlarm
 	 */
     vm.addAlarm = function (occurrence_id, minutes) {
-        // TODO
+        $.ajax({
+            type: "POST",
+            url: "addAlarm/" + occurrence_id,
+            data: {
+                minutes: minutes,
+            },
+            success: function (response) {
+                vm.updateEventList();
+            },
+        });
     };
     
     /*
 	 * updateAlarm
+	 * FIXME: al momento Alarm nel modello ha una lista di allarmi
 	 */
-    vm.updateAlarm = function (/* ... */) {
-        // TODO
-    }
+    vm.updateAlarm = function (alarm_id) {
+        $.ajax({
+            type: "POST",
+            url: "updateAlarm/" + alarm_id,
+            success: function (response) {
+                // TODO
+            },
+        });
+    };
     
     /*
 	 * deleteAlarm
+	 * FIXME: al momento Alarm nel modello ha una lista di allarmi
 	 */
-    vm.deleteAlarm = function (/* ... */) {
-        // TODO
-    }
+    vm.deleteAlarm = function (alarm_id) {
+        $.ajax({
+            type: "POST",
+            url: "deleteAlarm/" + alarm_id,
+            success: function (response) {
+                // TODO
+            },
+        });
+    };
     
     /*
 	 * updateUser
@@ -990,24 +985,29 @@ angular
         });
     };
     
-    /*
-	 * sendInvitation
-	 */
-    vm.sendInvitation = function (calendar_id, email, privileges) {
-        $.ajax({
-            type: "POST",
-            url: "sendInvitation/" + calendar_id,
-            data: {
-                receiver_email: email,
-                privilege: privileges,
-            },
-            success: function (response) {
-                if (response == "YES") {
-                    // TODO
-                }
-            },
-        });
-    };
+         /*
+    	 * sendInvitation
+    	 */
+        vm.sendInvitation = function (calendar_id, email, privileges) { alert("invio invito "+calendar_id+" "+email+" "+privileges);
+            $.ajax({
+                type: "POST",
+                url: "sendInvitation/" + calendar_id,
+                data: {
+                    receiver_email: email,
+                    privilege: privileges,
+                },
+                success: function (response) {
+                    if (response == "YES") {
+                        // TODO
+                    	console.log(response);
+                    }else{
+                    	
+                    	console.log("else ===> "+response);
+                    }
+                    
+                },
+            });
+        };
     
     /*
 	 * deleteNotifications
@@ -1025,7 +1025,7 @@ angular
     };
     
     /*
-	 * answerInvitation
+	 * answerInvitation   MARCO
 	 */
     vm.answerInvitation = function (invitation_id, answer) {
         $.ajax({
@@ -1045,6 +1045,7 @@ angular
             },
         });
     };
+    
     
     /*
 	 * resetSentStateOnMessages
@@ -1080,6 +1081,9 @@ angular
             var received = JSON.parse(event.data);
             
             if (received.length) {
+            	alert("invito calendario");
+            	
+            	console.log(JSON.stringify(received));
                 vm.invitations = vm.invitations.concat(received.slice());
                 document.getElementById('notif').style.color = '#F44336';
             }
@@ -1087,7 +1091,16 @@ angular
     };
     
     vm.SSEAlarmSubscription = function () {
-        // TODO
+        var eventSource = new EventSource("alarms");
+        
+        eventSource.onmessage = function (event) {
+            JSON.parse(event.data).forEach(function (item) {
+                alert(
+                    "Event \"" + item.occurrence.title + "\" starting at " +
+                    item.occurrence.startTime + "!\n"
+                );
+            });
+        };
     };
     
     // ---------- //
@@ -1099,7 +1112,7 @@ angular
         vm.resetSentStateOnMessages();
         vm.SSENotificationSubscription();
         vm.SSEInvitationSubscription();
-        vm.SSEAlarmSubscription();
+       // vm.SSEAlarmSubscription();
     })();
     
     // --------------------------- //
@@ -1241,8 +1254,6 @@ angular
     
     vm.cellModifier = function(cell) {
         vm.vtrCell.push(cell);
-        console.log(vm.vtrCell.length);
-        console.log(vm.vtrCell[length - 1]);
     };
 
     // MANAGE EVENT
@@ -1286,25 +1297,8 @@ angular
 		     				
 		     				
 		                     document.getElementById("repetition").checked = false;
-		                     
-		                    
-		                     
-		                     console.log("insert new event with REPETITION (idC, title, descr, start, end , primcol , secondcol)");
-		                     console.log(idCalendar + " "
-		                             + vm.temp.title + " " + vm.temp.description
-		                             + " " + vm.temp.startsAt + " " + vm.temp.endsAt
-		                             + " " + vm.temp.color.primary + " "
-		                             + vm.temp.color.secondary);
-		                     
-		                     console.log("id event = > "+response);
 		                 	
 		                 	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
-		                 	
-		                 	 console.log("insert new repetition with (id evt, freq , start, end )");
-		                 	 console.log(response + " "
-		                              + vm.temp.freq + " " + vm.temp.dtstart
-		                              + " " + vm.temp.until);
-		                 	
 		                 });
 		                 
 		                 
@@ -1319,15 +1313,7 @@ angular
                  }
              }else{		// event without repetition
             	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
-                         vm.temp.color.secondary);	                 
-                
-                 
-                 console.log("insert new event (WITHOUT REP) (idC, title, descr, start, end , primcol , secondcol)");
-                 console.log(idCalendar + " "
-                         + vm.temp.title + " " + vm.temp.description
-                         + " " + vm.temp.startsAt + " " + vm.temp.endsAt
-                         + " " + vm.temp.color.primary + " "
-                         + vm.temp.color.secondary);
+                         vm.temp.color.secondary);
                  
                  document.getElementById('btn-add').disabled = true;
                	 
@@ -1356,12 +1342,6 @@ angular
                 vm.temp.endsAt, vm.temp.color.primary,
                 vm.temp.color.secondary);
         
-        console.log("update event with id "+vm.temp.id+" title, descr, start, end , primcol , secondcol");
-        console.log(vm.temp.title + " " + vm.temp.description
-                + " " + vm.temp.startsAt + " " + vm.temp.endsAt
-                + " " + vm.temp.color.primary + " "
-                + vm.temp.color.secondary);
-
         resetClock();
         document.getElementById('modal-wrapper6').style.display = 'none';
 
@@ -1395,8 +1375,6 @@ angular
     	
         vm.insertNewMemo(vm.memo.title, vm.memo.description, now , vm.memo.color.primary);
         
-        console.log("insert new MEMO => "+vm.memo.title+ " " + vm.memo.description+" " +now+" " +vm.memo.color.primary);
-
         document.getElementById('modal-wrapper7').style.display = 'none';
 
     }
@@ -1409,13 +1387,11 @@ angular
  
         vm.updateMemo(vm.memo.id, vm.memo.title, vm.memo.description, now, vm.memo.color.primary);
         
-        console.log("update  MEMO => "+vm.memo.id+" "+vm.memo.title+ " " + vm.memo.description+" " +now+" " +vm.memo.color.primary)
-
         document.getElementById('modal-wrapper8').style.display = 'none';
     }
     
     // ---------------------------- //
-    // -- WASTELAND -- //
+    // --        WASTELAND       -- //
     // -- enter at your own risk -- //
     // ---------------------------- //
     
@@ -1440,15 +1416,6 @@ angular
         $event.stopPropagation();
         event[field] = !event[field];
     };
-
-  
-
-    
-    // ----------- //
-    // -- DEBUG -- //
-    // ----------- //
-    
-    vm.fn = function () { };
         
   // ------------------------------ //
   // -- PROVA PER RICERCA UTENTI -- //
@@ -1461,12 +1428,9 @@ angular
   vm.manageInputString = function(){
   	
   	var strCurrent = document.getElementById('userChoice').value; 
-    	console.log(strCurrent);  	
-
     	
   vm.searchEmailInDb(strCurrent, function (x) {
   		var resp = JSON.parse(x);
-  		console.log(JSON.stringify(resp,null,4));
   		vm.populateListOfUsername(resp);
  	});
   };
@@ -1490,7 +1454,6 @@ angular
       
            resp.forEach(function(element) {
           	if(contRespUser<=10    ){ 
-   			console.log(element);
    			string+="<li><a href=\"javascript:void(0)\" onclick=\"setUser('"+element+"')\"" +
               " class = \"calendars\" data-id=\" \">" +element+"</a></li>";                       
           	}
@@ -1534,6 +1497,33 @@ angular
 	}
   
 
+ 
 });
 
 
+//=======
+//  // ----------- //
+//  // -- DEBUG -- //
+//  // ----------- //
+//  
+//  vm.fn = function () {
+//      var time = new Date(); console.log(time);
+//      var delay = 10;
+//      time.setMinutes(time.getMinutes() + 1)
+//      time.setSeconds(time.getSeconds() + delay);
+//      
+//      console.log(time);
+//      
+//      vm.insertNewEvent(
+//              "2",
+//              delay + " seconds",
+//              delay + " seconds before alarm triggers",
+//              time, time,
+//              "#555555", "#aaaaaa", function (response) {
+//          if (response != -1) {
+//              vm.addAlarm(response, 1);
+//          }
+//      });
+//  };
+//});
+//>>>>>>> refs/remotes/origin/_giuseppe_

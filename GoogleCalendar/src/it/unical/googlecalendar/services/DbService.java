@@ -1,6 +1,5 @@
 package it.unical.googlecalendar.services;
 
-import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -8,15 +7,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.sound.midi.SysexMessage;
 
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 import it.unical.googlecalendar.dao.AlarmDAO;
 import it.unical.googlecalendar.dao.CalendarDAOImpl;
@@ -73,7 +66,7 @@ public class DbService {
 		ndao.save(n);
 		// ora creo un evento e lo associo al mio calendario
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-		String dateInString = "21-01-2018 10:20:56";
+		String dateInString = "01-03-2018 10:20:30";
 		String dateInString2 = "24-01-2018 16:20:00";
 		String leftBoundary = "03-02-2018 12:00:00";
 		String rightBoundary = "10-02-2018 12:00:00";
@@ -82,6 +75,8 @@ public class DbService {
 		Occurrence ev2 = null;
 		Occurrence ev3 = null;
 		Occurrence ev4 = null;
+		
+	
 		try {
 			ev1 = new Occurrence(katiaCalendar, katia, "Comprare il latte", "Ricordati di comprare il latte",
 					sdf.parse(dateInString), sdf.parse(dateInString2), "#555555", "#aaaaaa");
@@ -99,6 +94,7 @@ public class DbService {
 		odao.save(ev3);
 		odao.save(ev4);
 		
+		adao.insertNewAlarm(katia.getId(), ev1.getId(),10);
 		int rep_id;
 		
 		try {
@@ -110,6 +106,12 @@ public class DbService {
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
+		
+//		System.out.println("allarmi x katia");
+//		List<Alarm> alarmsKatia=adao.getAlarmsToNotifyById(katia.getId());
+//		for(Alarm a:alarmsKatia){
+//			System.out.println(a.getOccurrence().getTitle()+": "+a.getAlarm());
+//		}
 	}
 
 	public Collection<Occurrence> stampaTuttiGliEventi() {
@@ -171,6 +173,10 @@ public class DbService {
 	}
 
 	public boolean sendInvitation(int user_id, String receiver_email, int calendar_id, String privilege) {
+		
+System.out.println("dentro dB SERVICE");
+
+
 		return idao.sendInvitation(user_id, receiver_email, calendar_id, privilege);
 	}
 
@@ -205,7 +211,6 @@ public class DbService {
 
 	public List<Alarm> getMyAlarms(int user_id) {
 		return adao.getAlarmsByUserId(user_id);
-
 	}
 
 	public Alarm getTheAlarmForAnOccurrence(int user_id, int occurrence_id) {
@@ -273,5 +278,9 @@ public class DbService {
 
 	public boolean deleteException(int ex_id, int user_id) {
 		return edao.deleteExceptionById(ex_id, user_id);
+	}
+
+	public List<Alarm> getAlarmsToNotifyById(int user_id) {
+		return adao.getAlarmsToNotifyById(user_id);
 	}
 }

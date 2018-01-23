@@ -1,6 +1,7 @@
 package it.unical.googlecalendar.model;
 
 import java.awt.Color;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 
@@ -51,12 +52,13 @@ import com.google.gson.annotations.Expose;
 
 		@ManyToOne(cascade=CascadeType.REFRESH)
 		@JoinColumn(name = "occurrence_id",nullable = false)
+		@Expose
 		private Occurrence occurrence;
 
 		// additional attributes
 		@Column(nullable = false)
 		@Expose
-		int alarm=0;
+		private Date alarm;
 
 				public Alarm() {
 
@@ -64,26 +66,33 @@ import com.google.gson.annotations.Expose;
 
 		}
 
-		public Alarm(User u, Occurrence o, int alarm) {
+		public Alarm(User u, Occurrence o, int minutes) {
 	super();
 			this.user = u;
 
 			this.occurrence = o;
 
-			
-			this.alarm = alarm;
-		u.getAlarms().add(this);
+			alarm=new Date(o.getStartTime().getTime()-minutes*60*1000L);
+			u.getAlarms().add(this);
 		o.getAlarms().add(this);
 		
 		}
 
 		
-		public int getAlarm() {
+		public Occurrence getOccurrence() {
+			return occurrence;
+		}
+
+		public void setOccurrence(Occurrence occurrence) {
+			this.occurrence = occurrence;
+		}
+
+		public Date getAlarm() {
 			return alarm;
 		}
 
-		public void setAlarm(int alarm) {
-			this.alarm = alarm;
+		public void setAlarm(int minutes) {
+			alarm=new Date(occurrence.getStartTime().getTime()-minutes*60*1000L);
 		}
 
 		public int getId() {
