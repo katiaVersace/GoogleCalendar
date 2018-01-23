@@ -529,15 +529,15 @@
 							style="font-size: 15px; width: 150px; height: 40px;" id="repChoice"
 							value="none" class="form-control"></input>
 						<div class="dropdown-menu scrollable-menu" id="ulGenres">
-							<li><a href="javascript:void(0)" onclick="addFreq('RRule.HOURLY')"
+							<li><a href="javascript:void(0)" onclick="addFreq('HOUR')"
 								 data-id="0">Hourly</a></li>
-							<li><a href="javascript:void(0)" onclick="addFreq('RRule.DAILY')"
+							<li><a href="javascript:void(0)" onclick="addFreq('DAY')"
 								 data-id="10">Daily</a></li>
-							<li><a href="javascript:void(0)" onclick="addFreq('RRule.WEEKLY')"
+							<li><a href="javascript:void(0)" onclick="addFreq('WEEK')"
 								 data-id="20">Weekly</a></li>
-							<li><a href="javascript:void(0)" onclick="addFreq('RRule.MONTHLY')"
+							<li><a href="javascript:void(0)" onclick="addFreq('MONTH')"
 								 data-id="30">Monthly</a></li>
-							<li><a href="javascript:void(0)" onclick="addFreq('RRule.YEARLY')"
+							<li><a href="javascript:void(0)" onclick="addFreq('YEAR')"
 								 data-id="none">Yearly</a></li>
 						</div>
 					</div>
