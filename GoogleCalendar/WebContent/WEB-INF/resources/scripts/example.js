@@ -208,7 +208,7 @@ angular
             ];
             return result;
             
-        case "R":
+        case "READER":
             return result;
     	}
     
@@ -284,7 +284,7 @@ angular
                 $scope.$digest(); 
             }
         }
-                        
+                
         vm.shownCalendars.forEach(function (calendar_id) {
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start.toDate(), boundaries.end.toDate(), function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
@@ -300,7 +300,7 @@ angular
                         if(moment(blueprint.startTime)>= boundaries.start && moment(blueprint.startTime)<=boundaries.end){
                         	  ruleStart = (moment.max(boundaries.start, moment(blueprint.startTime))).toDate();
                         	  ruleEnd = (moment.min(boundaries.end, moment(blueprint.repetition.endTime))).toDate();
-                        } else {
+                        }else{
                         	ruleStart = moment(blueprint.startTime).toDate();
                         	ruleEnd = moment(blueprint.repetition.endTime).toDate();
                         }
@@ -335,7 +335,7 @@ angular
                             vm.events.push(event);
                         });
                     } else {
-                        var event = new vm.Event(
+                        vm.events.push(new vm.Event(
                             blueprint.id,
                             blueprint.calendar.id,
                             blueprint.title,
@@ -344,14 +344,8 @@ angular
                             new Date(blueprint.endTime),
                             blueprint.primaryColor,
                             blueprint.secondaryColor,
-                            "ADMIN"  //TODO
-                        );
-                        
-                        vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
-                        	event.alarm = JSON.parse(response);
-                        	console.log(event.alarm);
-                        	vm.events.push(event);
-                        });
+                            "ADMIN"
+                        ));
                     }
                 });
                 // Needed for asynchronous update of vm.events
@@ -664,12 +658,12 @@ angular
     /*
 	 * JSON_getAlarmForAnOccurrence TODO: test me
 	 */
-    vm.JSON_getAlarmForAnOccurrence = function (occurrence_id, callback) { alert("GET ALARM for "+occurrence_id);
+    vm.JSON_getAlarmForAnOccurrence = function (occurrence_id, callback) {
         $.ajax({
             type: "POST",
             url: "JSON_getAlarmForAnOccurrence/" + occurrence_id,
             success: function (response) {
-                callback(response);
+                callback(resposne);
             },
         });
     };
@@ -1152,7 +1146,7 @@ angular
                 id : event.id,
                 memo : false,
                 description : event.description,
-                clock : event.alarm,   
+                clock : event.clock, // TODO: fix clock on DB
                 startsAt : event.startsAt,
                 endsAt : event.endsAt,
                 color : {
@@ -1318,9 +1312,13 @@ angular
                  
 		                 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
 		                         vm.temp.color.secondary, function (response){
-		                	 resetFreqChoice();
-			     				document.getElementById("repetition").checked = false;
-			     				vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
+		
+		     				 resetFreqChoice();
+		     				 
+		     				 
+		     				 document.getElementById("repetition").checked = false;
+		                 	
+		                 	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
 		                 });
 		                 
 		                 
@@ -1339,10 +1337,10 @@ angular
             	 if(vm.temp.clock != "none"){// alarm setted
 
             		 
-            		 // event without repetition with ALARM
+            		 // event without repetition  with ALARM
                 	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
                              vm.temp.color.secondary,function(response){
-                		
+                		 alert("allarme settato a 1 ");
                 		 vm.addAlarm(response, vm.temp.clock);
                 	 });
                 	 
@@ -1381,7 +1379,7 @@ angular
         vm.updateEvent(vm.temp.id, vm.temp.title,
                 vm.temp.description, vm.temp.startsAt,
                 vm.temp.endsAt, vm.temp.color.primary,
-                vm.temp.color.secondary,);
+                vm.temp.color.secondary);
         
         resetClock();
         document.getElementById('modal-wrapper6').style.display = 'none';
