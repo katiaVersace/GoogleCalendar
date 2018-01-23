@@ -397,8 +397,7 @@ public class IndexController {
     // se ritorna -1 significa che l'inserimento non � andato a buon fine 
     @RequestMapping(value = "/insertNewException/{repetition_id}", method = RequestMethod.POST)
     @ResponseBody
-    public int insertNewException(HttpSession session, @PathVariable("repetition_id") String repetition_id,
-            @RequestParam Date sT,@RequestParam Date eT) {
-    	   return dbService.insertNewException(Integer.parseInt(repetition_id),sT,eT,(Integer) session.getAttribute("user_id"));
+    public int insertNewException(HttpSession session, @PathVariable("repetition_id") String repetition_id,  @RequestParam Date date_exception) {
+    	   return dbService.insertNewException(Integer.parseInt(repetition_id),date_exception,date_exception,(Integer) session.getAttribute("user_id"));
     }
 }

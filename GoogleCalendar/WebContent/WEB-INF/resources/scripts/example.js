@@ -164,7 +164,7 @@ angular
                 			
                 			 onClick : function(args) {
                 				 console.log(args.calendarEvent);
-                				 vm.insertNewException(args.calendarEvent.repetition.id, args.calendarEvent.startsAt);
+                				 vm.insertNewException(args.calendarEvent.repetition.id,args.calendarEvent.startsAt);
   		                    }
                 			}
                 	  ];
@@ -823,6 +823,9 @@ angular
         $.ajax({
             type: "POST",
             url: "insertNewException/" + repetition_id,
+            data:{
+            	date_exception : date_exception,
+            },
             success: function (response) {
                 if (response != -1) {
                     vm.updateEventList();
@@ -1163,7 +1166,7 @@ angular
             resizable : false,
             actions : actions,
             // ///////////////// REPETITON DATA ******************
-            freq: null,
+            freq: "none",
             dtstart: startDate,
             until: endDate
         };
@@ -1198,7 +1201,7 @@ angular
             resizable : false,
             actions : actions,
             // ///////////////// REPETITON DATA ******************
-            freq: null,
+            freq: "none",
             dtstart: vm.firstDateClicked,
             until: vm.lastDateClicked
         };
@@ -1269,34 +1272,47 @@ angular
             	 // value of repetition
                  vm.temp.freq = document.getElementById("repChoice").value;
                  
-                 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
-                         vm.temp.color.secondary, function (response){
 
-     				 resetFreqChoice();
-     				
-     				
-                     document.getElementById("repetition").checked = false;
-                     
-                    
-                     
-                     console.log("insert new event with REPETITION (idC, title, descr, start, end , primcol , secondcol)");
-                     console.log(idCalendar + " "
-                             + vm.temp.title + " " + vm.temp.description
-                             + " " + vm.temp.startsAt + " " + vm.temp.endsAt
-                             + " " + vm.temp.color.primary + " "
-                             + vm.temp.color.secondary);
-                     
-                     console.log("id event = > "+response);
-                 	
-                 	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
-                 	
-                 	 console.log("insert new repetition with (id evt, freq , start, end )");
-                 	 console.log(response + " "
-                              + vm.temp.freq + " " + vm.temp.dtstart
-                              + " " + vm.temp.until);
-                 	
-                 });
-      
+             	if(vm.temp.freq != "none"){
+                 
+		                 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
+		                         vm.temp.color.secondary, function (response){
+		
+		     				 resetFreqChoice();
+		     				
+		     				
+		                     document.getElementById("repetition").checked = false;
+		                     
+		                    
+		                     
+		                     console.log("insert new event with REPETITION (idC, title, descr, start, end , primcol , secondcol)");
+		                     console.log(idCalendar + " "
+		                             + vm.temp.title + " " + vm.temp.description
+		                             + " " + vm.temp.startsAt + " " + vm.temp.endsAt
+		                             + " " + vm.temp.color.primary + " "
+		                             + vm.temp.color.secondary);
+		                     
+		                     console.log("id event = > "+response);
+		                 	
+		                 	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
+		                 	
+		                 	 console.log("insert new repetition with (id evt, freq , start, end )");
+		                 	 console.log(response + " "
+		                              + vm.temp.freq + " " + vm.temp.dtstart
+		                              + " " + vm.temp.until);
+		                 	
+		                 });
+		                 
+		                 
+		                 document.getElementById('btn-add').disabled = true;
+		               	 
+		                 
+		                 document.getElementById('modal-wrapper5').style.display = 'none';
+		                 resetClock(); 			
+		      
+                 } else{
+                	 alert("please insert a valid frequence");
+                 }
              }else{		// event without repetition
             	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
                          vm.temp.color.secondary);	                 
@@ -1308,16 +1324,15 @@ angular
                          + " " + vm.temp.startsAt + " " + vm.temp.endsAt
                          + " " + vm.temp.color.primary + " "
                          + vm.temp.color.secondary);
+                 
+                 document.getElementById('btn-add').disabled = true;
+               	 
+                 
+                 document.getElementById('modal-wrapper5').style.display = 'none';
+                 resetClock(); 			
             	 
              }
-            
-       	 
-       	 	document.getElementById('btn-add').disabled = true;
-       	 
-            
-            document.getElementById('modal-wrapper5').style.display = 'none';
-            resetClock(); 			
-       
+  
         } else { 
         	 	alert("please choose a calendar");
         	 }
