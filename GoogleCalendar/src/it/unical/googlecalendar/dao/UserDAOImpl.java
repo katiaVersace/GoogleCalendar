@@ -75,6 +75,7 @@ public class UserDAOImpl implements UserDAO {
 		try{
 			result = (User) q.getSingleResult();
 		}catch (Exception e) {
+			session.close();
 			return "FALSE"; //utente non registrato
 			// TODO: handle exception
 		}
@@ -93,6 +94,7 @@ public class UserDAOImpl implements UserDAO {
 				return "TRUE";
 				}
 		}
+		session.close();
 			return "FALSE"; //utente non registrato
 		
 		}

@@ -398,4 +398,24 @@ public class IndexController {
             @RequestParam Date sT,@RequestParam Date eT) {
     	   return dbService.insertNewException(Integer.parseInt(repetition_id),sT,eT,(Integer) session.getAttribute("user_id"));
     }
+    /*
+     * SSE alarm subscription
+     */
+    @RequestMapping(value = "/alarms")
+    public void pushAlarms(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        
+        if (((Integer) session.getAttribute("user_id")) != null) {
+        	writer.write("data: " +
+        				gson.toJson(dbService.getAlarmsToNotifyById((Integer) session.getAttribute("user_id"))) 
+        	+ "\n\n");
+        	writer.flush();
+        }
+        writer.close();
+    }
 }
