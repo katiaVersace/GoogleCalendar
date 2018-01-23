@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.google.gson.annotations.Expose;
+
 //FIXME: mettere come chiave primaria ricevente e calendario, cosi che la stessa persona non possa essere invitata due volte 
 //allo stesso calendario da due persone diverse.
 
@@ -34,9 +36,11 @@ public class Invitation {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="invitation_id",unique = true)
+	@Expose
 	private int id;
 	
-@Column
+	@Column
+	@Expose
 	private Date timestamp;
 
 	@Column
@@ -54,9 +58,11 @@ public class Invitation {
 	
 	@ManyToOne(cascade=CascadeType.REFRESH)
 	@JoinColumn(name = "calendar_id", nullable = false)	
+	@Expose
 	private Calendar calendar;
 
 	@Column(name="privilege")
+	@Expose
 	private String privilege;
 	
 	

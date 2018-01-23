@@ -32,7 +32,8 @@
 	rel="stylesheet">
 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
 <script src="resources/scripts/example.js"></script>
 <script src="resources/scripts/openModal.js"></script>
@@ -89,8 +90,7 @@
 
 				<li><a onclick="modal('1')"> <i
 						class="glyphicon glyphicon-plus"></i> Add New Calendar
-				</a> 
-				</li>
+				</a></li>
 
 				<li><a onclick="openModalType2()"> <i
 						class="glyphicon glyphicon-user"></i> Update profile
@@ -120,16 +120,17 @@
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav navbar-right">
-							<li><a id="usernameHome" href="#" style="color: #337ab7; font-size: 20px;">${username}</a></li>
-							<li>
-								<a id="notificationDropDown" href="#"
-									ng-click="vm.updateNotificationsView()" 
-									 data-toggle="null"
-									aria-haspopup="true" > <i id = "notif"
-									class="glyphicon glyphicon-bell" style="font-size: 20px; color:'#9E9E9E';" ></i> <span class="caret"></span>
-								</a>
+							<li><a id="usernameHome" href="#"
+								style="color: #337ab7; font-size: 20px;">${username}</a></li>
+							<li><a id="notificationDropDown" href="#"
+								ng-click="vm.updateNotificationsView()" data-toggle="null"
+								aria-haspopup="true"> <i id="notif"
+									class="glyphicon glyphicon-bell"
+									style="font-size: 20px; color: '#9E9E9E';"></i> <span
+									class="caret"></span>
+							</a>
 								<div class="dropdown-menu scrollable-menu" id="ulNotifications"></div>
-							
+
 							</li>
 							<li>
 								<form action="logout">
@@ -187,7 +188,8 @@
 									<div class="btn-group">
 
 										<button class="btn btn-primary pull-right" id="buttonShowMemo"
-											ng-click="vm.toggleMemos()" style="margin-left: 3px;">Show Memo</button>
+											ng-click="vm.toggleMemos()" style="margin-left: 3px;">Show
+											Memo</button>
 										<!-- <i style="font-size: 16px; color: white;"class="glyphicon glyphicon-save-file"></i> Add event -->
 										<button id="btn-add" class="btn btn-primary pull-right"
 											ng-click="vm.openEventModal()" disabled="disabled">
@@ -322,12 +324,15 @@
 							developed this Web Application for ASDE exam.</strong>
 					</p>
 					<p></p>
-					<p style="color: white; text-align: center;">Marco Amato - 187734</p>
-					<p style="color: white; text-align: center;">Giuseppe Benvenuto - 189248</p>
+					<p style="color: white; text-align: center;">Marco Amato -
+						187734</p>
+					<p style="color: white; text-align: center;">Giuseppe Benvenuto
+						- 189248</p>
 					<p style="color: white; text-align: center;">Mario Carricato -
 						187799</p>
 					<p style="color: white; text-align: center;">Fabio Fabiano</p>
-					<p style="color: white; text-align: center;">Caterina Versace - 187471</p>
+					<p style="color: white; text-align: center;">Caterina Versace -
+						187471</p>
 				</div>
 			</form>
 		</div>
@@ -363,8 +368,8 @@
 								class="glyphicon glyphicon-equalizer"></i> <span class="caret"></span>
 						</button>
 						<input type="text"
-							style="font-size: 15px; width: 150px; height: 40px;" id="privilages"
-							value="none" class="form-control"></input>
+							style="font-size: 15px; width: 150px; height: 40px;"
+							id="privilages" value="none" class="form-control"></input>
 						<div class="dropdown-menu scrollable-menu" id="ulGenres">
 							<li><a href="javascript:void(0)"
 								onclick="addPermission('Admin')" class="clocks" data-id="Admin">Admin</a></li>
@@ -402,8 +407,8 @@
 							class="btn btn-info navbar-btn"
 							ng-click=" vm.shareCalendarView()" style="background: #66BB6A;">
 							<i style="font-size: 15px; color: white;"
-								class="glyphicon glyphicon-send"></i>
-							<span><strong>Share Calendar</strong></span>
+								class="glyphicon glyphicon-send"></i> <span><strong>Share
+									Calendar</strong></span>
 						</button>
 					</div>
 				</div>
@@ -421,7 +426,8 @@
 					<span
 						onclick="document.getElementById('modal-wrapper5').style.display='none'"
 						class="close" title="Close PopUp">&times;</span>
-					<h1 style="text-align: center; color: white; padding-top: 10px;">Add Event</h1>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Add
+						Event</h1>
 					<a href="#" class="avatar"><i
 						style="font-size: 45px; color: white;"
 						class="glyphicon glyphicon-calendar"></i></a>
@@ -512,37 +518,39 @@
 							<div style="text-align: center;">
 
 
-								<label style="float:right;">
-        	                    <input  type="checkbox" id= "repetition" data-toggle="collapse" data-target="#repPanel">                                                          
-                            	<label for="repetition" ><span></span>set repetition</label>
-                         	</label>
-					
-					<div id="repPanel" class="collapse">  <!-- START HIDDEN PANNEL -->
-					
-					 <div class="btn-group" style="float: left;">
-						<button type="button" class="btn btn-primary dropdown-toggle"
-							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<i style="font-size: 25px; color: white;"
-								class="glyphicon glyphicon-repeat"></i> <span class="caret"></span>
-						</button>
-						<input type="text"
-							style="font-size: 15px; width: 150px; height: 40px;" id="repChoice"
-							value="none" class="form-control"></input>
-						<div class="dropdown-menu scrollable-menu" id="ulGenres">
-							<li><a href="javascript:void(0)" onclick="addFreq('HOUR')"
-								 data-id="0">Hourly</a></li>
-							<li><a href="javascript:void(0)" onclick="addFreq('DAY')"
-								 data-id="10">Daily</a></li>
-							<li><a href="javascript:void(0)" onclick="addFreq('WEEK')"
-								 data-id="20">Weekly</a></li>
-							<li><a href="javascript:void(0)" onclick="addFreq('MONTH')"
-								 data-id="30">Monthly</a></li>
-							<li><a href="javascript:void(0)" onclick="addFreq('YEAR')"
-								 data-id="none">Yearly</a></li>
-						</div>
-					</div>
-					 
-					<!-- div class="btn-group" >
+								<label style="float: right;"> <input type="checkbox"
+									id="repetition" data-toggle="collapse" data-target="#repPanel">
+									<label for="repetition"><span></span>set repetition</label>
+								</label>
+
+								<div id="repPanel" class="collapse">
+									<!-- START HIDDEN PANNEL -->
+
+									<div class="btn-group" style="float: left;">
+										<button type="button" class="btn btn-primary dropdown-toggle"
+											data-toggle="dropdown" aria-haspopup="true"
+											aria-expanded="false">
+											<i style="font-size: 25px; color: white;"
+												class="glyphicon glyphicon-repeat"></i> <span class="caret"></span>
+										</button>
+										<input type="text"
+											style="font-size: 15px; width: 150px; height: 40px;"
+											id="repChoice" value="none" class="form-control"></input>
+										<div class="dropdown-menu scrollable-menu" id="ulGenres">
+											<li><a href="javascript:void(0)"
+												onclick="addFreq('HOUR')" data-id="0">Hourly</a></li>
+											<li><a href="javascript:void(0)"
+												onclick="addFreq('DAY')" data-id="10">Daily</a></li>
+											<li><a href="javascript:void(0)"
+												onclick="addFreq('WEEK')" data-id="20">Weekly</a></li>
+											<li><a href="javascript:void(0)"
+												onclick="addFreq('MONTH')" data-id="30">Monthly</a></li>
+											<li><a href="javascript:void(0)"
+												onclick="addFreq('YEAR')" data-id="none">Yearly</a></li>
+										</div>
+									</div>
+
+									<!-- div class="btn-group" >
 						<button type="button" class="btn btn-primary dropdown-toggle"
 							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i style="font-size: 25px; color: white;"
@@ -564,74 +572,75 @@
 								class="clocks" data-id="none">none</a></li>
 						</div>
 					</div>   -->
-					
-					<!-- <i style="color: white; margin-left: 40px; ">Interval</i>
-  					<input type="number" style="width: 100px;" name="quantity" min="1" max="5">  -->
-					
-					
-					<table class="table table-bordered">
-									<thead>
-										<tr>
-											<th>Starts at</th>
-											<th>Ends at</th>
-										</tr>
-									</thead>
 
-									<tbody>
-										<td>
-											<p class="input-group">
-												<input type="text" class="form-control" readonly
-													uib-datepicker-popup="dd MMMM yyyy"
-													ng-model="vm.temp.dtstart" is-open="vm.temp.startOpen2"
-													close-text="Close"> <span class="input-group-btn">
-													<button type="button" class="btn btn-default"
-														ng-click="vm.toggle($event, 'startOpen2', vm.temp)">
-														<i class="glyphicon glyphicon-calendar"></i>
-													</button>
-												</span>
-											</p>
-											<div uib-timepicker ng-model="vm.temp.dtstart" hour-step="1"
-												minute-step="15" show-meridian="false"></div>
-										</td>
-										<td>
-											<p class="input-group">
-												<input type="text" class="form-control" readonly
-													uib-datepicker-popup="dd MMMM yyyy"
-													ng-model="vm.temp.until" is-open="vm.temp.endOpen2"
-													close-text="Close"> <span class="input-group-btn">
-													<button type="button" class="btn btn-default"
-														ng-click="vm.toggle($event, 'endOpen2', vm.temp)">
-														<i class="glyphicon glyphicon-calendar"></i>
-													</button>
-												</span>
-											</p>
-											<div uib-timepicker ng-model="vm.temp.until" hour-step="1"
-												minute-step="15" show-meridian="false"></div>
-										</td>
-									</tbody>
-								</table>
-								
-								
-								
-								
-					</div>  <!-- END HIDDEN PANNEL -->
-				
-					
-					          	
-						
-						<textarea rows="2" placeholder="Description" id="descEvent"
-						 ng-model="vm.temp.description"></textarea>
-					
-					
-					<div>
-						<button type="button" id="addEvnt" ng-click="vm.addEventView()"
-									class="btn btn-info navbar-btn" style="background: #42A5F5">
-						<span><strong>Add </strong></span>
-						</button>
+									<!-- <i style="color: white; margin-left: 40px; ">Interval</i>
+  					<input type="number" style="width: 100px;" name="quantity" min="1" max="5">  -->
+
+
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+												<th>Starts at</th>
+												<th>Ends at</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											<td>
+												<p class="input-group">
+													<input type="text" class="form-control" readonly
+														uib-datepicker-popup="dd MMMM yyyy"
+														ng-model="vm.temp.dtstart" is-open="vm.temp.startOpen2"
+														close-text="Close"> <span class="input-group-btn">
+														<button type="button" class="btn btn-default"
+															ng-click="vm.toggle($event, 'startOpen2', vm.temp)">
+															<i class="glyphicon glyphicon-calendar"></i>
+														</button>
+													</span>
+												</p>
+												<div uib-timepicker ng-model="vm.temp.dtstart" hour-step="1"
+													minute-step="15" show-meridian="false"></div>
+											</td>
+											<td>
+												<p class="input-group">
+													<input type="text" class="form-control" readonly
+														uib-datepicker-popup="dd MMMM yyyy"
+														ng-model="vm.temp.until" is-open="vm.temp.endOpen2"
+														close-text="Close"> <span class="input-group-btn">
+														<button type="button" class="btn btn-default"
+															ng-click="vm.toggle($event, 'endOpen2', vm.temp)">
+															<i class="glyphicon glyphicon-calendar"></i>
+														</button>
+													</span>
+												</p>
+												<div uib-timepicker ng-model="vm.temp.until" hour-step="1"
+													minute-step="15" show-meridian="false"></div>
+											</td>
+										</tbody>
+									</table>
+
+
+
+
+								</div>
+								<!-- END HIDDEN PANNEL -->
+
+
+
+
+								<textarea rows="2" placeholder="Description" id="descEvent"
+									ng-model="vm.temp.description"></textarea>
+
+
+								<div>
+									<button type="button" id="addEvnt" ng-click="vm.addEventView()"
+										class="btn btn-info navbar-btn" style="background: #42A5F5">
+										<span><strong>Add </strong></span>
+									</button>
+								</div>
 							</div>
 					</div>
-					</div>
-				
+
 					<!-- DELETEEEEE GRAPHIC EVENT
       				<button class="btn btn-danger" ng-click="vm.events.splice($index, 1)">Delete</button>
 					 <td>
@@ -824,7 +833,8 @@
 					<span
 						onclick="document.getElementById('modal-wrapper8').style.display='none'"
 						class="close" title="Close PopUp">&times;</span>
-					<h1 style="text-align: center; color: white; padding-top: 10px;">Update Meno</h1>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Update
+						Meno</h1>
 					<a href="#" class="avatar"><i
 						style="font-size: 45px; color: white;"
 						class="glyphicon glyphicon-save-file"></i></a>
@@ -868,6 +878,91 @@
 		</div>
 	</div>
 
+
+	[15:33, 23/1/2018] Mario Caricato:
+	<!-- Invitations -->
+	<div id="modal-wrapper9" class="modal">
+		<div>
+			<form class="modal-content animate" action="/action_page.php">
+				<div class="imgcontainer">
+					<span
+						onclick="document.getElementById('modal-wrapper7').style.display='none'"
+						class="close" title="Close PopUp">&times;</span>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Invitation</h1>
+					<a href="#" class="avatar"><i
+						style="font-size: 45px; color: white;"
+						class="glyphicon glyphicon-envelopet"></i></a>
+				</div>
+
+				<div class="modal-content">
+					<div style="text-align: center;">
+
+						<p id="invitation" style="color: white;">You were invited to
+							calendar :</p>
+						<div id="calText"></div>
+
+						<div style="text-align: center;">
+							<button type="button" id="btn-dlCalendar"
+								class="btn btn-info navbar-btn" onclick="" ng-click=""
+								style="background: #C62828;">
+								<span><strong>Decline</strong></span>
+							</button>
+							<button type="button" id="btn-upCalendar"
+								class="btn btn-info navbar-btn" ng-click=""
+								style="background: #66BB6A;">
+								<span><strong>Accept</strong></span>
+							</button>
+
+
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+
+
+	<!-- Invitations -->
+	<div id="modal-wrapper9" class="modal">
+		<div>
+			<form class="modal-content animate" action="/action_page.php">
+				<div class="imgcontainer">
+					<span
+						onclick="document.getElementById('modal-wrapper9').style.display='none'"
+						class="close" title="Close PopUp">&times;</span>
+					<h1 style="text-align: center; color: white; padding-top: 10px;">Invitation</h1>
+					<a href="#" class="avatar"><i
+						style="font-size: 45px; color: white;"
+						class="glyphicon glyphicon-envelopet"></i></a>
+				</div>
+
+				<div class="modal-content">
+					<div style="text-align: center;">
+
+						<p id="invitation" style="color: white;">You were invited to
+							calendar :</p>
+						<div id="calText"></div>
+
+						<div style="text-align: center;">
+							<button type="button" id="btn-dlCalendar"
+								class="btn btn-info navbar-btn" onclick="" ng-click=""
+								style="background: #C62828;">
+								<span><strong>Decline</strong></span>
+							</button>
+							<button type="button" id="btn-upCalendar"
+								class="btn btn-info navbar-btn" ng-click=""
+								style="background: #66BB6A;">
+								<span><strong>Accept</strong></span>
+							</button>
+
+
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 	<script type="text/javascript">
 		var openModalType2 = function() {
 			var name = document.getElementById("nameUser").value = '';

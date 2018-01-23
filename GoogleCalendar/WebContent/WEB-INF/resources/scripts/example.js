@@ -319,7 +319,8 @@ angular
                                 new Date(rule),
                                 blueprint.primaryColor,
                                 blueprint.secondaryColor,
-                                "REPETITION"					//type for actions
+                                "REPETITION"					// type for
+																// actions
                             );
                             event.repetition = blueprint.repetition;
                             vm.events.push(event);
@@ -460,20 +461,25 @@ angular
 
         for(i = vm.notificationsView.length-1; i>=0;i--) {
             var id = vm.notificationsView[i].id;
-            var description = vm.notificationsView[i].description;
             var timestamp = vm.notificationsView[i].timestamp;
                 
             console.log(vm.notificationsView[i]);
             console.log("\n");
                 
-            var x = description;
-            description = x.replace(/'/g,"\\'");
                 
-            if(!vm.notificationsView[i].hasOwnProperty('senderID')) {
+            if(vm.notificationsView[i].hasOwnProperty('description')) {
                 // this is a simple notification
+            	var description = vm.notificationsView[i].description;
+            	var x = description;
+                description = x.replace(/'/g,"\\'");
+            	
                 string+="<li><a href=\"javascript:void(0)\" class = \"calendars\" data-id=\"" + id+ "\">" +description+"</a></li>";
             } else {    
+            	
+            	var calendarName = vm.notificationsView[i].calendar.title;
+            	var text = "you have been invited to calendar : "+calendarName;
                 // this is a invitation TODO
+            	string+="<li><a href=\"javascript:void(0)\" ng-click=\"vm.openAnswerModal('"+id+"')\" class = \"calendars\" data-id=\"" + id+ "\">" +text+"</a></li>";
             }
         }
             
@@ -526,8 +532,9 @@ angular
     	}
     	else{
     		vm.sendInvitation(vm.calendarToUpd.id,email,privilages);
+    		document.getElementById('modal-wrapper4').style.display = 'none';
+         	resetShareCalendarValue();
     	}
-     	resetShareCalendarValue();
      }
     
     
@@ -1510,5 +1517,13 @@ angular
       });
   };
          
+  
+  
+  vm.openAnswerModal = function (id){
+	  
+	  alert(id);
+	  modal(9);
+ 
+  }
 
 });
