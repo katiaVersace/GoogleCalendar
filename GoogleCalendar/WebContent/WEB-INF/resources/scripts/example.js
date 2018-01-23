@@ -236,7 +236,7 @@ angular
                         
                         if (typeof blueprint.repetition.exceptions !== "undefined") {
                             blueprint.repetition.exceptions.forEach(function (item) {
-                                rruleset.exdate(moment(item.startTime));
+                                rruleset.exdate(new Date(item.startTime));
                             });
                         }
                         
@@ -978,7 +978,6 @@ angular
             
             if (received.length) {
                 vm.notifications = vm.notifications.concat(received.slice());
-                
                 document.getElementById('notif').style.color = '#F44336';
             }
         };
@@ -992,9 +991,8 @@ angular
             
             if (received.length) {
                 vm.invitations = vm.invitations.concat(received.slice());
-                
                 document.getElementById('notif').style.color = '#F44336';
-             }
+            }
         };
     };
     
@@ -1264,7 +1262,7 @@ angular
     }
     
     // ---------------------------- //
-    // -- WASTELAND -- //
+    // --        WASTELAND       -- //
     // -- enter at your own risk -- //
     // ---------------------------- //
     
