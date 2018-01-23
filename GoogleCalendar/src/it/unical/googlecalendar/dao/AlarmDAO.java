@@ -166,29 +166,27 @@ public class AlarmDAO {
 
 		session.close();
 		return result;
-	
 	}
+	
 	public List<Alarm> getAlarmsToNotifyById(int user_id) {
 		Session session = sessionFactory.openSession();
 		Date now=new Date();
-		//Date now=new Date(118, 2, 1, 10, 0, 0);
-		Date now1=new Date(now.getTime()+59*1000L);
+		Date now1=new Date(now.getTime()+10*1000L);
 		
-		
-
 		// sql query
-				List<Alarm> result = session.createQuery("SELECT m FROM Alarm m where m.user.id= :user_id and m.alarm>=:now and m.alarm<=:now1 ")
-						.setParameter("user_id", user_id).setParameter("now1", now1).setParameter("now", now).getResultList();
-				
-//				List<Date> resultDates = session.createQuery("SELECT datediff(SECOND,m.alarm,:now) P FROM Alarm m where m.user.id= :user_id ")
-//						.setParameter("user_id", user_id).setParameter("now", now).getResultList();
-//				for(Date d:resultDates){
-//					System.out.println(d);
-//				}
+		List<Alarm> result = session.createQuery(
+		        "SELECT m FROM Alarm m where m.user.id= :user_id and m.alarm>=:now and m.alarm<=:now1 ")
+				.setParameter("user_id", user_id).setParameter("now1", now1).setParameter("now", now).getResultList();
+		
+		System.out.println("before deleting - size: " + result.size());
+		
+		for (Alarm alarm : result) {
+		    deleteAlarmById(alarm.getId(), user_id);
+		}
+		
+		System.out.println("after deleting: " + result.size());
 
 		session.close();
 		return result;
-	
 	}
-
 }

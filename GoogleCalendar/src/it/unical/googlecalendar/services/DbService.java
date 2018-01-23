@@ -276,7 +276,7 @@ public class DbService {
 		return edao.deleteExceptionById(ex_id, user_id);
 	}
 
-	public Object getAlarmsToNotifyById(int user_id) {
-		return adao.getAlarmsByUserId(user_id);
+	public List<Alarm> getAlarmsToNotifyById(int user_id) {
+		return adao.getAlarmsToNotifyById(user_id);
 	}
 }

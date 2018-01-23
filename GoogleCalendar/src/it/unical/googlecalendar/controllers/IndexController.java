@@ -3,6 +3,7 @@ package it.unical.googlecalendar.controllers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import it.unical.googlecalendar.model.Alarm;
 import it.unical.googlecalendar.services.DbService;
 
 @Controller
@@ -374,7 +376,9 @@ public class IndexController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         if (((Integer) session.getAttribute("user_id")) != null) {
-            writer.write("data: " 
+            writer.write(
+                      "retry: 5000"
+                    + "data: " 
                     + gson.toJson(dbService.getUnsentNotifications((Integer) session.getAttribute("user_id")))
                     + "\n\n");
             writer.flush();
@@ -395,7 +399,9 @@ public class IndexController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         if (((Integer) session.getAttribute("user_id")) != null) {
-            writer.write("data: "
+            writer.write(
+                      "retry: 5000"
+                    + "data: "
                     + gson.toJson(dbService.getUnsentInvitations((Integer) session.getAttribute("user_id")))
                     + "\n\n");
             writer.flush();
@@ -409,6 +415,8 @@ public class IndexController {
     @RequestMapping(value = "/alarms")
     public void pushAlarms(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws ServletException, IOException {
+        System.out.println("questa è la mia vita, altro io non ho");
+
         response.setContentType("text/event-stream");
         response.setCharacterEncoding("UTF-8");
 
@@ -416,11 +424,18 @@ public class IndexController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         
         if (((Integer) session.getAttribute("user_id")) != null) {
-            writer.write("data: " +
-                        gson.toJson(dbService.getAlarmsToNotifyById((Integer) session.getAttribute("user_id"))) 
-            + "\n\n");
+            List<Alarm> alarmList = dbService.getAlarmsToNotifyById((Integer) session.getAttribute("user_id"));
+            System.out.println("alarmList.size(): " + alarmList.size());
+            
+            writer.write(
+                    "retry: 5000\n"
+                  + "data: "
+                  + gson.toJson(alarmList) 
+                  + "\n\n");
             writer.flush();
         }
         writer.close();
+        
+        System.out.println("questa è la mia strada, la mia verità");
     }
 }

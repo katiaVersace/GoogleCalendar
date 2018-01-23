@@ -1081,7 +1081,12 @@ angular
         var eventSource = new EventSource("alarms");
         
         eventSource.onmessage = function (event) {
-            console.log(JSON.stringify(JSON.parse(event.data), null, 4));
+            JSON.parse(event.data).forEach(function (item) {
+                alert(
+                    "Event \"" + item.occurrence.title + "\" starting at " +
+                    item.occurrence.startTime + "!\n"
+                );
+            });
         };
     };
     
@@ -1477,10 +1482,12 @@ angular
   // ----------- //
   
   vm.fn = function () {
-      var time = new Date();
-      var delay = 20;
-      time.getMinutes(time.getMinutes() + 1)
-      time.getSeconds(time.getSeconds() + delay);
+      var time = new Date(); console.log(time);
+      var delay = 10;
+      time.setMinutes(time.getMinutes() + 1)
+      time.setSeconds(time.getSeconds() + delay);
+      
+      console.log(time);
       
       vm.insertNewEvent(
               "2",
