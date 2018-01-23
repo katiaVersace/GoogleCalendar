@@ -92,6 +92,8 @@ angular
     // By Marco, used for message rendering purposes
     vm.notificationsView = [];
     
+    vm.tempSenderId = undefined;
+    
     // --------------- //
     // -- UTILITIES -- //
     // --------------- //
@@ -479,11 +481,11 @@ angular
             	var calendarName = vm.notificationsView[i].calendar.title;
             	var text = "you have been invited to calendar : "+calendarName;
                 // this is a invitation TODO
-            	string+="<li><a href=\"javascript:void(0)\" ng-click=\"vm.openAnswerModal('"+id+"')\" class = \"calendars\" data-id=\"" + id+ "\">" +text+"</a></li>";
-            }
+            	string+="<li><a href=\"#\" ng-click=\"vm.openAnswerModal('"+id+"')\" class = \"calendars\" data-id=\"" + id+ "\">" +text+"</a></li>";
+            }															
         }
             
-        viewList.append(string);        
+        viewList.append( $compile(string)($scope));        
         vm.deleteNotifications();
       };
 
@@ -1028,14 +1030,13 @@ angular
     vm.answerInvitation = function (invitation_id, answer) {
         $.ajax({
             type: "POST",
-            url: "answerNotification",
+            url: "answerInvitation/" + invitation_id,
             data: {
-                invitation_id: invitation_id,
                 answer: answer ? "accept" : "decline",
             },
             success: function (response) {
                 if (response == "accepted") {
-                    vm.discardInvitation(id);
+                    vm.discardInvitation(invitation_id);
                     vm.updateCalendarList();
                 } else if (response != "declined") {
                     console.log("vm.answerInvitation unsuccessful");
@@ -1249,11 +1250,7 @@ angular
         
         modal(5);
     };
-
-    // MANAGE EVENT
-    vm.openEventModal = function() {
-        modal(5);
-    };
+ 
 
 
     // add event press button action
@@ -1518,12 +1515,25 @@ angular
   };
          
   
-  
   vm.openAnswerModal = function (id){
 	  
-	  alert(id);
-	  modal(9);
- 
-  }
+	      vm.tempSenderId = id;
+		  modal(9);
+
+	};
+	
+	vm.acceptInvitation = function(){
+		vm.answerInvitation(vm.tempSenderId, true);
+		document.getElementById('modal-wrapper9').style.display = 'none';
+	}
+	
+	vm.refuseInvitation = function(){
+		
+		vm.answerInvitation(vm.tempSenderId, false);
+		document.getElementById('modal-wrapper9').style.display = 'none';
+	}
+  
 
 });
+
+

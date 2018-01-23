@@ -879,50 +879,7 @@
 	</div>
 
 
-	[15:33, 23/1/2018] Mario Caricato:
-	<!-- Invitations -->
-	<div id="modal-wrapper9" class="modal">
-		<div>
-			<form class="modal-content animate" action="/action_page.php">
-				<div class="imgcontainer">
-					<span
-						onclick="document.getElementById('modal-wrapper7').style.display='none'"
-						class="close" title="Close PopUp">&times;</span>
-					<h1 style="text-align: center; color: white; padding-top: 10px;">Invitation</h1>
-					<a href="#" class="avatar"><i
-						style="font-size: 45px; color: white;"
-						class="glyphicon glyphicon-envelopet"></i></a>
-				</div>
-
-				<div class="modal-content">
-					<div style="text-align: center;">
-
-						<p id="invitation" style="color: white;">You were invited to
-							calendar :</p>
-						<div id="calText"></div>
-
-						<div style="text-align: center;">
-							<button type="button" id="btn-dlCalendar"
-								class="btn btn-info navbar-btn" onclick="" ng-click=""
-								style="background: #C62828;">
-								<span><strong>Decline</strong></span>
-							</button>
-							<button type="button" id="btn-upCalendar"
-								class="btn btn-info navbar-btn" ng-click=""
-								style="background: #66BB6A;">
-								<span><strong>Accept</strong></span>
-							</button>
-
-
-						</div>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-
-
-
+	
 	<!-- Invitations -->
 	<div id="modal-wrapper9" class="modal">
 		<div>
@@ -934,24 +891,22 @@
 					<h1 style="text-align: center; color: white; padding-top: 10px;">Invitation</h1>
 					<a href="#" class="avatar"><i
 						style="font-size: 45px; color: white;"
-						class="glyphicon glyphicon-envelopet"></i></a>
+						class="glyphicon glyphicon-envelope"></i></a>
 				</div>
 
 				<div class="modal-content">
 					<div style="text-align: center;">
 
-						<p id="invitation" style="color: white;">You were invited to
-							calendar :</p>
-						<div id="calText"></div>
+						<p id="invitationModal" style="color: white;">Do you want to accept? </p>
 
 						<div style="text-align: center;">
-							<button type="button" id="btn-dlCalendar"
-								class="btn btn-info navbar-btn" onclick="" ng-click=""
+							<button type="button" id="btn-dlCalendar" 
+								class="btn btn-info navbar-btn" onclick="" ng-click="vm.refuseInvitation()"
 								style="background: #C62828;">
 								<span><strong>Decline</strong></span>
 							</button>
 							<button type="button" id="btn-upCalendar"
-								class="btn btn-info navbar-btn" ng-click=""
+								class="btn btn-info navbar-btn" ng-click="vm.acceptInvitation()"
 								style="background: #66BB6A;">
 								<span><strong>Accept</strong></span>
 							</button>
@@ -963,6 +918,8 @@
 			</form>
 		</div>
 	</div>
+	
+	
 	<script type="text/javascript">
 		var openModalType2 = function() {
 			var name = document.getElementById("nameUser").value = '';

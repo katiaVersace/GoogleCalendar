@@ -363,6 +363,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 
 		// sql query
 		Invitation result = session.get(Invitation.class, u_id);
+		Hibernate.initialize(result.getCalendar());
 
 		session.close();
 		return result;

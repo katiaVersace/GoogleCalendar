@@ -244,9 +244,9 @@ public class DbService {
 	public String answerInvitation(int inv_id, int u_id, String answer) {
 		Invitation i = idao.getInvitationById(inv_id);
 		
-		if (answer.equals("accepted") && idao.acceptInvitation(u_id, i.getCalendar().getId()))
+		if (answer.equals("accept") && idao.acceptInvitation(u_id, i.getCalendar().getId()))
 			return "accepted";
-		else if (answer.equals("declined") && idao.declineInvitation(u_id, i.getCalendar().getId()))
+		else if (answer.equals("decline") && idao.declineInvitation(u_id, i.getCalendar().getId()))
 			return "declined";
 		return "error";
 	}

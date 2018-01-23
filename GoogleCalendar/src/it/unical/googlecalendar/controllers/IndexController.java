@@ -179,7 +179,7 @@ public class IndexController {
     @RequestMapping(value = "/answerInvitation/{invitation_id}", method = RequestMethod.POST)
     @ResponseBody
     public String answerInvitation(HttpSession session,@RequestParam String answer,
-            @PathVariable("invitation_id") String invitation_id) {
+            @PathVariable("invitation_id") String invitation_id) {  System.out.println("risposta = > "+answer);
         return dbService.answerInvitation(Integer.parseInt(invitation_id), (Integer) session.getAttribute("user_id"), answer);
     }
     
