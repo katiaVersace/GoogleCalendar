@@ -73,7 +73,7 @@ public class AlarmDAO {
 		Session session = sessionFactory.openSession();
 		// sql query
 		Alarm result = (Alarm) session.createQuery("SELECT a FROM Alarm a where a.user.id= :user_id and a.occurrence.id= :occurrence_id")
-				.setParameter("user_id", user_id).setParameter("alarm_id", occurrence_id).uniqueResult();
+				.setParameter("user_id", user_id).setParameter("occurrence_id", occurrence_id).uniqueResult();
 		
 	       System.out.println("result in get alarms by occurnece ==>  "+result);
 

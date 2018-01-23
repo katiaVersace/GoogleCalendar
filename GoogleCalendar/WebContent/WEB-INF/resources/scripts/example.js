@@ -347,11 +347,11 @@ angular
                             "ADMIN"  //TODO
                         );
                         
-//                        vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
-//                        	event.alarm = JSON.parse(response);
-//                        	console.log(event.alarm);
+                        vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
+                        	event.alarm = JSON.parse(response);
+                        	console.log(event.alarm);
                         	vm.events.push(event);
-               //         });
+                        });
                     }
                 });
                 // Needed for asynchronous update of vm.events
@@ -664,12 +664,12 @@ angular
     /*
 	 * JSON_getAlarmForAnOccurrence TODO: test me
 	 */
-    vm.JSON_getAlarmForAnOccurrence = function (occurrence_id, callback) {
+    vm.JSON_getAlarmForAnOccurrence = function (occurrence_id, callback) { alert("GET ALARM for "+occurrence_id);
         $.ajax({
             type: "POST",
             url: "JSON_getAlarmForAnOccurrence/" + occurrence_id,
             success: function (response) {
-                callback(resposne);
+                callback(response);
             },
         });
     };
@@ -1152,7 +1152,7 @@ angular
                 id : event.id,
                 memo : false,
                 description : event.description,
-                clock : event.clock,   
+                clock : event.alarm,   
                 startsAt : event.startsAt,
                 endsAt : event.endsAt,
                 color : {
