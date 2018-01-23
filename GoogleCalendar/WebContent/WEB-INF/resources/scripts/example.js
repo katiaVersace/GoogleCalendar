@@ -1,4 +1,6 @@
-// TODO: decidere come inserire ripetizioni
+// changelog
+// discusse con marco le storie delle repetition
+// discussa con katia la storia dell'update sulle repetition
 
 // --------------------------- //
 // -- MERGE MARIO MARCO [0] -- //
@@ -738,6 +740,21 @@ angular
     };
     
     /*
+     * insertNewException
+     */
+    vm.insertNewException = function (repetition_id) {
+        $.ajax({
+            type: "POST",
+            url: "insertNewException/" + repetition_id,
+            success: function (response) {
+                if (response != -1) {
+                    vm.updateEventList();
+                }
+            },
+        });
+    };
+    
+    /*
 	 * insertNewMemo
 	 */
     vm.insertNewMemo = function (title, description, date, color) {
@@ -961,7 +978,6 @@ angular
             
             if (received.length) {
                 vm.notifications = vm.notifications.concat(received.slice());
-                
                 document.getElementById('notif').style.color = '#F44336';
             }
         };
@@ -975,9 +991,8 @@ angular
             
             if (received.length) {
                 vm.invitations = vm.invitations.concat(received.slice());
-                
                 document.getElementById('notif').style.color = '#F44336';
-             }
+            }
         };
     };
     
@@ -1260,7 +1275,7 @@ angular
     }
     
     // ---------------------------- //
-    // -- WASTELAND -- //
+    // --        WASTELAND       -- //
     // -- enter at your own risk -- //
     // ---------------------------- //
     
