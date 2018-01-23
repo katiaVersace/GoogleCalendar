@@ -72,27 +72,7 @@ angular
     // calendar for modal
     vm.calendarToUpd = undefined;
     
-
-    // List of glyphs shown after entries in a day's event list,
-    // with behavior
-    var actions = [
-        {
-            label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
-            onClick : function(args) {
-                vm.clickUpdateEvent(args.calendarEvent);
-            }
-        }, 
-        {
-            label : '<i class=\'glyphicon glyphicon-remove\'></i>',
-            onClick : function(args) {
-               if (args.calendarEvent.memo) {
-            	       vm.deleteMemoById(args.calendarEvent.id)
-               } else {
-                   vm.deleteOccurrence(args.calendarEvent.id);
-               }
-            }
-        }, 
-    ];
+    var actions = [];
         
     // --------------------------- //
     // -- MERGE MARIO MARCO [1] -- //
@@ -116,9 +96,10 @@ angular
     // -- UTILITIES -- //
     // --------------- //
     
+    
     // Event Constructor
     vm.Event = function (id, calendar, title, description, 
-            startsAt, endsAt, primaryColor, secondaryColor) {
+            startsAt, endsAt, primaryColor, secondaryColor,actionsType) {
         this.id = id;
         this.calendar = calendar;
         this.title = title;
@@ -132,11 +113,11 @@ angular
         this.draggable = false;
         this.resizable = false;
         this.memo = false;
-        this.actions = actions;
+        this.actions = vm.getActions(actionsType);
     };
   
     // Memo Constructor (deceives vm.events into thinking it's a regular event)
-    vm.Memo = function (id, title, description, color, dateAdded) {
+    vm.Memo = function (id, title, description, color, dateAdded,actionsType) {
         var now = new Date();
         
         this.id = id;
@@ -155,11 +136,70 @@ angular
         this.draggable = false;
         this.resizable = false;
         this.memo = true;
-        this.actions = actions;
+        this.actions = vm.getActions(actionsType);
     };
+    
+    
+
+    // List of glyphs shown after entries in a day's event list,
+    // with behavior
+   
+    vm.getActions = function(type){
+    	
+    	var result =[];
+    	
+    	switch (type) {
+        case "REPETITION":
+        	result = [ {
+	                    label : '<i class=\'glyphicon glyphicon-remove\'></i>',
+		                    onClick : function(args) {
+		                       if (args.calendarEvent.memo) {
+		                    	       vm.deleteMemoById(args.calendarEvent.id)
+		                       } else {
+		                           vm.deleteOccurrence(args.calendarEvent.id);
+		                       }
+		                    }
+                		}, {
+                			label : '<i class=\'glyphicon glyphicon-ban-circle\'></i>',
+                			
+                			 onClick : function(args) {
+                				 console.log(args.calendarEvent);
+                				 vm.insertNewException(args.calendarEvent.repetition.id, args.calendarEvent.startsAt);
+  		                    }
+                			}
+                	  ];
+            return result;
+        case "ADMIN":
+        	result = [
+                {
+                    label : '<i class=\'glyphicon glyphicon-pencil\'></i>',
+                    onClick : function(args) {
+                        vm.clickUpdateEvent(args.calendarEvent);
+                    }
+                }, 
+                {
+                    label : '<i class=\'glyphicon glyphicon-remove\'></i>',
+                    onClick : function(args) {
+                       if (args.calendarEvent.memo) {
+                    	       vm.deleteMemoById(args.calendarEvent.id)
+                       } else {
+                           vm.deleteOccurrence(args.calendarEvent.id);
+                       }
+                    }
+                }, 
+            ];
+            return result;
+        case "READER":
+            return result;
+    	}
+    
+    return undefined;
+    	
+    }
     
     vm.getRRuleFreqType = function (type) {
         switch (type) {
+       
             case "YEAR":
                 return RRule.YEARLY;
             case "MONTH":
@@ -168,6 +208,8 @@ angular
                 return RRule.WEEKLY;
             case "DAY":
                 return RRule.DAILY;
+            case "HOUR":
+                return RRule.HOURLY;
         }
         
         return undefined;
@@ -276,7 +318,8 @@ angular
                                 new Date(rule),
                                 new Date(rule),
                                 blueprint.primaryColor,
-                                blueprint.secondaryColor
+                                blueprint.secondaryColor,
+                                "REPETITION"					//type for actions
                             );
                             event.repetition = blueprint.repetition;
                             vm.events.push(event);
@@ -290,7 +333,8 @@ angular
                             new Date(blueprint.startTime),
                             new Date(blueprint.endTime),
                             blueprint.primaryColor,
-                            blueprint.secondaryColor
+                            blueprint.secondaryColor,
+                            "ADMIN"
                         ));
                     }
                 });
@@ -716,7 +760,7 @@ angular
     };
     
     /*
-	 * insertNewRepetition
+	 * insertNewRepetition TODO aggiungere intervallo
 	 */
     vm.insertNewRepetition = function (occurrence_id, repetitionType,
             startTime, endTime) {
@@ -775,7 +819,7 @@ angular
     /*
 	 * insertNewException
 	 */
-    vm.insertNewException = function (repetition_id) {
+    vm.insertNewException = function (repetition_id, date_exception) {
         $.ajax({
             type: "POST",
             url: "insertNewException/" + repetition_id,
@@ -1227,12 +1271,7 @@ angular
                  
                  vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
                          vm.temp.color.secondary, function (response){
-                 	
-                     document.getElementById('btn-add').disabled = true;
-      
-                     
-                     document.getElementById('modal-wrapper5').style.display = 'none';
-                     resetClock();
+
      				 resetFreqChoice();
      				
      				
@@ -1258,16 +1297,9 @@ angular
                  	
                  });
       
-             }else{		//event without repetition
+             }else{		// event without repetition
             	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
-                         vm.temp.color.secondary);
-            	 
-            	 
-            	 document.getElementById('btn-add').disabled = true;
-                 
-                 
-                 document.getElementById('modal-wrapper5').style.display = 'none';
-                 resetClock(); 				                 
+                         vm.temp.color.secondary);	                 
                 
                  
                  console.log("insert new event (WITHOUT REP) (idC, title, descr, start, end , primcol , secondcol)");
@@ -1279,6 +1311,12 @@ angular
             	 
              }
             
+       	 
+       	 	document.getElementById('btn-add').disabled = true;
+       	 
+            
+            document.getElementById('modal-wrapper5').style.display = 'none';
+            resetClock(); 			
        
         } else { 
         	 	alert("please choose a calendar");
