@@ -21,12 +21,12 @@ import javax.persistence.UniqueConstraint;
 import com.google.gson.annotations.Expose;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"calendar_id"})})
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "calendar_id" }) })
 public class Calendar {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "calendar_id",unique = true)
+	@Column(name = "calendar_id", unique = true)
 	@Expose
 	private int id;
 
@@ -38,22 +38,23 @@ public class Calendar {
 	@Expose
 	private String description;
 
-	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE)
+	@OneToMany(mappedBy = "calendar", orphanRemoval = true, cascade = CascadeType.REMOVE)
 	private List<Occurrence> occurrences = new ArrayList<Occurrence>();
 
 	// User che condividono questo calendario
-	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "calendar", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<Users_Calendars> users_calendars = new ArrayList<Users_Calendars>();
 
-//	// invitation
-	@OneToMany(mappedBy = "calendar",orphanRemoval=true,cascade=CascadeType.REMOVE)
+	// // invitation
+	@OneToMany(mappedBy = "calendar", orphanRemoval = true, cascade = CascadeType.REMOVE)
 	public List<Invitation> Invitations = new ArrayList<Invitation>();
-	
-	@OneToOne(cascade=CascadeType.REFRESH)
+
+	@OneToOne(cascade = CascadeType.REFRESH)
 	private User fbUser;
-	
-	
-//	private Date version;
+
+	private Date versioneCalendario;
+
+	private Date versioneStato;
 
 	public Calendar() {
 		super();
@@ -65,33 +66,37 @@ public class Calendar {
 		this.title = title;
 
 		this.description = description;
-		
+
 		Users_Calendars association = null;
-		
-			association = new Users_Calendars(creator, this, "ADMIN", Color.CYAN, this.title);
-		
-		if(isFB)
-		{creator.setMyFacebookCalendar(this);
-		this.fbUser=creator;}
-//	version=new Date();
-	
+
+		association = new Users_Calendars(creator, this, "ADMIN", Color.CYAN, this.title);
+
+		if (isFB) {
+			creator.setMyFacebookCalendar(this);
+			this.fbUser = creator;
+		}
+		Date now = new Date();
+		versioneStato = now;
+		versioneCalendario = now;
+
 	}
-	
 
 	
+	public Date getVersioneCalendario() {
+		return versioneCalendario;
+	}
 
-	// elimina calendario(se sei ADMIN)
-	// elimina R o RW(se sei ADMIN)
+	public void setVersioneCalendario(Date versioneCalendario) {
+		this.versioneCalendario = versioneCalendario;
+	}
 
-	
+	public Date getVersioneStato() {
+		return versioneStato;
+	}
 
-//	public Date getVersion() {
-//		return version;
-//	}
-//
-//	public void setVersion(Date version) {
-//		this.version = version;
-//	}
+	public void setVersioneStato(Date versioneStato) {
+		this.versioneStato = versioneStato;
+	}
 
 	public User getFbUser() {
 		return fbUser;
@@ -148,8 +153,6 @@ public class Calendar {
 		this.users_calendars = users_calendars;
 	}
 
-	
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

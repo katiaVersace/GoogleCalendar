@@ -13,6 +13,7 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.EventException;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.Repetition;
@@ -141,6 +142,7 @@ public class ExceptionDAO {
 	public int insertNewException(int r_id, Date s, Date en,int user_id) {
 		Session session = sessionFactory.openSession();
 		Repetition u=session.get(Repetition.class,r_id);
+		Occurrence o=session.get(Occurrence.class, u.getOccurrence().getId());
 		int result =-1;
 		Transaction tx = null;
 		
@@ -152,7 +154,6 @@ public class ExceptionDAO {
 		if (resultsId.size() != 0) {
 			Users_Calendars uc = resultsId.get(0);
 				if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
-	
 		try {
 			
 			EventException m = new EventException(u,s, en);
@@ -164,9 +165,35 @@ public class ExceptionDAO {
 				cache.evictAllRegions();
 			}
 			// END DEBUG
+			Date oldVersion=o.getVersioneEvento();
+			
+			//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+			Occurrence cDB=session.get(Occurrence.class, u.getOccurrence().getId());
+			Date newVersione=cDB.getVersioneEvento();
+		
+				   // DEBUG
+				session.clear();
+			 cache = sessionFactory.getCache();
+				if (cache != null) {
+					cache.evictAllRegions();
+				}
+				// END DEBUG
+			Calendar c=session.get(Calendar.class, cDB.getCalendar().getId());
+		if(oldVersion.equals(newVersione)){
+			Date now=new Date();
+			o.setVersioneEvento(now);
+			c.setVersioneStato(now);
 			session.save(m);
+			session.update(c);
+			session.update(o);
 			tx.commit();
 			result=m.getId();
+		
+			}
+			else{
+				throw new Exception("L'evento con ripetizione ed eccezione è stato modificato da un utente, le tue modifiche andranno perse");
+				
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();

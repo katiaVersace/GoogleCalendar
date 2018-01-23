@@ -56,18 +56,40 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 	
 	@Override
-	public void update(Occurrence Occurrence) {
+	public void update(Occurrence o) {
 
 		Session session = sessionFactory.openSession();
 
 		Transaction tx = null;
+		
 
 		try {
 			tx = session.beginTransaction();
-			session.update(Occurrence);
+						
+			//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+			Date oldVersion=o.getVersioneEvento();
+			Occurrence cDB=getOccurrenceById(o.getId());
+			Date newVersion=cDB.getVersioneEvento();
+			
+			// DEBUG
+			session.clear();
+			Cache cache = sessionFactory.getCache();
+			if (cache != null) {
+				cache.evictAllRegions();
+			}// END DEBUG
+			
+			if(oldVersion.equals(newVersion)){
+			Date now=new Date();
+			o.setVersioneEvento(now);
+			session.update(o);
 			tx.commit();
-
-		} catch (Exception e) {
+						}
+			else{
+				
+				throw new Exception("L'evento è stato modificato da un utente, le tue modifiche andranno perse");
+				
+			}}
+		catch (Exception e) {
 			tx.rollback();
 		}
 
@@ -225,10 +247,15 @@ public int insertNewEvent(int ca, int u_id, String title, String description,Dat
 
 		try {
 			tx = session.beginTransaction();
+			//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+			Date now=new Date();
+			c.setVersioneStato(now);
 			session.save(ev);
-			result=ev.getId();
+			session.update(c);
 			tx.commit();
-
+			result=ev.getId();
+			
+			
 		} catch (Exception e) {
 			result = -1;
 			tx.rollback();
@@ -264,7 +291,9 @@ public int insertNewEvent(int ca, int u_id, String title, String description,Dat
 			if (uc.getPrivileges().equals("ADMIN")) {
 				try {
 					tx = session.beginTransaction();
-
+					Date oldVersion=oc.getVersioneEvento();
+					Occurrence cDB=session.get(Occurrence.class, oc_id);
+					Date newVersion=cDB.getVersioneEvento();
 					    // DEBUG
 						session.clear();
 						Cache cache = sessionFactory.getCache();
@@ -272,14 +301,32 @@ public int insertNewEvent(int ca, int u_id, String title, String description,Dat
 							cache.evictAllRegions();
 						}
 						// END DEBUG
+						
+						
+						//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+						
+						Calendar c=session.get(Calendar.class, ca.getId());
+						if(oldVersion.equals(newVersion)){
+						Date now=new Date();
+						oc.setVersioneEvento(now);
+						c.setVersioneStato(now);
+						session.delete(oc);
+						session.update(c);
+						session.flush();
+						tx.commit();
+						result = true;
+
+						
+						}
+						else{
+							
+							throw new Exception("L'evento con ripetizione ed eccezione è stato modificato da un utente, le tue modifiche andranno perse");
+							
+						}
 						ca.getOccurrences().remove(oc);
 						
-					session.delete(oc);
-					session.flush();
-
-					tx.commit();
-					result = true;
-				} catch (Exception e) {
+						
+									} catch (Exception e) {
 					e.printStackTrace();
 					result = false;
 					tx.rollback();
@@ -294,7 +341,8 @@ public int insertNewEvent(int ca, int u_id, String title, String description,Dat
 	@Override
 	public boolean updateEventById(int ev_id, String title,  String description, Date startTime,Date endTime,String c1, String c2,int user_id) {
 		Session session = sessionFactory.openSession();
-		Occurrence v = session.get(Occurrence.class,ev_id);
+		Occurrence oldO=session.get(Occurrence.class,ev_id);
+		Occurrence v = oldO;
 boolean result = false;
 
 		// l'utente e il calendario dell'occurrence
@@ -317,6 +365,9 @@ boolean result = false;
 					v.setSecondaryColor(c2);
 					v.setDescription(description);
 					
+					Date oldVersion=v.getVersioneEvento();
+					Occurrence cDB=getOccurrenceById(ev_id);
+					Date newVersion=cDB.getVersioneEvento();
 					// DEBUG
 					session.clear();
 					Cache cache = sessionFactory.getCache();
@@ -324,9 +375,30 @@ boolean result = false;
 						cache.evictAllRegions();
 					}
 					// END DEBUG
+					
+					//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+					
+					Calendar c=session.get(Calendar.class, v.getCalendar().getId());
+					if(oldVersion.equals(newVersion)){
+					Date now=new Date();
+					v.setVersioneEvento(now);
+					c.setVersioneStato(now);
 					session.saveOrUpdate(v);
+					session.update(c);
 					tx.commit();
 					result = true;
+					}
+					else{
+						v.setTitle(oldO.getTitle());
+						v.setStartTime(oldO.getStartTime());
+						v.setEndTime(oldO.getEndTime());
+						v.setPrimaryColor(oldO.getPrimaryColor());
+						v.setSecondaryColor(oldO.getSecondaryColor());
+						v.setDescription(oldO.getDescription());
+						throw new Exception("L'evento è stato modificato da un utente, le tue modifiche andranno perse");
+						
+					}
+					
 				} catch (Exception e) {
 					result = false;
 					tx.rollback();

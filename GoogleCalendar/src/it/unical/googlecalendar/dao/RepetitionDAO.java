@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.hibernate.Cache;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import it.unical.googlecalendar.model.Repetition;
+import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.Users_Calendars;
 
@@ -169,10 +171,38 @@ public class RepetitionDAO {
 		
 
 			tx = session.beginTransaction();
-			session.save(m);
+			Date oldVersion=o.getVersioneEvento();
+			Occurrence cDB=session.get(Occurrence.class, o2);
+			Date newVersion= cDB.getVersioneEvento();
+			// DEBUG
+			session.clear();
+			Cache cache = sessionFactory.getCache();
+			if (cache != null) {
+				cache.evictAllRegions();
+			}
+			// END DEBUG
+
+			//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
 			
+			Calendar c=session.get(Calendar.class, cDB.getCalendar().getId());
+			if(oldVersion.equals(newVersion)){
+			Date now=new Date();
+			o.setVersioneEvento(now);
+			c.setVersioneStato(now);
+			session.save(m);
+			session.update(c);
+			session.update(o);
 			tx.commit();
 			result=m.getId();
+			}
+			else{
+				throw new Exception("L'evento con ripetizione è stato modificato da un utente, le tue modifiche andranno perse");
+				
+			}
+			
+			
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
