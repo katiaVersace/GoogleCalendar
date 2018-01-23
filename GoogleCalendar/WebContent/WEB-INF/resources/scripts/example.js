@@ -1,7 +1,3 @@
-// changelog
-// discusse con marco le storie delle repetition
-// discussa con katia la storia dell'update sulle repetition
-
 // --------------------------- //
 // -- MERGE MARIO MARCO [0] -- //
 // --------------------------- //
@@ -863,22 +859,45 @@ angular
 	 * addAlarm
 	 */
     vm.addAlarm = function (occurrence_id, minutes) {
-        // TODO
+        $.ajax({
+            type: "POST",
+            url: "addAlarm/" + occurrence_id,
+            data: {
+                minutes: minutes,
+            },
+            success: function (response) {
+                vm.updateEventList();
+            },
+        });
     };
     
     /*
 	 * updateAlarm
+	 * FIXME: al momento Alarm nel modello ha una lista di allarmi
 	 */
-    vm.updateAlarm = function (/* ... */) {
-        // TODO
-    }
+    vm.updateAlarm = function (alarm_id) {
+        $.ajax({
+            type: "POST",
+            url: "updateAlarm/" + alarm_id,
+            success: function (response) {
+                // TODO
+            },
+        });
+    };
     
     /*
 	 * deleteAlarm
+	 * FIXME: al momento Alarm nel modello ha una lista di allarmi
 	 */
-    vm.deleteAlarm = function (/* ... */) {
-        // TODO
-    }
+    vm.deleteAlarm = function (alarm_id) {
+        $.ajax({
+            type: "POST",
+            url: "deleteAlarm/" + alarm_id,
+            success: function (response) {
+                // TODO
+            },
+        });
+    };
     
     /*
 	 * updateUser
@@ -997,7 +1016,11 @@ angular
     };
     
     vm.SSEAlarmSubscription = function () {
-        // TODO
+        var eventSource = new EventSource("alarms");
+        
+        eventSource.onmessage = function (event) {
+            // TODO
+        };
     };
     
     // ---------- //
@@ -1287,12 +1310,6 @@ angular
         $event.stopPropagation();
         event[field] = !event[field];
     };
-
-    // ----------- //
-    // -- DEBUG -- //
-    // ----------- //
-    
-    vm.fn = function () { };
         
   // ------------------------------ //
   // -- PROVA PER RICERCA UTENTI -- //
@@ -1367,6 +1384,26 @@ angular
           },
       });
   };
-         
 
+  // ----------- //
+  // -- DEBUG -- //
+  // ----------- //
+  
+  vm.fn = function () {
+      var time = new Date();
+      var delay = 20;
+      time.getMinutes(time.getMinutes() + 1)
+      time.getSeconds(time.getSeconds() + delay);
+      
+      vm.insertNewEvent(
+              "2",
+              delay + " seconds",
+              delay + " seconds before alarm triggers",
+              time, time,
+              "#555555", "#aaaaaa", function (response) {
+          if (response != -1) {
+              vm.addAlarm(response, 1);
+          }
+      });
+  };
 });

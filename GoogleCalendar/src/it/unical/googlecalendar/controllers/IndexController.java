@@ -203,8 +203,9 @@ public class IndexController {
         return dbService.addAlarm((Integer) session.getAttribute("user_id"), Integer.parseInt(occurrence_id), minutes);
     }
 
-    // FIXME: alarm_id -> occurrence_id
-    // TODO: Giuseppe aggiungi questo metodo!!
+    /*
+     * updateAlarm
+     */
     @RequestMapping(value = "/updateAlarm/{alarm_id}", method = RequestMethod.POST)
     @ResponseBody
     public String updateAlarm(HttpSession session, @RequestParam int minutes,
@@ -212,8 +213,9 @@ public class IndexController {
         return dbService.updateAlarm(Integer.parseInt(alarm_id), minutes) ? "YES" : "NO";
     }
 
-    // FIXME: alarm_id -> occurrence_id
-    // TODO: Giuseppe aggiungi questo metodo!!
+    /*
+     * deleteAlarm
+     */
     @RequestMapping(value = "/deleteAlarm/{alarm_id}", method = RequestMethod.POST)
     @ResponseBody
     public String deleteAlarm(HttpSession session,
