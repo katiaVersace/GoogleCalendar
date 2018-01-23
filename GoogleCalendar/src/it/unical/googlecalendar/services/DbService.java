@@ -66,7 +66,7 @@ public class DbService {
 		ndao.save(n);
 		// ora creo un evento e lo associo al mio calendario
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-		String dateInString = "21-01-2018 10:20:56";
+		String dateInString = "01-03-2018 10:20:30";
 		String dateInString2 = "24-01-2018 16:20:00";
 		String leftBoundary = "03-02-2018 12:00:00";
 		String rightBoundary = "10-02-2018 12:00:00";
@@ -75,6 +75,8 @@ public class DbService {
 		Occurrence ev2 = null;
 		Occurrence ev3 = null;
 		Occurrence ev4 = null;
+		
+	
 		try {
 			ev1 = new Occurrence(katiaCalendar, katia, "Comprare il latte", "Ricordati di comprare il latte",
 					sdf.parse(dateInString), sdf.parse(dateInString2), "#555555", "#aaaaaa");
@@ -92,6 +94,7 @@ public class DbService {
 		odao.save(ev3);
 		odao.save(ev4);
 		
+		adao.insertNewAlarm(katia.getId(), ev1.getId(),10);
 		int rep_id;
 		
 		try {
@@ -102,6 +105,12 @@ public class DbService {
 		            rep_obj.getId(), sdf.parse("05-02-2018 12:00:00"), sdf.parse("05-02-2018 12:00:00"), katia.getId());
 		} catch (Exception e) {
 		    e.printStackTrace();
+		}
+		
+		System.out.println("allarmi x katia");
+		List<Alarm> alarmsKatia=adao.getAlarmsToNotifyById(katia.getId());
+		for(Alarm a:alarmsKatia){
+			System.out.println(a.getOccurrence().getTitle()+": "+a.getAlarm());
 		}
 	}
 
@@ -265,5 +274,9 @@ public class DbService {
 
 	public boolean deleteException(int ex_id, int user_id) {
 		return edao.deleteExceptionById(ex_id, user_id);
+	}
+
+	public Object getAlarmsToNotifyById(int user_id) {
+		return adao.getAlarmsByUserId(user_id);
 	}
 }

@@ -316,6 +316,48 @@ public class IndexController {
     }
     
     /*
+     * insertNewRepetition
+     */
+    @RequestMapping(value = "/insertNewRepetition/{occurrence_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public int insertNewRepetition(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
+            @RequestParam String rType,@RequestParam Date sT,@RequestParam Date eT) {
+    	   return dbService.insertNewRepetition(Integer.parseInt(occurrence_id),rType,(Integer) session.getAttribute("user_id"),sT,eT);
+    }
+    
+    /*
+     * updateRepetition
+     */
+    @RequestMapping(value = "/updateRepetition/{repetition_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateRepetition(HttpSession session, @RequestParam String rType,@RequestParam Date st,@RequestParam Date et,
+            @PathVariable("repetition_id") String repetition_id) {
+        return dbService.updateRepetition(Integer.parseInt(repetition_id), rType,st,et,(Integer) session.getAttribute("user_id")) ? 
+                "YES" : "NO";
+    }
+
+    /*
+     * deleteRepetition
+     */
+    @RequestMapping(value = "/deleteRepetition/{repetition_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteRepetition(HttpSession session,@PathVariable("repetition_id") String repetition_id) {
+        return dbService.deleteRepetition(Integer.parseInt(repetition_id), (Integer) session.getAttribute("user_id")) ? 
+                "YES" : "NO";
+    }
+    
+    /*
+     * insertNewException
+     */
+    // se ritorna -1 significa che l'inserimento non � andato a buon fine 
+    @RequestMapping(value = "/insertNewException/{repetition_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public int insertNewException(HttpSession session, @PathVariable("repetition_id") String repetition_id,
+            @RequestParam Date sT,@RequestParam Date eT) {
+    	   return dbService.insertNewException(Integer.parseInt(repetition_id),sT,eT,(Integer) session.getAttribute("user_id"));
+    }
+    
+    /*
      * SSE notification subscription
      */
     @RequestMapping(value = "/notifications")
@@ -356,46 +398,25 @@ public class IndexController {
         }
         writer.close();
     }
-    
-    /*
-     * insertNewRepetition
-     */
-    @RequestMapping(value = "/insertNewRepetition/{occurrence_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public int insertNewRepetition(HttpSession session, @PathVariable("occurrence_id") String occurrence_id,
-            @RequestParam String rType,@RequestParam Date sT,@RequestParam Date eT) {
-    	   return dbService.insertNewRepetition(Integer.parseInt(occurrence_id),rType,(Integer) session.getAttribute("user_id"),sT,eT);
-    }
-    
-    /*
-     * updateRepetition
-     */
-    @RequestMapping(value = "/updateRepetition/{repetition_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String updateRepetition(HttpSession session, @RequestParam String rType,@RequestParam Date st,@RequestParam Date et,
-            @PathVariable("repetition_id") String repetition_id) {
-        return dbService.updateRepetition(Integer.parseInt(repetition_id), rType,st,et,(Integer) session.getAttribute("user_id")) ? 
-                "YES" : "NO";
-    }
 
     /*
-     * deleteRepetition
+     * SSE alarm subscription
      */
-    @RequestMapping(value = "/deleteRepetition/{repetition_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String deleteRepetition(HttpSession session,@PathVariable("repetition_id") String repetition_id) {
-        return dbService.deleteRepetition(Integer.parseInt(repetition_id), (Integer) session.getAttribute("user_id")) ? 
-                "YES" : "NO";
-    }
-    
-    /*
-     * insertNewException
-     */
-    // se ritorna -1 significa che l'inserimento non � andato a buon fine 
-    @RequestMapping(value = "/insertNewException/{repetition_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public int insertNewException(HttpSession session, @PathVariable("repetition_id") String repetition_id,
-            @RequestParam Date sT,@RequestParam Date eT) {
-    	   return dbService.insertNewException(Integer.parseInt(repetition_id),sT,eT,(Integer) session.getAttribute("user_id"));
+    @RequestMapping(value = "/alarms")
+    public void pushAlarms(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        
+        if (((Integer) session.getAttribute("user_id")) != null) {
+            writer.write("data: " +
+                        gson.toJson(dbService.getAlarmsToNotifyById((Integer) session.getAttribute("user_id"))) 
+            + "\n\n");
+            writer.flush();
+        }
+        writer.close();
     }
 }
