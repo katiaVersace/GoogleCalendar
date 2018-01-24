@@ -1,20 +1,17 @@
 package it.unical.googlecalendar.dao;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Query;
-import javax.sound.midi.SysexMessage;
 
 import org.hibernate.Cache;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import com.google.gson.Gson;
 
 import it.unical.googlecalendar.dao.CalendarDAO;
 
@@ -55,17 +52,51 @@ private Users_CalendarsDAOImpl ucdao;
 	}
 	
 	@Override
-	public void update(Calendar Calendar) {
+	public void update(Calendar c) {
 
 		Session session = sessionFactory.openSession();
 
 		Transaction tx = null;
+		
+		Date oldCalendarVersion=c.getVersioneCalendario();
+		
+		//pulisci cache
+		  // DEBUG
+		session.clear();
+		Cache cache = sessionFactory.getCache();
+		if (cache != null) {
+			cache.evictAllRegions();
+		}
+		// END DEBUG
 
 		try {
 			tx = session.beginTransaction();
-			session.update(Calendar);
+			
+			//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+			Calendar cDB=getCalendarById(c.getId());
+			Date newCalendarVersione=cDB.getVersioneCalendario();
+			
+			//pulisci cache
+			  // DEBUG
+			session.clear();
+			cache = sessionFactory.getCache();
+			if (cache != null) {
+				cache.evictAllRegions();
+			}
+			// END DEBUG
+			if(oldCalendarVersion.equals(newCalendarVersione)){
+			Date now=new Date();
+			c.setVersioneCalendario(now);
+			c.setVersioneStato(now);
+			session.update(c);
 			tx.commit();
-
+		
+			}
+			else{
+				
+				throw new Exception("Il calendario è stato modificato da un utente, le tue modifiche andranno perse");
+				
+			}
 		} catch (Exception e) {
 			tx.rollback();
 		}
@@ -268,7 +299,7 @@ private Users_CalendarsDAOImpl ucdao;
 
 			if (uc.getPrivileges().equals("ADMIN")||uc.getPrivileges().equals("RW")) {
 		
-
+			Date oldVersione=	c.getVersioneCalendario();
 				Transaction tx = null;
 
 				try {
@@ -285,20 +316,30 @@ private Users_CalendarsDAOImpl ucdao;
 					}
 					// END DEBUG
 					
-//					//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione � cambiata)
-//					Calendar cDB=getCalendarById(c_id);
-//					if(c.getVersion()==cDB.getVersion()){
-//					c.setVersion(new Date());
+					//CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+					Calendar cDB=getCalendarById(c_id);
+					
+Date newVersione=cDB.getVersioneCalendario();
+					// DEBUG
+					session.clear();
+					cache = sessionFactory.getCache();
+					if (cache != null) {
+						cache.evictAllRegions();
+					}// END DEBUG
+					if(oldVersione.equals(newVersione)){
+					Date now=new Date();
+					c.setVersioneCalendario(now);
+					c.setVersioneStato(now);
 					session.update(c);
 					tx.commit();
 					result=true;
-//					}
-//					else{
-//						c.setTitle(oldC.getTitle());
-//						c.setDescription(oldC.getDescription());
-//						
-//						System.out.println("Il calendario � stato modificato da un utente, le tue modifiche andranno perse");
-//					}
+					}
+					else{
+						c.setTitle(oldC.getTitle());
+						c.setDescription(oldC.getDescription());
+						throw new Exception("Il calendario è stato modificato da un utente, le tue modifiche andranno perse");
+						
+					}
 
 				
 				
@@ -390,8 +431,27 @@ return result;
 				
 		session.close();
 		return result;
-
-		
 	}
 	
+	@Override
+	public HashMap<Integer, Date> getVersionStateForUserCalendars(int user_id) {
+	    Session session = sessionFactory.openSession();
+
+        // sql query
+        List<Calendar> result;
+        
+        Query q = session
+                .createQuery("SELECT c FROM Calendar c JOIN FETCH c.users_calendars uc WHERE uc.user.id = :user_id");
+        q.setParameter("user_id", user_id);
+        result = q.getResultList();
+        
+        HashMap<Integer, Date> map = new HashMap<>();
+        
+        for (Calendar calendar : result) {
+            map.put(calendar.getId(), calendar.getVersioneStato());
+        }
+                
+        session.close();
+        return map;
+	}
 }

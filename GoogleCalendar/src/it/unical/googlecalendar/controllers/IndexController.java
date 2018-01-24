@@ -427,7 +427,6 @@ public class IndexController {
         
         if (((Integer) session.getAttribute("user_id")) != null) {
             List<Alarm> alarmList = dbService.getAlarmsToNotifyById((Integer) session.getAttribute("user_id"));
-           
             
             writer.write(
                     "retry: 5000\n"
@@ -439,6 +438,30 @@ public class IndexController {
         writer.close();
        
     }
+    
+    /*
+     * SSE calendar state change subscription
+     */
+    @RequestMapping(value = "/calendarStateChange")
+    public void pushCalendarStateChange(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        
+        if (((Integer) session.getAttribute("user_id")) != null) {            
+            writer.write(
+                    "retry: 2500\n"
+                  + "data: "
+                  + gson.toJson(dbService.getVersionStateForUserCalendars((Integer) session.getAttribute("user_id")))
+                  + "\n\n");
+            writer.flush();
+        }
+        writer.close();
+    }
+    
     /*
      * JSON_getPrivileges
      */

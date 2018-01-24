@@ -36,6 +36,8 @@ angular
     
     // Current date
     vm.viewDate = new Date();
+    
+    vm.calendarState = [];
 
     // Events to be displayed
     vm.events = [];
@@ -1136,6 +1138,33 @@ angular
         };
     };
     
+    // test me extensively one of these days
+    vm.SSECalendarStateChangeSubscription = function () {
+        var eventSource = new EventSource("calendarStateChange");
+        
+        eventSource.onmessage = function (event) {
+            var received = JSON.parse(event.data);
+            for (var calendar_id in received) {
+                if (received.hasOwnProperty(calendar_id)) {
+                    var filtered = vm.calendarState.filter(function (e) { return e.id === calendar_id; });
+                    if (!filtered.length) {
+                        var newEntry = {
+                            id: calendar_id,
+                            version: received[calendar_id],
+                        };
+                        vm.calendarState.push(newEntry);
+                    } else {
+                        if (new Date(received[calendar_id]) > new Date(filtered[0].version)) {
+                            filtered[0].version = received[calendar_id];
+                            vm.updateEventList();
+                            console.log("update requested");
+                        }
+                    }
+                }
+            }
+        };
+    };
+    
     // ---------- //
     // -- INIT -- //
     // ---------- //
@@ -1145,7 +1174,8 @@ angular
         vm.resetSentStateOnMessages();
         vm.SSENotificationSubscription();
         vm.SSEInvitationSubscription();
-         vm.SSEAlarmSubscription();
+        vm.SSEAlarmSubscription();
+        vm.SSECalendarStateChangeSubscription();
     })();
     
     // --------------------------- //

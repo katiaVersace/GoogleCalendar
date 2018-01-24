@@ -52,8 +52,9 @@ public class Calendar {
 	@OneToOne(cascade=CascadeType.REFRESH)
 	private User fbUser;
 	
+	private Date versioneCalendario;
 	
-//	private Date version;
+	private Date versioneStato;
 
 	public Calendar() {
 		super();
@@ -73,27 +74,29 @@ public class Calendar {
 		if(isFB)
 		{creator.setMyFacebookCalendar(this);
 		this.fbUser=creator;}
-//	version=new Date();
-	
+		
+		Date now = new Date();
+		versioneStato = now;
+		versioneCalendario = now;
 	}
-	
 
-	
+	public Date getVersioneCalendario() {
+        return versioneCalendario;
+    }
 
-	// elimina calendario(se sei ADMIN)
-	// elimina R o RW(se sei ADMIN)
+    public void setVersioneCalendario(Date versioneCalendario) {
+        this.versioneCalendario = versioneCalendario;
+    }
 
-	
+    public Date getVersioneStato() {
+        return versioneStato;
+    }
 
-//	public Date getVersion() {
-//		return version;
-//	}
-//
-//	public void setVersion(Date version) {
-//		this.version = version;
-//	}
+    public void setVersioneStato(Date versioneStato) {
+        this.versioneStato = versioneStato;
+    }
 
-	public User getFbUser() {
+    public User getFbUser() {
 		return fbUser;
 	}
 

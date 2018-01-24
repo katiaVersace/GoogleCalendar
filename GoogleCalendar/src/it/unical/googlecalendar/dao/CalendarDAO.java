@@ -1,5 +1,7 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import it.unical.googlecalendar.model.Calendar;
@@ -32,4 +34,6 @@ public interface CalendarDAO {
 	boolean disconnectUserFromCalendarById(int c_id, int u_id);
 
 	List<Users_Calendars> getPrivilegesForCalendars(int user_id);
+
+    HashMap<Integer, Date> getVersionStateForUserCalendars(int user_id);
 }
