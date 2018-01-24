@@ -346,7 +346,7 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
         Session session = sessionFactory.openSession();
         Occurrence oldO=session.get(Occurrence.class,ev_id);
         Occurrence v = oldO;
-boolean result = false;
+        boolean result = false;
 
         // l'utente e il calendario dell'occurrence
         Query query = session.createQuery(
@@ -369,7 +369,7 @@ boolean result = false;
                     v.setDescription(description);
                     
                     Date oldVersion=v.getVersioneEvento();
-                    Occurrence cDB=getOccurrenceById(ev_id);
+                    Occurrence cDB=session.get(Occurrence.class,ev_id);
                     Date newVersion=cDB.getVersioneEvento();
                     // DEBUG
                     session.clear();

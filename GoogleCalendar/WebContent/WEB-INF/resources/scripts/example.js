@@ -1012,7 +1012,7 @@ angular
     };
     
     /*
-	 * updateAlarm FIXME: al momento Alarm nel modello ha una lista di allarmi
+	 * updateAlarm
 	 */
     vm.updateAlarm = function (alarm_id,minutes) {
         $.ajax({
@@ -1220,7 +1220,7 @@ angular
         vm.SSENotificationSubscription();
         vm.SSEInvitationSubscription();
         vm.SSEAlarmSubscription();
-        vm.SSECalendarStateChangeSubscription();
+      //  vm.SSECalendarStateChangeSubscription();
     })();
     
     // --------------------------- //
@@ -1484,12 +1484,18 @@ angular
                 vm.temp.color.secondary);
         
         
-        if(vm.temp.minutes != 'none'){ // update alarm
-        vm.updateAlarm(vm.temp.alarmID,vm.temp.minutes);
+        if(vm.temp.minutes != 'none'){
+        		if(vm.temp.alarmID != undefined){
+        				vm.updateAlarm(vm.temp.alarmID,vm.temp.minutes);
+        			}
+        			else{
+        				vm.addAlarm(vm.temp.id, vm.temp.minutes);
+        				}
+        		
         }
         else{ // delete only if this is an event with alarm associated
         	
-        	if(vm.temp.alarmID != undefined)
+        	if(vm.temp.alarmID != undefined )
         		vm.deleteAlarm(vm.temp.alarmID);
         	
         }
