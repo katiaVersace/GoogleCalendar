@@ -163,15 +163,21 @@ private Users_CalendarsDAOImpl ucdao;
 			tx = session.beginTransaction();
 			
 			session.delete(c);
+			if(c.getFbUser()!=null)	
+			{
+				c.getFbUser().setMyFacebookCalendar(null);
+				session.update(c.getFbUser());
+			}
 			
 			tx.commit();
-			session.flush();
 			
 			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
 			result = true;
 
+			session.flush();
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			result = false;
 			tx.rollback();
 		}
