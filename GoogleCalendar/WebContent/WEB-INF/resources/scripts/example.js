@@ -265,7 +265,7 @@ angular
     
     // Delete an answered invitation from table
     vm.discardInvitation = function (id) {
-        vm.invitations.filter(function (item) {
+        vm.invitations = vm.invitations.filter(function (item) {
             return item.id != id;
         });
     };
