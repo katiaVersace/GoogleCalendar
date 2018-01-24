@@ -564,9 +564,17 @@ angular
     		alert("Please insert correct value");
     	}
     	else{
-    		vm.sendInvitation(vm.calendarToUpd.id,email,privilages);
-    		document.getElementById('modal-wrapper4').style.display = 'none';
-         	resetShareCalendarValue();
+    		
+    		if(vm.getPrivilegesByID(vm.calendarToUpd.id) != "ADMIN"){
+    			alert("You cannot share this calendar \n" +
+    					"missing required privilege (Admin)");
+    		}
+    		else{
+	    		vm.sendInvitation(vm.calendarToUpd.id,email,privilages);
+	    		document.getElementById('modal-wrapper4').style.display = 'none';
+	         	resetShareCalendarValue();
+    		}
+         	
     	}
      }
     
@@ -1400,74 +1408,77 @@ angular
 
         if (idCalendar != undefined) {
         	
-        	  // for repetition events
-            if(document.getElementById("repetition").checked==true){
-            	
-            	 vm.temp.endsAt = vm.temp.startsAt; 
-            	 // value of repetition
-                 vm.temp.freq = document.getElementById("repChoice").value;
-                 
-
-             	if(vm.temp.freq != "none"){
-                 
-		                 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
-		                         vm.temp.color.secondary, function (response){
+        	
+        	if(vm.getPrivilegesByID(idCalendar) =="R"){
+        		alert("this calendar is shared with you only as reader\n you cannot add new events");
+        	}else{
+        	
+			        	  // for repetition events
+			            if(document.getElementById("repetition").checked==true){
+			            	
+			            	 vm.temp.endsAt = vm.temp.startsAt; 
+			            	 // value of repetition
+			                 vm.temp.freq = document.getElementById("repChoice").value;
+			                 
+			
+			             	if(vm.temp.freq != "none"){
+			                 
+					                 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
+					                         vm.temp.color.secondary, function (response){
+					
+					     				 resetFreqChoice();
+				     				 
+				     				 
+				     				 document.getElementById("repetition").checked = false;
+				                 	
+				                 	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
+				                 });
+				                 
+				                 
+				                 document.getElementById('btn-add').disabled = true;
+				               	 
+				                 
+				                 document.getElementById('modal-wrapper5').style.display = 'none';
+				                 resetClock(); 			
+				      
+		                 } else{
+		                	 alert("please insert a valid frequence");
+		                 }
+		             }else{		
+		            	 
+		            	 
+		            	 if(vm.temp.minutes != "none"){// alarm setted
 		
-		     				 resetFreqChoice();
-		     				 
-		     				 
-		     				 document.getElementById("repetition").checked = false;
-		                 	
-		                 	vm.insertNewRepetition(response, vm.temp.freq, vm.temp.dtstart, vm.temp.until);
-		                 });
+		            		 
+		            		 // event without repetition with ALARM
+		                	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
+		                             vm.temp.color.secondary,function(response){
+		                		 vm.addAlarm(response, vm.temp.minutes);
+		                	 });
+		                	 
+		                	 resetClock(); 
+		            		 
+		            	 }else{
+		            	 
+		            	 // event without repetition without ALARM
+		            	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
+		                         vm.temp.color.secondary);
 		                 
-		                 
-		                 document.getElementById('btn-add').disabled = true;
+		                
+		                	
+		            	 }
+		            	 
+		            	 document.getElementById('btn-add').disabled = true;
 		               	 
 		                 
 		                 document.getElementById('modal-wrapper5').style.display = 'none';
-		                 resetClock(); 			
-		      
-                 } else{
-                	 alert("please insert a valid frequence");
-                 }
-             }else{		
-            	 
-            	 
-            	 if(vm.temp.minutes != "none"){// alarm setted
-
-            		 
-            		 // event without repetition with ALARM
-                	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
-                             vm.temp.color.secondary,function(response){
-                		 vm.addAlarm(response, vm.temp.minutes);
-                	 });
-                	 
-                	 resetClock(); 
-            		 
-            	 }else{
-            	 
-            	 // event without repetition without ALARM
-            	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
-                         vm.temp.color.secondary);
-                 
-                
-                	
-            	 }
-            	 
-            	 document.getElementById('btn-add').disabled = true;
-               	 
-                 
-                 document.getElementById('modal-wrapper5').style.display = 'none';
-             }
+		             }
+        	}
   
-        } else { 
-        	 	alert("please choose a calendar");
-        	 }
-          
-          
-          
-          
+        } else{ 
+        	   alert("please choose a calendar");
+        }
+  
     	}
 
  // update event press button action
