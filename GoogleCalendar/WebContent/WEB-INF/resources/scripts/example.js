@@ -1202,7 +1202,6 @@ angular
                         if (new Date(received[calendar_id]) > new Date(filtered[0].version)) {
                             filtered[0].version = received[calendar_id];
                             vm.updateEventList();
-                            console.log("update requested");
                         }
                     }
                 }
@@ -1220,7 +1219,7 @@ angular
         vm.SSENotificationSubscription();
         vm.SSEInvitationSubscription();
         vm.SSEAlarmSubscription();
-      //  vm.SSECalendarStateChangeSubscription();
+        vm.SSECalendarStateChangeSubscription();
     })();
     
     // --------------------------- //
