@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -290,8 +291,13 @@ System.out.println("dentro dB SERVICE");
 		
 	}
 	
-	public String getPrivilegesForCalendarID(int user_id, int calendar_id){System.out.println("dentro db service");
+	public String getPrivilegesForCalendarID(int user_id, int calendar_id){
 		return cdao.getPrivilegeForCalendarAndUser(user_id, calendar_id);
-		
+	}
+
+
+	public HashMap<Integer, Date> getVersionStateForUserCalendars(int user_id) {
+	    return cdao.getVersionStateForUserCalendars(user_id);
+
 	}
 }

@@ -427,7 +427,6 @@ public class IndexController {
         
         if (((Integer) session.getAttribute("user_id")) != null) {
             List<Alarm> alarmList = dbService.getAlarmsToNotifyById((Integer) session.getAttribute("user_id"));
-           
             
             writer.write(
                     "retry: 5000\n"
@@ -439,17 +438,6 @@ public class IndexController {
         writer.close();
        
     }
-    
-//    /*
-//     * JSON_getPrivileges
-//     */
-//    @RequestMapping(value = "/JSON_getPrivileges", method = RequestMethod.POST)
-//    @ResponseBody
-//    public String JSON_getPrivileges(HttpSession session) {
-//    	  Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//    	  return gson.toJson(dbService.getPrivilegesForCalendars((Integer) session.getAttribute("user_id"))) ;
-//    }
-    
     
     /*
      * JSON_getPrivileges
@@ -463,4 +451,27 @@ public class IndexController {
     	  return dbService.getPrivilegesForCalendarID((Integer) session.getAttribute("user_id"),Integer.parseInt(calendar_id)) ;
     }
 
+    /*
+     * SSE calendar state change subscription
+     */
+    @RequestMapping(value = "/calendarStateChange")
+    public void pushCalendarStateChange(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws ServletException, IOException {
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("UTF-8");
+
+        PrintWriter writer = response.getWriter();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        
+        if (((Integer) session.getAttribute("user_id")) != null) {            
+            writer.write(
+                    "retry: 2500\n"
+                  + "data: "
+                  + gson.toJson(dbService.getVersionStateForUserCalendars((Integer) session.getAttribute("user_id")))
+                  + "\n\n");
+            writer.flush();
+        }
+        writer.close();
+    }
+    
 }

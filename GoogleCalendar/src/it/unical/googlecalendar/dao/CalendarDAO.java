@@ -1,5 +1,7 @@
 package it.unical.googlecalendar.dao;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import it.unical.googlecalendar.model.Calendar;
@@ -34,4 +36,5 @@ public interface CalendarDAO {
 
 	String getPrivilegeForCalendarAndUser(int user_id, int calendar_id);
  
+    HashMap<Integer, Date> getVersionStateForUserCalendars(int user_id);
 }

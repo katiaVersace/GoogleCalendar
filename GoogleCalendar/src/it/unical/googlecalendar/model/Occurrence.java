@@ -79,7 +79,7 @@ public class Occurrence {
     @Expose
     private Repetition repetition;
     
-    
+    private Date versioneEvento;
     
 	
 	public Occurrence(){
@@ -100,7 +100,7 @@ public class Occurrence {
 		//One to many association 
 		calendar.getOccurrences().add(this);
 		this.description=description;
-		
+		this.versioneEvento = new Date();
 	}
 
 //	public List<Repetition> getRepetitions() {
@@ -111,7 +111,15 @@ public class Occurrence {
 //		this.repetitions = repetitions;
 //	}
 
-	public Repetition getRepetition() {
+	public Date getVersioneEvento() {
+        return versioneEvento;
+    }
+
+    public void setVersioneEvento(Date versioneEvento) {
+        this.versioneEvento = versioneEvento;
+    }
+
+    public Repetition getRepetition() {
 		return repetition;
 	}
 

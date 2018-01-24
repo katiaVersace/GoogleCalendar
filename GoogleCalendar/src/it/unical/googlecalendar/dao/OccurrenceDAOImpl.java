@@ -56,22 +56,44 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 	
 	@Override
-	public void update(Occurrence Occurrence) {
+	public void update(Occurrence o) {
 
-		Session session = sessionFactory.openSession();
+	    Session session = sessionFactory.openSession();
 
-		Transaction tx = null;
+        Transaction tx = null;
+        
 
-		try {
-			tx = session.beginTransaction();
-			session.update(Occurrence);
-			tx.commit();
+        try {
+            tx = session.beginTransaction();
+                        
+            //CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+            Date oldVersion=o.getVersioneEvento();
+            Occurrence cDB=getOccurrenceById(o.getId());
+            Date newVersion=cDB.getVersioneEvento();
+            
+            // DEBUG
+            session.clear();
+            Cache cache = sessionFactory.getCache();
+            if (cache != null) {
+                cache.evictAllRegions();
+            }// END DEBUG
+            
+            if(oldVersion.equals(newVersion)){
+            Date now=new Date();
+            o.setVersioneEvento(now);
+            session.update(o);
+            tx.commit();
+                        }
+            else{
+                
+                throw new Exception("L'evento è stato modificato da un utente, le tue modifiche andranno perse");
+                
+            }}
+        catch (Exception e) {
+            tx.rollback();
+        }
 
-		} catch (Exception e) {
-			tx.rollback();
-		}
-
-		session.close();
+        session.close();
 
 	}
 
@@ -217,129 +239,179 @@ public class OccurrenceDAOImpl implements OccurrenceDAO {
 	}
 
 	@Override
-public int insertNewEvent(int ca, int u_id, String title, String description,Date startTime,Date endTime,String c1, String c2) {
-		
-		Session session = sessionFactory.openSession();
-		User u = session.get(User.class,u_id);
-		Calendar c=session.get(Calendar.class, ca);
-		Occurrence ev = new Occurrence(c, u, title, description,startTime,endTime, c1, c2);
-		int result =-1;
-		Transaction tx = null;
+	public int insertNewEvent(int ca, int u_id, String title, String description,Date startTime,Date endTime,String c1, String c2) {
+	        
+	        Session session = sessionFactory.openSession();
+	        User u = session.get(User.class,u_id);
+	        Calendar c=session.get(Calendar.class, ca);
+	        Occurrence ev = new Occurrence(c, u, title, description,startTime,endTime, c1, c2);
+	        int result =-1;
+	        Transaction tx = null;
 
-		try {
-			tx = session.beginTransaction();
-			session.save(ev);
-			result=ev.getId();
-			tx.commit();
+	        try {
+	            tx = session.beginTransaction();
+	            //CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+	            Date now=new Date();
+	            c.setVersioneStato(now);
+	            session.save(ev);
+	            session.update(c);
+	            tx.commit();
+	            result=ev.getId();
+	            
+	            
+	        } catch (Exception e) {
+	            result = -1;
+	            tx.rollback();
+	        }
 
-		} catch (Exception e) {
-			result = -1;
-			tx.rollback();
-		}
-
-		session.close();
-		return result;
-	}
+	        session.close();
+	        return result;
+	    }
 
 
-
-	@Override
-	public boolean deleteById(int oc_id,int u_id) {
-		Session session = sessionFactory.openSession();
-		Occurrence oc =session.get(Occurrence.class,oc_id);
-		User u = session.get(User.class,u_id);
-		Transaction tx = null;
-		boolean result = false;
-		Calendar ca=session.load(Calendar.class, oc.getCalendar().getId());
-		Hibernate.initialize(ca.getOccurrences());
-		// per controllare i privilegi devo prendermi l'associazione tra
-		// l'utente e il calendario dell'occurrence
-		Query query = session.createQuery(
-				"SELECT uc FROM Users_Calendars uc, Calendar c, Occurrence o"
-				+ " WHERE uc.calendar.id= c.id and uc.user.id= :user_id and c.id=o.calendar.id and o.id= :occurrence_id ");
-		query.setParameter("occurrence_id", oc.getId()).setParameter("user_id", u.getId());
-
-		List<Users_Calendars> resultsId = query.getResultList();
-		if (resultsId.size() != 0) {
-			Users_Calendars uc = resultsId.get(0);
-
-			// gestire se sei l'ultimo admin chi diventa admin?
-			if (uc.getPrivileges().equals("ADMIN")) {
-				try {
-					tx = session.beginTransaction();
-
-					    // DEBUG
-						session.clear();
-						Cache cache = sessionFactory.getCache();
-						if (cache != null) {
-							cache.evictAllRegions();
-						}
-						// END DEBUG
-						ca.getOccurrences().remove(oc);
-						
-					session.delete(oc);
-					session.flush();
-
-					tx.commit();
-					result = true;
-				} catch (Exception e) {
-					e.printStackTrace();
-					result = false;
-					tx.rollback();
-					e.printStackTrace();
-				}
-			}
-		}
-		session.close();
-		return result;
-	}
 
 	@Override
-	public boolean updateEventById(int ev_id, String title,  String description, Date startTime,Date endTime,String c1, String c2,int user_id) {
-		Session session = sessionFactory.openSession();
-		Occurrence v = session.get(Occurrence.class,ev_id);
+    public boolean deleteById(int oc_id,int u_id) {
+        Session session = sessionFactory.openSession();
+        Occurrence oc =session.get(Occurrence.class,oc_id);
+        User u = session.get(User.class,u_id);
+        Transaction tx = null;
+        boolean result = false;
+        Calendar ca=session.load(Calendar.class, oc.getCalendar().getId());
+        Hibernate.initialize(ca.getOccurrences());
+        // per controllare i privilegi devo prendermi l'associazione tra
+        // l'utente e il calendario dell'occurrence
+        Query query = session.createQuery(
+                "SELECT uc FROM Users_Calendars uc, Calendar c, Occurrence o"
+                + " WHERE uc.calendar.id= c.id and uc.user.id= :user_id and c.id=o.calendar.id and o.id= :occurrence_id ");
+        query.setParameter("occurrence_id", oc.getId()).setParameter("user_id", u.getId());
+
+        List<Users_Calendars> resultsId = query.getResultList();
+        if (resultsId.size() != 0) {
+            Users_Calendars uc = resultsId.get(0);
+
+            // gestire se sei l'ultimo admin chi diventa admin?
+            if (uc.getPrivileges().equals("ADMIN")) {
+                try {
+                    tx = session.beginTransaction();
+                    Date oldVersion=oc.getVersioneEvento();
+                    Occurrence cDB=session.get(Occurrence.class, oc_id);
+                    Date newVersion=cDB.getVersioneEvento();
+                        // DEBUG
+                        session.clear();
+                        Cache cache = sessionFactory.getCache();
+                        if (cache != null) {
+                            cache.evictAllRegions();
+                        }
+                        // END DEBUG
+                        
+                        
+                        //CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+                        
+                        Calendar c=session.get(Calendar.class, ca.getId());
+                        if(oldVersion.equals(newVersion)){
+                        Date now=new Date();
+                        oc.setVersioneEvento(now);
+                        c.setVersioneStato(now);
+                        session.delete(oc);
+                        session.update(c);
+                        session.flush();
+                        tx.commit();
+                        result = true;
+
+                        
+                        }
+                        else{
+                            
+                            throw new Exception("L'evento con ripetizione ed eccezione è stato modificato da un utente, le tue modifiche andranno perse");
+                            
+                        }
+                        ca.getOccurrences().remove(oc);
+                        
+                        
+                                    } catch (Exception e) {
+                    e.printStackTrace();
+                    result = false;
+                    tx.rollback();
+                    e.printStackTrace();
+                }
+            }
+        }
+        session.close();
+        return result;
+    }
+
+	@Override
+    public boolean updateEventById(int ev_id, String title,  String description, Date startTime,Date endTime,String c1, String c2,int user_id) {
+        Session session = sessionFactory.openSession();
+        Occurrence oldO=session.get(Occurrence.class,ev_id);
+        Occurrence v = oldO;
 boolean result = false;
 
-		// l'utente e il calendario dell'occurrence
-		Query query = session.createQuery(
-				"SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
-		query.setParameter("calendar_id", v.getCalendar().getId()).setParameter("user_id", user_id);
+        // l'utente e il calendario dell'occurrence
+        Query query = session.createQuery(
+                "SELECT uc FROM Users_Calendars uc WHERE uc.calendar.id= :calendar_id and uc.user.id= :user_id");
+        query.setParameter("calendar_id", v.getCalendar().getId()).setParameter("user_id", user_id);
 
-		List<Users_Calendars> resultsId = query.getResultList();
-		if (resultsId.size() != 0) {
-			Users_Calendars uc = resultsId.get(0);
+        List<Users_Calendars> resultsId = query.getResultList();
+        if (resultsId.size() != 0) {
+            Users_Calendars uc = resultsId.get(0);
 
-			if (uc.getPrivileges().equals("ADMIN") || uc.getPrivileges().equals("RW")) {
-				Transaction tx = null;
-				try {
-					tx = session.beginTransaction();
-					v.setTitle(title);
-					v.setStartTime(startTime);
-					v.setEndTime(endTime);
-					v.setPrimaryColor(c1);
-					v.setSecondaryColor(c2);
-					v.setDescription(description);
-					
-					// DEBUG
-					session.clear();
-					Cache cache = sessionFactory.getCache();
-					if (cache != null) {
-						cache.evictAllRegions();
-					}
-					// END DEBUG
-					session.saveOrUpdate(v);
-					tx.commit();
-					result = true;
-				} catch (Exception e) {
-					result = false;
-					tx.rollback();
-					e.printStackTrace();
-				}
-			}
-		}
-		session.close();
-		return result;
-	}
+            if (uc.getPrivileges().equals("ADMIN") || uc.getPrivileges().equals("RW")) {
+                Transaction tx = null;
+                try {
+                    tx = session.beginTransaction();
+                    v.setTitle(title);
+                    v.setStartTime(startTime);
+                    v.setEndTime(endTime);
+                    v.setPrimaryColor(c1);
+                    v.setSecondaryColor(c2);
+                    v.setDescription(description);
+                    
+                    Date oldVersion=v.getVersioneEvento();
+                    Occurrence cDB=getOccurrenceById(ev_id);
+                    Date newVersion=cDB.getVersioneEvento();
+                    // DEBUG
+                    session.clear();
+                    Cache cache = sessionFactory.getCache();
+                    if (cache != null) {
+                        cache.evictAllRegions();
+                    }
+                    // END DEBUG
+                    
+                    //CONCORRENZA: controllo della versione(ricarico l'oggetto dal db e controllo se la versione è cambiata)
+                    
+                    Calendar c=session.get(Calendar.class, v.getCalendar().getId());
+                    if(oldVersion.equals(newVersion)){
+                    Date now=new Date();
+                    v.setVersioneEvento(now);
+                    c.setVersioneStato(now);
+                    session.saveOrUpdate(v);
+                    session.update(c);
+                    tx.commit();
+                    result = true;
+                    }
+                    else{
+                        v.setTitle(oldO.getTitle());
+                        v.setStartTime(oldO.getStartTime());
+                        v.setEndTime(oldO.getEndTime());
+                        v.setPrimaryColor(oldO.getPrimaryColor());
+                        v.setSecondaryColor(oldO.getSecondaryColor());
+                        v.setDescription(oldO.getDescription());
+                        throw new Exception("L'evento è stato modificato da un utente, le tue modifiche andranno perse");
+                        
+                    }
+                    
+                } catch (Exception e) {
+                    result = false;
+                    tx.rollback();
+                    e.printStackTrace();
+                }
+            }
+        }
+        session.close();
+        return result;
+    }
 	
 	@Override
 	public Occurrence getOccurrenceById(int o_id){
