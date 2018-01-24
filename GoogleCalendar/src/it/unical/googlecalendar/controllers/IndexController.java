@@ -439,4 +439,28 @@ public class IndexController {
         writer.close();
        
     }
+    
+//    /*
+//     * JSON_getPrivileges
+//     */
+//    @RequestMapping(value = "/JSON_getPrivileges", method = RequestMethod.POST)
+//    @ResponseBody
+//    public String JSON_getPrivileges(HttpSession session) {
+//    	  Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//    	  return gson.toJson(dbService.getPrivilegesForCalendars((Integer) session.getAttribute("user_id"))) ;
+//    }
+    
+    
+    /*
+     * JSON_getPrivileges
+     */
+    @RequestMapping(value = "/JSON_getPrivileges/{calendar_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String JSON_getPrivileges(HttpSession session, @PathVariable("calendar_id") String calendar_id) {
+    	
+    	System.out.println("dentro json privileges");
+    	 // Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    	  return dbService.getPrivilegesForCalendarID((Integer) session.getAttribute("user_id"),Integer.parseInt(calendar_id)) ;
+    }
+
 }

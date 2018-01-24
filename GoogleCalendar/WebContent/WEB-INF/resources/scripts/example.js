@@ -286,6 +286,9 @@ angular
         }
                 
         vm.shownCalendars.forEach(function (calendar_id) {
+        	 console.log("ENTRO ");
+        	var privileges = vm.getPrivilegesByID(calendar_id);
+           
             vm.JSON_getMyEventsInPeriod(calendar_id, boundaries.start.toDate(), boundaries.end.toDate(), function (events) {
                 JSON.parse(events).forEach(function (blueprint) {
                     if (typeof blueprint.repetition !== "undefined") {
@@ -335,30 +338,30 @@ angular
                         $scope.$digest();
                     } else {
                     	
-                    	 var event = new vm.Event(
-                	         blueprint.id,
-                         blueprint.calendar.id,
-                         blueprint.title,
-                         blueprint.description,
-                         new Date(blueprint.startTime),
-                         new Date(blueprint.endTime),
-                         blueprint.primaryColor,
-                         blueprint.secondaryColor,
-                         "ADMIN"  //TODO
-                     );
-                             
-                     vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
-                         if (response != "null") {
-                             var received = JSON.parse(response);                                     
-                             event.alarm = {
-                                 id: received.id,
-                                 time: received.alarm,
-                             }
-                         }
-                     	
-                         vm.events.push(event);
-                     	$scope.$digest();
-                     });
+	                    	 var event = new vm.Event(
+	                	         blueprint.id,
+	                         blueprint.calendar.id,
+	                         blueprint.title,
+	                         blueprint.description,
+	                         new Date(blueprint.startTime),
+	                         new Date(blueprint.endTime),
+	                         blueprint.primaryColor,
+	                         blueprint.secondaryColor,
+	                         privileges 
+	                     );
+	                             
+	                     vm.JSON_getAlarmForAnOccurrence(event.id, function (response) {
+	                         if (response != "null") {
+	                             var received = JSON.parse(response);                                     
+	                             event.alarm = {
+	                                 id: received.id,
+	                                 time: received.alarm,
+	                             }
+	                         }
+	                     	
+	                         vm.events.push(event);
+	                     	$scope.$digest();
+	                     });
                     }
                 });
                 // Needed for asynchronous update of vm.events
@@ -370,10 +373,25 @@ angular
     // Update the list of calendars displayed within the sidebar
     vm.updateCalendarList = function () {
         var viewList = $("#calendarsList");
+        
         vm.calendarsArray = [];
         vm.JSON_getAllMyCalendars(function (calendars) {
             viewList.empty();
             JSON.parse(calendars).forEach(function (calendar) {
+            	
+           
+            	// //////// GET PRIVILEGES
+            	vm.JSON_getPrivileges(calendar.id, function (response) {
+                    if (response != "null") {
+// var received = response;
+// cosnole.log(received); 
+                    	
+                        calendar.privileges = response;
+                        console.log(calendar);
+                    }
+            	});
+ 
+            	
                 vm.calendarsArray.push(calendar);
                 var x = calendar.title;
                 var title = x.replace(/'/g,"\\'");
@@ -449,8 +467,8 @@ angular
             +"<ul class=\"dropdown-menu\">";
         
         for(i = 0;i< vm.calendarsArray.length;i++) {
-            
-            var title = vm.calendarsArray[i].title;
+        	
+        	var title = vm.calendarsArray[i].title;
             var id = vm.calendarsArray[i].id;
             
             var x = title;
@@ -694,7 +712,26 @@ angular
         });
     };
     
- 
+    
+    /*
+	 * JSON_getPrivileges
+	 */
+   
+    vm.JSON_getPrivileges = function (calendar_id,callback) {
+        $.ajax({
+            type: "POST",
+            url: "JSON_getPrivileges/" + calendar_id,
+            success: function (response) {
+                // console.log("PRIVILEGGI PER CALENDARIO "+calendar_id);
+                console.log(response);
+                console.log("*********************");
+                
+                callback(response);
+            },
+        });
+    };
+    
+    
     /*
 	 * JSON_getMyInvitations
 	 */
@@ -1168,7 +1205,7 @@ angular
                 },
                 draggable : false,
                 resizable : false,
-                actions : actions
+                actions : vm.getActions("ADMIN")
             };
 
             updateClock(vm.temp.clock);
@@ -1189,7 +1226,7 @@ angular
                 },
                 draggable : false,
                 resizable : false,
-                actions : actions
+                actions : vm.getActions("ADMIN")
             };
             vm.tmpMemo = event;
             modal(8);
@@ -1218,7 +1255,7 @@ angular
             },
             draggable : false,
             resizable : false,
-            actions : actions,
+            actions : vm.getActions("ADMIN"),
             // ///////////////// REPETITON DATA ******************
             freq: "none",
             dtstart: startDate,
@@ -1253,7 +1290,7 @@ angular
             },
             draggable : false,
             resizable : false,
-            actions : actions,
+            actions : vm.getActions("ADMIN"),
             // ///////////////// REPETITON DATA ******************
             freq: "none",
             dtstart: vm.firstDateClicked,
@@ -1303,8 +1340,7 @@ angular
     
     	var idCalendar = document.getElementById("choiceId").value;
 
-        // ///////////// TO DO /////////////////// ADD ATTR in
-        // INSERTNEWEVENT
+ 
         vm.temp.clock = document.getElementById("TourId").value;
 
           
@@ -1350,7 +1386,7 @@ angular
             	 if(vm.temp.clock != "none"){// alarm setted
 
             		 
-            		 // event without repetition  with ALARM
+            		 // event without repetition with ALARM
                 	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
                              vm.temp.color.secondary,function(response){
                 		 alert("allarme settato a 1 ");
@@ -1413,7 +1449,7 @@ angular
             draggable : false,
             resizable : false,
             memo : true,
-            actions : actions
+            actions : vm.getActions("ADMIN")
         };
 
     };
@@ -1548,6 +1584,16 @@ angular
 		document.getElementById('modal-wrapper9').style.display = 'none';
 	}
   
+	
+	vm.getPrivilegesByID = function(id_calendar){
+    	 
+		        for(i = 0 ;i< vm.calendarsArray.length;i++){
+		        	if(vm.calendarsArray[i].id == id_calendar) 
+		        		return vm.calendarsArray[i].privileges;
+		        	
+		        }
+	 
+	};
 
  
 });

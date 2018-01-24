@@ -1,22 +1,15 @@
 package it.unical.googlecalendar.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
-import javax.sound.midi.SysexMessage;
 
 import org.hibernate.Cache;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import com.google.gson.Gson;
-
-import it.unical.googlecalendar.dao.CalendarDAO;
 
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.User;
@@ -376,6 +369,22 @@ return result;
 				session.close();
 
 				return result;
+	}
+	
+	@Override
+	public List<Users_Calendars> getPrivilegesForCalendars(int user_id){
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		List<Users_Calendars> result ;
+				Query q=session.createQuery("SELECT uc FROM Users_Calendars uc WHERE uc.user.id=:user_id");
+				q.setParameter("user_id", user_id);
+				result=q.getResultList();
+				
+		session.close();
+		return result;
+
+		
 	}
 	
 }

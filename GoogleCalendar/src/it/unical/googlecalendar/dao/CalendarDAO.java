@@ -5,6 +5,7 @@ import java.util.List;
 import it.unical.googlecalendar.model.Calendar;
 import it.unical.googlecalendar.model.Occurrence;
 import it.unical.googlecalendar.model.User;
+import it.unical.googlecalendar.model.Users_Calendars;
 
 
 public interface CalendarDAO {
@@ -18,7 +19,6 @@ public interface CalendarDAO {
 	
 	void update(Calendar Calendar);
 
-	String getPrivilegeForCalendarAndUser(int user_id, int calendar_id);
 	
 	Calendar getCalendarById(int c_id);
 
@@ -29,4 +29,9 @@ public interface CalendarDAO {
 	boolean updateCalendarById(int c_id, String title, String description, int user_id);
 
 	boolean disconnectUserFromCalendarById(int c_id, int u_id);
+
+	List<Users_Calendars> getPrivilegesForCalendars(int user_id);
+
+	String getPrivilegeForCalendarAndUser(int user_id, int calendar_id);
+ 
 }

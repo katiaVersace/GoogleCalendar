@@ -376,12 +376,12 @@
 							id="privilages" value="none" class="form-control"></input>
 						<div class="dropdown-menu scrollable-menu" id="ulGenres">
 							<li><a href="javascript:void(0)"
-								onclick="addPermission('Admin')" class="clocks" data-id="Admin">Admin</a></li>
+								onclick="addPermission('ADMIN')" class="clocks" data-id="Admin">Admin</a></li>
 							<li><a href="javascript:void(0)"
-								onclick="addPermission('Reader&Writer')" class="clocks"
+								onclick="addPermission('RW')" class="clocks"
 								data-id="reader&writer">Reader&Writer</a></li>
 							<li><a href="javascript:void(0)"
-								onclick="addPermission('Reader')" class="clocks"
+								onclick="addPermission('R')" class="clocks"
 								data-id="reader">Reader</a></li>
 						</div>
 					</div>
