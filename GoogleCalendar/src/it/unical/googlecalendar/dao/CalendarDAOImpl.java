@@ -378,4 +378,20 @@ return result;
 				return result;
 	}
 	
+	@Override
+	public List<Users_Calendars> getPrivilegesForCalendars(int user_id){
+		Session session = sessionFactory.openSession();
+
+		// sql query
+		List<Users_Calendars> result ;
+				Query q=session.createQuery("SELECT uc FROM Users_Calendars uc WHERE uc.user.id=:user_id");
+				q.setParameter("user_id", user_id);
+				result=q.getResultList();
+				
+		session.close();
+		return result;
+
+		
+	}
+	
 }
