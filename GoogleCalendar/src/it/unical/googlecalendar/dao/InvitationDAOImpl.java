@@ -271,7 +271,7 @@ public class InvitationDAOImpl implements InvitationDAO {
 							session.update(i);
 						}
 						catch (Exception e) {
-							e.printStackTrace();
+							
 						i = new Invitation(sender_id,receiverId.get(0) , calendar, privilege);
 						session.save(i);
 						

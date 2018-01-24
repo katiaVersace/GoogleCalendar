@@ -446,7 +446,6 @@ public class IndexController {
     @ResponseBody
     public String JSON_getPrivileges(HttpSession session, @PathVariable("calendar_id") String calendar_id) {
     	
-    	System.out.println("dentro json privileges");
     	 // Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     	  return dbService.getPrivilegesForCalendarID((Integer) session.getAttribute("user_id"),Integer.parseInt(calendar_id)) ;
     }

@@ -1060,7 +1060,7 @@ angular
             		if(response == "User update successfully" || response == "Username changed successfully")
                         document.getElementById('usernameHome').innerHTML = username;
             		
-            		alert(response);
+            	
              },
         });
     };
@@ -1068,7 +1068,7 @@ angular
          /*
 			 * sendInvitation
 			 */
-        vm.sendInvitation = function (calendar_id, email, privileges) { alert("invio invito "+calendar_id+" "+email+" "+privileges);
+        vm.sendInvitation = function (calendar_id, email, privileges) {
             $.ajax({
                 type: "POST",
                 url: "sendInvitation/" + calendar_id,
@@ -1161,7 +1161,7 @@ angular
             var received = JSON.parse(event.data);
             
             if (received.length) {
-            	alert("invito calendario");
+            	
             	
             	console.log(JSON.stringify(received));
                 vm.invitations = vm.invitations.concat(received.slice());
@@ -1441,7 +1441,6 @@ angular
             		 // event without repetition with ALARM
                 	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
                              vm.temp.color.secondary,function(response){
-                		 alert("allarme settato a 1 ");
                 		 vm.addAlarm(response, vm.temp.minutes);
                 	 });
                 	 

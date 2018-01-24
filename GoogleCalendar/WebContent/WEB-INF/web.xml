@@ -17,7 +17,7 @@
       <!-- REAL DB -->
       <!-- <param-value>it.unical.googlecalendar.configuration.AppConfiguration</param-value> -->
       <!-- DB SGUINCIO -->
-      <param-value>it.unical.googlecalendar.configuration.AppConfigurationNoDB</param-value>
+      <param-value>it.unical.googlecalendar.configuration.AppConfiguration</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>

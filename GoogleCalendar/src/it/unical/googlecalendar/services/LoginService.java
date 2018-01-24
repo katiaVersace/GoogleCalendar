@@ -33,7 +33,7 @@ public class LoginService {
 	private String hidden = "none";
 	private String inactive = "inactive";
 
-	@PostConstruct
+	//@PostConstruct
 	public void initialize() {
 
 		udao.save(new User("ciccio@c.it", "ciccio", "ciccio"));

@@ -163,9 +163,9 @@ private Users_CalendarsDAOImpl ucdao;
 			tx = session.beginTransaction();
 			
 			session.delete(c);
-			session.flush();
 			
 			tx.commit();
+			session.flush();
 			
 			//dovrebbe farlo la cascata..delete c->delete uc->refresh u
 			result = true;

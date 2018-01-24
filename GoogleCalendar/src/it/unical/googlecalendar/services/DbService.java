@@ -53,7 +53,7 @@ public class DbService {
     @Autowired
     private ExceptionDAO edao;
 
-	@PostConstruct
+	//@PostConstruct
 	public void initialize() {
 		// User katia=udao.getUserByEmail("k@h.it");
 		User katia = new User("k@h.it", "Katia2", "1234");
@@ -176,9 +176,6 @@ public class DbService {
 
 	public boolean sendInvitation(int user_id, String receiver_email, int calendar_id, String privilege) {
 		
-System.out.println("dentro dB SERVICE");
-
-
 		return idao.sendInvitation(user_id, receiver_email, calendar_id, privilege);
 	}
 
