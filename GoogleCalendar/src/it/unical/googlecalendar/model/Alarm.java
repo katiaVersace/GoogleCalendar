@@ -54,6 +54,9 @@ import com.google.gson.annotations.Expose;
 		@JoinColumn(name = "occurrence_id",nullable = false)
 		@Expose
 		private Occurrence occurrence;
+		
+		@Expose
+		public int minutes;
 
 		// additional attributes
 		@Column(nullable = false)
@@ -75,10 +78,21 @@ import com.google.gson.annotations.Expose;
 			alarm=new Date(o.getStartTime().getTime()-minutes*60*1000L);
 			u.getAlarms().add(this);
 		o.getAlarms().add(this);
+
+		this.minutes=minutes;
 		
 		}
 
 		
+		public int getMinutes() {
+			return minutes;
+		}
+
+		public void setMinutes(int minutes) {
+			this.minutes = minutes;
+			alarm=new Date(occurrence.getStartTime().getTime()-minutes*60*1000L);
+		}
+
 		public Occurrence getOccurrence() {
 			return occurrence;
 		}

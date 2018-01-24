@@ -356,6 +356,7 @@ angular
 	                             event.alarm = {
 	                                 id: received.id,
 	                                 time: received.alarm,
+	                                 minutes : received.minutes
 	                             }
 	                         }
 	                     	
@@ -384,7 +385,7 @@ angular
             	vm.JSON_getPrivileges(calendar.id, function (response) {
                     if (response != "null") {
 // var received = response;
-// cosnole.log(received); 
+// cosnole.log(received);
                     	
                         calendar.privileges = response;
                         console.log(calendar);
@@ -1011,12 +1012,19 @@ angular
     /*
 	 * updateAlarm FIXME: al momento Alarm nel modello ha una lista di allarmi
 	 */
-    vm.updateAlarm = function (alarm_id) {
+    vm.updateAlarm = function (alarm_id,minutes) {
         $.ajax({
             type: "POST",
             url: "updateAlarm/" + alarm_id,
+            data : {
+            	minutes:minutes
+            },
             success: function (response) {
                 // TODO
+            	if(response == "YES")
+            		console.log("alarm aggiornato correttamente");
+            	else
+            		console.log("alarm non aggiornato corretamente");
             },
         });
     };
@@ -1191,12 +1199,25 @@ angular
 
     vm.clickUpdateEvent = function(event) {
         if (!event.memo) {
+        	
+        	var alarmID = undefined;
+        	var minutes = undefined;
+        	if(event.hasOwnProperty('alarm')){
+        		alarmID = event.alarm.id;
+        		minutes = event.alarm.minutes;
+        	}
+        	else{
+        		alarmID = undefined;
+        		minutes = undefined;		
+        	}
+        	
+        	
             vm.temp = {
                 title : event.title,
                 id : event.id,
                 memo : false,
                 description : event.description,
-                clock : event.clock, // TODO: fix clock on DB
+                minutes : minutes, // TODO: fix clock on DB
                 startsAt : event.startsAt,
                 endsAt : event.endsAt,
                 color : {
@@ -1205,10 +1226,11 @@ angular
                 },
                 draggable : false,
                 resizable : false,
+                alarmID : alarmID,
                 actions : vm.getActions("ADMIN")
             };
 
-            updateClock(vm.temp.clock);
+            updateClock(vm.temp.minutes);
             // document.getElementById("TourId").value =
             // vm.temp.clock;
             modal(6);
@@ -1246,7 +1268,7 @@ angular
             id : '',
             memo : false,
             description : '',
-            clock : 'none',
+            minutes : 'none',
             startsAt : startDate,
             endsAt : endDate,
             color : {
@@ -1281,7 +1303,7 @@ angular
             title : 'New event',
             description : '',
             memo : false,
-            clock : 'none',
+            minutes : 'none',
             startsAt : vm.firstDateClicked,
             endsAt : vm.lastDateClicked,
             color : {
@@ -1341,7 +1363,7 @@ angular
     	var idCalendar = document.getElementById("choiceId").value;
 
  
-        vm.temp.clock = document.getElementById("TourId").value;
+        vm.temp.minutes = document.getElementById("TourId").value;
 
           
       
@@ -1383,14 +1405,14 @@ angular
              }else{		
             	 
             	 
-            	 if(vm.temp.clock != "none"){// alarm setted
+            	 if(vm.temp.minutes != "none"){// alarm setted
 
             		 
             		 // event without repetition with ALARM
                 	 vm.insertNewEvent(idCalendar, vm.temp.title, vm.temp.description, vm.temp.startsAt, vm.temp.endsAt, vm.temp.color.primary,
                              vm.temp.color.secondary,function(response){
                 		 alert("allarme settato a 1 ");
-                		 vm.addAlarm(response, vm.temp.clock);
+                		 vm.addAlarm(response, vm.temp.minutes);
                 	 });
                 	 
                 	 resetClock(); 
@@ -1420,15 +1442,28 @@ angular
           
     	}
 
-    // update event press button action
+ // update event press button action
     vm.updateEventView = function() {
 
         var idCalendar = document.getElementById("choiceId").value;
-
+        vm.temp.minutes = document.getElementById("TourId2").value;
+        
         vm.updateEvent(vm.temp.id, vm.temp.title,
                 vm.temp.description, vm.temp.startsAt,
                 vm.temp.endsAt, vm.temp.color.primary,
                 vm.temp.color.secondary);
+        
+        
+        if(vm.temp.minutes != 'none'){ // update alarm
+        vm.updateAlarm(vm.temp.alarmID,vm.temp.minutes);
+        }
+        else{ // delete only if this is an event with alarm associated
+        	
+        	if(vm.temp.alarmID != undefined)
+        		vm.deleteAlarm(vm.temp.alarmID);
+        	
+        }
+        
         
         resetClock();
         document.getElementById('modal-wrapper6').style.display = 'none';
